@@ -1,0 +1,21 @@
+# Binaries
+*.exe
+main
+main.exe
+src/**/*.exe
+bin/
+build/
+
+# Object files
+*.o
+
+# Executables
+*.out
+
+# Visual Studio Code
+.vscode/
+
+# Miscellaneous
+*.log
+*.tmp
+compile.txt
