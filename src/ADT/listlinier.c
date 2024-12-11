@@ -1,11 +1,11 @@
 #include "../../include/ADT/listlinier.h"
 #include <stdio.h>
 
-boolean IsEmptyLL(LinkedList L) {
+boolean IsEmptyLL(ListLinier L) {
     return L.First == Nil;
 }
 
-void CreateEmptyLL(LinkedList *L) {
+void CreateEmptyLL(ListLinier *L) {
     L->First = Nil;
 }
 
@@ -23,7 +23,7 @@ void DealokasiLL(addressLL *P) {
     *P = Nil;
 }
 
-void InsertFirstLL(LinkedList *L, infotypeLL X) {
+void InsertFirstLL(ListLinier *L, infotypeLL X) {
     addressLL P = AlokasiLL(X);
     if (P != Nil) {
         P->next = L->First;
@@ -31,7 +31,7 @@ void InsertFirstLL(LinkedList *L, infotypeLL X) {
     }
 }
 
-void InsertLastLL(LinkedList *L, infotypeLL X) {
+void InsertLastLL(ListLinier *L, infotypeLL X) {
     if (IsEmptyLL(*L)) {
         InsertFirstLL(L, X);
     } else {
@@ -46,7 +46,7 @@ void InsertLastLL(LinkedList *L, infotypeLL X) {
     }
 }
 
-void InsertAtLL(LinkedList *L, infotypeLL X, int idx) {
+void InsertAtLL(ListLinier *L, infotypeLL X, int idx) {
     if (idx == 0) {
         InsertFirstLL(L, X);
     } else {
@@ -66,7 +66,7 @@ void InsertAtLL(LinkedList *L, infotypeLL X, int idx) {
     }
 }
 
-void DeleteFirstLL(LinkedList *L) {
+void DeleteFirstLL(ListLinier *L) {
     if (!IsEmptyLL(*L)) {
         addressLL P = L->First;
         L->First = P->next;
@@ -74,7 +74,7 @@ void DeleteFirstLL(LinkedList *L) {
     }
 }
 
-void DeleteLastLL(LinkedList *L) {
+void DeleteLastLL(ListLinier *L) {
     if (!IsEmptyLL(*L)) {
         if (L->First->next == Nil) {
             DeleteFirstLL(L);
@@ -91,7 +91,7 @@ void DeleteLastLL(LinkedList *L) {
     }
 }
 
-void DeleteAtLL(LinkedList *L, int idx) {
+void DeleteAtLL(ListLinier *L, int idx) {
     if (!IsEmptyLL(*L) && idx >= 0 && idx < NbElmt(*L)) {
         if (idx == 0) {
             DeleteFirstLL(L);
@@ -109,7 +109,7 @@ void DeleteAtLL(LinkedList *L, int idx) {
     }
 }
 
-void DeleteByValueLL(LinkedList *L, infotypeLL X) {
+void DeleteByValueLL(ListLinier *L, infotypeLL X) {
     if (!IsEmptyLL(*L)) {
         addressLL curr = L->First;
         addressLL prev = Nil;
@@ -135,7 +135,7 @@ void DeleteByValueLL(LinkedList *L, infotypeLL X) {
     }
 }
 
-void displayLinkedList(LinkedList L) {
+void displayListLinier(ListLinier L) {
     if (IsEmptyLL(L)) {
         printf("List kosong\n");
     } else {
@@ -149,7 +149,7 @@ void displayLinkedList(LinkedList L) {
     }
 }
 
-int NbElmt(LinkedList L) {
+int NbElmt(ListLinier L) {
     int count = 0;
     addressLL P = L.First;
     while (P != Nil) {
@@ -159,7 +159,7 @@ int NbElmt(LinkedList L) {
     return count;
 }
 
-void swapLinkedList(LinkedList *L, int x, int y) {
+void swapListLinier(ListLinier *L, int x, int y) {
     if (x != y && x >= 1 && y >= 1 && x <= NbElmt(*L) && y <= NbElmt(*L)) {
         if (x > y) {
             int temp = x;
@@ -197,7 +197,7 @@ void swapLinkedList(LinkedList *L, int x, int y) {
     }
 }
 
-char* GetLL(LinkedList L, int idx) {
+char* GetLL(ListLinier L, int idx) {
     if (!IsEmptyLL(L) && idx >= 0 && idx < NbElmt(L)) {
         addressLL P = L.First;
         int i = 0;
@@ -210,13 +210,13 @@ char* GetLL(LinkedList L, int idx) {
     return NULL;
 }
 
-void ClearLL(LinkedList *L) {
+void ClearLL(ListLinier *L) {
     while (!IsEmptyLL(*L)) {
         DeleteFirstLL(L);
     }
 }
 
-boolean isMemberLL(LinkedList L, infotypeLL X) {
+boolean isMemberLL(ListLinier L, infotypeLL X) {
     addressLL P = L.First;
     while (P != Nil) {
         if (stringEqual(P->info, X)) {
