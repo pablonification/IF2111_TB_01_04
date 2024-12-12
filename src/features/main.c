@@ -59,8 +59,7 @@ void showMainMenu(){
                 char file[MAX_LEN];
                 wordToString(filename, file);
                 Load(file, &gameState);
-                gameState.isLoaded = TRUE;
-                gameState.users[0].money = 1000;
+                //gameState.users[0].money = 1000;
             } else{
                 printf("Game sudah dimulai. Tidak bisa load file konfigurasi.\n");
             }
@@ -93,9 +92,10 @@ void showMainMenu(){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && gameState.isStarted && gameState.isLogin){
                 printf("Anda masih tercatat sebagai %s. Silahkan LOGOUT terlebih dahulu.\n", currentUser);
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Game belum dimulai. Silakan start terlebih dahulu.\n");
             } else {
-                Login(gameState.users, gameState.userCount);
-                gameState.isLogin = TRUE;
+                Login(&gameState, gameState.users, gameState.userCount);
                 //gameState.users->money = gameState.users[0].money;
                 //printf("%d\n", gameState.users->money);
             }
@@ -105,7 +105,9 @@ void showMainMenu(){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Anda belum login. Silakan login terlebih dahulu\n");
-            } else {
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Game belum dimulai. Silakan start terlebih dahulu.\n");
+            } else{
                 Logout(gameState.users, gameState.userCount);
                 gameState.isLogin = FALSE;
             }
@@ -126,7 +128,9 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
+                printf("Saldo anda saat ini: %d\n", gameState.users->money);
                 work(&gameState.users->money);
+                printf("Saldo anda setelah bekerja: %d\n", gameState.users->money);
             } 
         }
         else if (compareWords("WORK CHALLENGE", command, 14)){
@@ -135,6 +139,7 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
+                printf("Saldo anda saat ini: %d\n", gameState.users->money);
                 printf("Daftar challenge yang tersedia:\n");
                 printf("1. Tebak Angka (biaya main=200)\n");
                 printf("2. W0RDL399 (biaya main=500)\n");
@@ -147,12 +152,15 @@ void showMainMenu(){
 
                 if (compareWords("1", choice, 1)){
                     tebakAngkaRNG(&gameState.users->money);
+                    printf("Saldo anda saat ini: %d\n", gameState.users->money);
                 }
                 else if (compareWords("2", choice, 1)){
                     playWordl3(&gameState.users->money);
+                    printf("Saldo anda saat ini: %d\n", gameState.users->money);
                 }
                 else if (compareWords("3", choice, 1)){
                     playQuantumWordl3(&gameState.users->money);
+                    printf("Saldo anda saat ini: %d\n", gameState.users->money);
                 }
             }
         }
@@ -252,14 +260,15 @@ void Load(const char *filename, GameState *gameState) {
         return;
     }
 
-    makeListItem(gameState);
-
     int itemCount;
+    boolean succread_item = FALSE;
     if (readFile(file, "%d", &itemCount) != 1) {
         printf("Kesalahan format file: jumlah item tidak valid.\n");
         closeFile(file);
         return;
     }
+    // debug
+    //printf("Item count: %d\n", itemCount);
 
     for (int i = 0; i < itemCount; i++) {
         int price;
@@ -274,36 +283,92 @@ void Load(const char *filename, GameState *gameState) {
         gameState->itemList.item[i].price = price;
         customStringCPY(gameState->itemList.item[i].name, name);
         gameState->itemList.itemLength++;
+        succread_item = TRUE;
     }
 
     int userCount;
+    boolean succread_user = FALSE;
+    boolean succread_ph = FALSE;
+    boolean succread_wl = FALSE;
     if (readFile(file, "%d", &userCount) != 1) {
         printf("Kesalahan format file: jumlah user tidak valid.\n");
         closeFile(file);
         return;
     }
-
+    // debug
+    //printf("User count: %d\n", userCount);
     for (int i = 0; i < userCount; i++) {
         int money;
         char username[MAX_LEN], password[MAX_LEN];
-        
-        if (readUser(file, "%d %s %s", &money, username, password) != 3) {
-            printf("Kesalahan format file: data user tidak valid.\n");
+
+        int result = readUser(file, "%d %s %s", &money, username, password);
+        if (result != 3) {
+            printf("Kesalahan format file: data user tidak valid. Result: %d\n", result);
             closeFile(file);
             return;
         }
 
+        // Debugging: Print read values
+        printf("Read user: money=%d, username=%s, password=%s\n", money, username, password);
+
         gameState->users[i].money = money;
-        printf("%d\n", money);
         customStringCPY(gameState->users[i].name, username);
         customStringCPY(gameState->users[i].password, password);
         gameState->userCount++;
+        succread_user = TRUE;
+
+        // Load purchase history
+        int purchaseCount;
+        if (readFile(file, "%d", &purchaseCount) != 1) {
+            printf("Kesalahan format file: jumlah riwayat pembelian tidak valid.\n");
+            closeFile(file);
+            return;
+        }
+
+        succread_ph = TRUE;
+        gameState->users[i].purchaseCount = purchaseCount;
+        for (int j = 0; j < purchaseCount; j++) {
+            int cost;
+            char itemName[MAX_LEN];
+            if (readItem(file, "%d %[^\n]", &cost, itemName) != 2) {
+                printf("Kesalahan format file: data riwayat pembelian tidak valid.\n");
+                closeFile(file);
+                return;
+            }
+            printf("Read purchase history: cost=%d, itemName=%s\n", cost, itemName);
+            gameState->users[i].purchaseHistory[j].cost = cost;
+            customStringCPY(gameState->users[i].purchaseHistory[j].itemName, itemName);
+        }
+
+        // Load wishlist
+        int wishlistCount;
+        if (readFile(file, "%d", &wishlistCount) != 1) {
+            printf("Kesalahan format file: jumlah wishlist tidak valid.\n");
+            closeFile(file);
+            return;
+        } printf("Read wishlist count: %d\n", wishlistCount);
+
+        succread_wl = TRUE;
+        gameState->users[i].wishlistCount = wishlistCount;
+        for (int j = 0; j < wishlistCount; j++) {
+            char wishItem[MAX_LEN];
+            if (readItem2(file, " %[^\n]", wishItem) != 1) {
+                printf("Kesalahan format file: data wishlist tidak valid.\n");
+                closeFile(file);
+                return;
+            }
+            printf("Read wishlist item: %s\n", wishItem);
+            customStringCPY(gameState->users[i].wishlist[j], wishItem);
+        }
     }
 
-    gameState->isLoaded = TRUE;
-    closeFile(file);
-    printLoad(gameState);
-    printf("File konfigurasi berhasil diload. PURRMART siap digunakan.\n");
+    if (succread_item && succread_user && succread_ph && succread_wl) {
+        gameState->isLoaded = TRUE;
+        closeFile(file);
+        printf("File konfigurasi berhasil diload. PURRMART siap digunakan.\n");
+    } else {
+        printf("Gagal load file konfigurasi. Silakan cek file konfigurasi.\n");
+    }
 }
 
 
@@ -317,7 +382,7 @@ int findUser(User *users, int user_count, const char *username, const char *pass
     return -1;
 }
 
-void Login(User *users, int user_count) {
+void Login(GameState *gameState, User *users, int user_count) {
 
     Word username,password;
     
@@ -337,7 +402,24 @@ void Login(User *users, int user_count) {
         customStringCPY(currentUser, users[userIndex].name);
         printf("Anda telah berhasil login sebagai %s.\n", currentUser);
         users->money = users[userIndex].money;
+        printf("Saldo anda: %d\n", users->money);
 
+        users->purchaseCount = users[userIndex].purchaseCount;
+        printf("Jumlah riwayat pembelian: %d\n", users->purchaseCount);
+        for (int i = 0; i < users[userIndex].purchaseCount; i++) {
+            users->purchaseHistory[i].cost = users[userIndex].purchaseHistory[i].cost;
+            customStringCPY(users->purchaseHistory[i].itemName, users[userIndex].purchaseHistory[i].itemName);
+            printf("Riwayat pembelian %d: %s dengan harga %d\n", i + 1, users->purchaseHistory[i].itemName, users->purchaseHistory[i].cost);
+        }
+
+        users->wishlistCount = users[userIndex].wishlistCount;
+        printf("Jumlah wishlist: %d\n", users->wishlistCount);
+        for (int i = 0; i < users[userIndex].wishlistCount; i++) {
+            customStringCPY(users->wishlist[i], users[userIndex].wishlist[i]);
+            printf("Wishlist %d: %s\n", i + 1, users->wishlist[i]);
+        }
+
+        gameState->isLogin = TRUE;
     }
     else {
         printf("Username atau password salah. Silakan coba lagi.\n");
@@ -347,7 +429,10 @@ void Login(User *users, int user_count) {
 
 void Logout(User *users, int user_count) {
     printf("%s telah logout dari sistem PURRMART. Silakan REGISTER/LOGIN kembali untuk melanjutkan.\n", currentUser);
-    currentUser[0] = '\0';  // Clear the currentUser string
+    currentUser[0] = '\0';
+    users->money = 0;
+    users->purchaseCount = 0;
+    users->wishlistCount = 0;
 }
 
 void Register(GameState *gameState) {
@@ -473,7 +558,7 @@ void makeListItem(GameState *gameState) {
     }
 }
 
-/* buat ngetes hasil load-an tadi*/
+/* 
 void printLoad(GameState *gameState) {
     printf("\n=== Testing Game State ===\n");
     
@@ -504,40 +589,7 @@ void printLoad(GameState *gameState) {
 
     printf("\nStatus Inisialisasi: %s\n", 
            gameState->isLoaded ? "Sudah Terinisialisasi" : "Belum Terinisialisasi");
-}
-
-// Work
-
-void delay(int seconds) {
-    time_t start_time = time(NULL);
-    while (time(NULL) - start_time < seconds);
-}
-
-//Implementasi fungsi pengumpulan input
-void collectInput(char *input){ //input per kata jadiin kalimat
-    input[0] = '\0'; //inisialisasi
-    Word currentWord;
-
-    while(!EndWord){
-        int len = my_strlen(input);
-
-        if(len + currentWord.Length + 1 > 100){ //cek apakah kata yang akan dimasukkan melebihi panjang maksimum
-            break;
-        }
-
-        for (int i = 0; i < currentWord.Length; i++){
-            input[len + i] = currentWord.TabWord[i];
-        }
-        input[len + currentWord.Length] = ' '; //tambahin spasi tiap akhir kata
-        input[len + currentWord.Length + 1] = '\0'; //terminate string
-        ADVWORD();
-    }
-    
-    int len = my_strlen(input);
-    if(len > 0 && input[len - 1] == ' '){
-        input[len - 1] = '\0'; //hapus spasi terakhir
-    }
-}
+} */
 
 unsigned my_strlen(char *str){
     unsigned len = 0;
@@ -558,50 +610,7 @@ boolean my_strcmp(char *str1, char *str2){
     return str1[i] == str2[i];
 }
 
-void work(int *balance){
-    Work workList[] = {
-        {"Asisten Praktikum Alstrukdat", 1000, 10},
-        {"Penghangat Kursi Labdas", 500, 6},
-        {"Teknisi Wifi Eduroam", 700, 8}
-    };
-
-    int workCount = sizeof(workList) / sizeof(workList[0]); //jumlah pekerjaan tersedia
-
-    printf(">> WORK\nDaftar pekerjaan:\n"); //print daftar pekerjaan yang tersedia
-    for(int i = 0; i < workCount; i++){
-        printf("%d. %s (pendapatan: %d, durasi: %ds)\n", i+1, workList[i].workName, workList[i].workPayment, workList[i].workDuration);
-    }
-
-    boolean validWork = FALSE; //inisialisasi
-    char selectedWork[100];
-    int selectedWorkIndex;
-
-    while(!validWork){
-        printf("\nPilih nama pekerjaan: ");
-        STARTWORD(); //baca input
-        collectInput(selectedWork);
-
-        for (int i = 0; i < workCount; i++){ //cek apakah pekerjaan yang dipilih valid
-            if (my_strcmp(selectedWork, workList[i].workName) == 0){ //jika valid
-                validWork = TRUE;
-                selectedWorkIndex = i;
-                break;
-            }
-        }
-        if (!validWork){ //jika tidak valid, kembali ke loop, input lagi
-            printf("Pekerjaan tidak valid, silakan coba lagi. "); 
-        }
-    }
-
-    printf("Anda sedang bekerja sebagai %s. Harap tunggu...\n", selectedWork);
-    delay(workList[selectedWorkIndex].workDuration);
-    printf("Pekerjaan telah selesai. Anda mendapatkan gaji $%d\n", workList[selectedWorkIndex].workPayment);
-
-    balance += workList[selectedWorkIndex].workPayment;
-}
-
 // store
-
 void storeList (ListItem *L) {
     if (IsEmptyItem(L)) {
         printf("TOKO KOSONG\n");
