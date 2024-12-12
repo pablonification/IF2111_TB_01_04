@@ -16,10 +16,17 @@
 
 extern char currentUser[MAX_LEN];
 
-typedef struct{
+typedef struct {
     char name[MAX_LEN];
     char password[MAX_LEN];
     int money;
+    int purchaseCount;
+    int wishlistCount;
+    struct {
+        int cost;
+        char itemName[MAX_LEN];
+    } purchaseHistory[MaxEl];
+    char wishlist[MaxEl][MAX_LEN];
 } User;
 
 typedef struct{
@@ -34,7 +41,7 @@ typedef struct {
 
 typedef struct {
     ListItem itemList;
-    User users[MAX_LEN];
+    User users[MAX_USERS];
     int userCount;
     QueueItem requestQueue;
     boolean isStarted;
@@ -52,7 +59,7 @@ void showMainMenu();
 boolean Start(GameState *gameState);
 void Load(const char *filename, GameState *gameState);
 boolean loadGameState(GameState *gameState, const char *filename);
-void Login(User *users, int user_count);
+void Login(GameState *gameState, User *users, int user_count);
 int findUser(User *users, int user_count, const char *username, const char *password);
 void Register(GameState *gameState);
 void Save(const char *filename, GameState *gameState);
@@ -63,17 +70,6 @@ void insertLastItem(ListItem *itemlist, Item item);
 void makeListItem(GameState *gameState);
 
 void printLoad(GameState *gameState);
-
-// work
-unsigned my_strlen(char *str);
-
-boolean my_strcmp(char *str1, char *str2);
-
-void delay(int seconds);
-
-void collectInput(char *input);
-
-void work(int *balance);
 
 // store
 void storeList (ListItem *L);
@@ -96,5 +92,8 @@ IdxType LastIdxItem(ListItem L);
 boolean SearchItem(ListItem L, char *X);
 
 boolean isWordInt(Word w);
+
+unsigned my_strlen( char *str);
+boolean my_strcmp( char *str1,  char *str2);
 
 #endif
