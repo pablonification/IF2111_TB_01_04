@@ -58,7 +58,6 @@ typedef struct {
 void showMainMenu();
 boolean Start(GameState *gameState);
 void Load(const char *filename, GameState *gameState);
-boolean loadGameState(GameState *gameState, const char *filename);
 void Login(GameState *gameState, User *users, int user_count);
 int findUser(User *users, int user_count, const char *username, const char *password);
 void Register(GameState *gameState);
@@ -73,26 +72,14 @@ void printLoad(GameState *gameState);
 
 // store
 void storeList (ListItem *L);
-// I.S List bisa saja kosong
-// F.S Jika list kosong, mencetak "TOKO KOSONG"
-// Jika list tidak kosong, mencetak seluruh barang yang ada di toko
-
 void storeRemove(ListItem *L);
-
 void storeRequest (ListItem *L, QueueItem *Q);
-
 void storeSupply(ListItem *L, QueueItem *Q);
-
 boolean IsEmptyItem(ListItem *L);
-
 void DeleteAtItem(ListItem *L, IdxType i);
-
 IdxType LastIdxItem(ListItem L);
-
 boolean SearchItem(ListItem L, char *X);
-
 boolean isWordInt(Word w);
-
 unsigned my_strlen( char *str);
 boolean my_strcmp( char *str1,  char *str2);
 
