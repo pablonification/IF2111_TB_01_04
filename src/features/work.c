@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <time.h>
-#include "ADT/mesinkata.h"
-#include "work.h"
-#include "misc.h"
+#include "../../include/ADT/mesinkata.h"
+#include "../../include/features/work.h"
 
 //IMPLEMENTASI FUNGSI DAN PROSEDUR WORK
 
