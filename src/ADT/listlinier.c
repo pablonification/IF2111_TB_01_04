@@ -159,55 +159,69 @@ int NbElmt(ListLinier L) {
     return count;
 }
 
-void swapListLinier(ListLinier *L, int x, int y) {
-    if (x != y && x >= 1 && y >= 1 && x <= NbElmt(*L) && y <= NbElmt(*L)) {
-        if (x > y) {
-            int temp = x;
-            x = y;
-            y = temp;
-        }
-        
-        addressLL prevX = Nil, currX = L->First;
-        for (int i = 1; i < x; i++) {
-            prevX = currX;
-            currX = currX->next;
-        }
-        
-        addressLL prevY = Nil, currY = L->First;
-        for (int i = 1; i < y; i++) {
-            prevY = currY;
-            currY = currY->next;
-        }
-        
-        if (prevX != Nil) {
-            prevX->next = currY;
+void swapListLinier(ListLinier *L, int i, int j) {
+    // Validate indices
+    if (i == j) return;
+    
+    // Get nodes at positions i and j
+    addressLL prev_i = Nil;
+    addressLL curr_i = L->First;
+    int pos_i = 0;
+    while (pos_i < i && curr_i != Nil) {
+        prev_i = curr_i;
+        curr_i = curr_i->next;
+        pos_i++;
+    }
+    
+    addressLL prev_j = Nil;
+    addressLL curr_j = L->First;
+    int pos_j = 0;
+    while (pos_j < j && curr_j != Nil) {
+        prev_j = curr_j;
+        curr_j = curr_j->next;
+        pos_j++;
+    }
+    
+    // Swap nodes
+    if (curr_i != Nil && curr_j != Nil) {
+        // Handle if nodes are adjacent
+        if (curr_i->next == curr_j) {
+            curr_i->next = curr_j->next;
+            curr_j->next = curr_i;
+            if (prev_i != Nil) prev_i->next = curr_j;
+            else L->First = curr_j;
+        } else if (curr_j->next == curr_i) {
+            curr_j->next = curr_i->next;
+            curr_i->next = curr_j;
+            if (prev_j != Nil) prev_j->next = curr_i;
+            else L->First = curr_i;
         } else {
-            L->First = currY;
+            // Non-adjacent nodes
+            addressLL temp_next = curr_i->next;
+            curr_i->next = curr_j->next;
+            curr_j->next = temp_next;
+            
+            if (prev_i != Nil) prev_i->next = curr_j;
+            else L->First = curr_j;
+            
+            if (prev_j != Nil) prev_j->next = curr_i;
+            else L->First = curr_i;
         }
-        
-        if (prevY != Nil) {
-            prevY->next = currX;
-        } else {
-            L->First = currX;
-        }
-        
-        addressLL temp = currY->next;
-        currY->next = currX->next;
-        currX->next = temp;
     }
 }
 
 char* GetLL(ListLinier L, int idx) {
-    if (!IsEmptyLL(L) && idx >= 0 && idx < NbElmt(L)) {
-        addressLL P = L.First;
-        int i = 0;
-        while (i < idx) {
-            P = P->next;
-            i++;
-        }
-        return P->info;
+    if (idx < 1) return NULL;
+    
+    addressLL p = L.First;
+    int ctr = 1;
+    
+    while (p != Nil && ctr < idx) {
+        p = p->next;
+        ctr++;
     }
-    return NULL;
+    
+    return (p != Nil) ? p->info : NULL;
 }
 
 void ClearLL(ListLinier *L) {

@@ -7,24 +7,16 @@
 #include "../../include/ADT/listlinier.h"
 // #include "../../include/features/main.h"
 
-// run : gcc -o wishlist wishlist.c ../ADT/listlinier.c ../ADT/mesinkata.c ../ADT/mesinkarakter.c misc.c store.c
+// run : gcc -o wishlist wishlist.c ../ADT/listlinier.c ../ADT/mesinkata.c ../ADT/mesinkarakter.c misc.c store.c (dari folder src/features)
 
+boolean isValidInput(Word input) {
+    return input.Length > 0;
+}
 /*
 ini belum nanganin kasus input tidak valid atau enter langsung &&&&&&&&&&&&&&&&&&&&&&&&&
 */
 
 // Fitur wishlistShow
-
-/*
-WISHLIST SHOW adalah command yang digunakan untuk menunjukkan barang-barang yang sudah dimasukkan ke dalam wishlist. 
-Tampilan:
-Berikut adalah isi wishlist-mu:
-1 Ayam Geprek Bakar Crispy Besthal
-2 Ayam Mangut Besthal
-3 Karaage Don
-4 Torikatsu Don
-(nomor merupakan posisi barang dalam wishlist)
-*/
 void wishlistShow(WishlistUser *wishlist) {
     if(!IsEmptyLL(wishlist->wishlist_item)) {
         printf("Berikut adalah isi wishlist-mu:\n");
@@ -40,22 +32,6 @@ void wishlistShow(WishlistUser *wishlist) {
 }
 
 // Fitur wishlistAdd
-
-/*
-WISHLIST ADD merupakan command yang digunakan untuk menambahkan suatau barang ke wishlist. Menggunakan fungsio InsertLastLL dari ADT ListLinier.
-
-Tampilan:
-Masukkan nama barang: Ayam Geprek Bakar Crispy Besthal
-
-Berhasil menambahkan Ayam Geprek Bakar Crispy Besthal ke wishlist!
-
-Alur:
-- Menerima input nama barang dari pengguna  
-- Cek barang apakah sudah ada di store
-    - Jika barang ditemukan dalam store, maka barang berhasil ditambahkan ke wishlist dengan menggunakan fungsi InsertLastLL    
-    - Jika barang ditemukan dalam store dan sudah ada di wishlist, maka barang tidak dapat ditambahkan ke wishlist
-    - Jika barang tidak ditemukan dalam store, maka barang tidak dapat ditambahkan ke wishlist
-*/
 void wishlistAdd(ListItem *L, WishlistUser *wishlist) {
     // Terima input nama barang dari pengguna
     Word item_name;
@@ -65,6 +41,13 @@ void wishlistAdd(ListItem *L, WishlistUser *wishlist) {
     char item_namestr[MaxEl];
     item_name = currentWord;    
     wordToString(item_name, item_namestr); 
+
+    // Validasi input
+    if (!isValidInput(item_name)) {
+        printf("Input tidak valid! Silakan masukkan nama barang yang tidak kosong.\n");
+        wishlistAdd(L, wishlist); // Minta input lagi
+        return; // Pastikan fungsi berhenti setelah memanggil ulang
+    }
 
     // Cek apakah barang sudah ada di store
     // // debug kasus AK47 udah ada di wishlist &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -78,6 +61,7 @@ void wishlistAdd(ListItem *L, WishlistUser *wishlist) {
         } else {
             InsertLastLL(&wishlist->wishlist_item, item_namestr);
             wishlist->number++; // increment jumlah barang di wishlist
+            printf("DEBUG: Items after add: %d\n", wishlist->number);
             printf("Berhasil menambahkan %s ke wishlist!\n", item_namestr);
         }
     } else { // Barang tidak ditemukan di store
@@ -90,18 +74,12 @@ void wishlistAdd(ListItem *L, WishlistUser *wishlist) {
 }
 
 // Fitur wishlistClear
-/*
-WISHLIST CLEAR adalah command yang digunakan untuk menghapus semua barang yang terdapat di dalam WISHLIST. 
-
-Tampilan:
-Wishlist telah dikosongkan.
-*/
-void wishlistClear(WishlistUser *wishlist){
-    // apakah wishlist kosong?
+void wishlistClear(WishlistUser *wishlist) {
     if (IsEmptyLL(wishlist->wishlist_item)) {
         printf("Wishlist sudah kosong.\n");
     } else {
         ClearLL(&wishlist->wishlist_item);
+        wishlist->number = 0;  
         printf("Wishlist telah dikosongkan.\n");
     }
 }
@@ -124,7 +102,6 @@ Masukkan nama barang yang akan dihapus : LoremIpsum
 Penghapusan barang WISHLIST gagal dilakukan, LoremIpsum tidak ada di WISHLIST!
 
 // Command mati; Kembali ke main menu
-
 
 */
 
@@ -156,12 +133,21 @@ void wishlistRemove(WishlistUser *wishlist){
     input = currentWord;    
     wordToString(input, inputstr);
 
+    // Validasi input
+    if (!isValidInput(input)) {
+        printf("Input tidak valid! Silakan masukkan nama barang atau nomor yang valid.\n");
+        wishlistRemove(wishlist); // Minta input lagi
+        return; // Pastikan fungsi berhenti setelah memanggil ulang
+    }
+
     // Cek apakah input berupa nomor atau nama barang
     if (isNumber(inputstr)) {
         int idx = convertWordToInt(input);
         if (idx > 0 && idx <= wishlist->number) {
             DeleteAtLL(&wishlist->wishlist_item, idx-1);
             printf("Barang pada posisi %d berhasil dihapus dari wishlist!\n", idx);
+            wishlist->number--;  // Update count only on successful delete
+            printf("DEBUG: Items after remove: %d\n", wishlist->number);
         } else {
             printf("Penghapusan barang wishlist gagal dilakukan, posisi %d tidak ada di wishlist!\n", idx);
             wishlistRemove(wishlist); // kalo index salah, minta input lagi
@@ -171,6 +157,8 @@ void wishlistRemove(WishlistUser *wishlist){
         if (isMemberLL(wishlist->wishlist_item, inputstr)) {
             DeleteByValueLL(&wishlist->wishlist_item, inputstr);
             printf("%s berhasil dihapus dari wishlist!\n", inputstr);
+            wishlist->number--;  
+            printf("DEBUG: Items after remove: %d\n", wishlist->number);
         } else {
             printf("Penghapusan barang wishlist gagal dilakukan, %s tidak ada di wishlist!\n", inputstr);
             wishlistRemove(wishlist); // kalo barangnya ga ada, minta input lagi
@@ -182,25 +170,13 @@ void wishlistRemove(WishlistUser *wishlist){
 
 
 // Fitur wishlistSwap <i> <j> (berdasarkan posisi)
-/*
-WISHLIST SWAP merupakan command yang digunakan untuk menukar barang posisi ke-i dengan barang posisi ke-j pada wishlist. Posisi i dan j merupakan urutan barang pada wishlist, urutan dimulai dari 1. 
-
-Tampillan:
->> WISHLIST SWAP 1 2
-Berhasil menukar posisi Ayam Geprek Bakar Crispy Besthal dengan Ayam Mangut Besthal pada wishlist!
-// Urutan Ayam Geprek Bakar Crispy Besthal berubah dari 1 menjadi 2. Sebaliknya, urutan Ayam Mangut Besthal berubah dari 2 menjadi 1
->> WISHLIST SWAP 1 2
-Gagal menukar posisi Ayam Geprek Bakar Crispy Besthal!
-// Hanya terdapat satu barang (Ayam Geprek Bakar Crispy Besthal) pada wishlist sehingga posisinya tidak dapat ditukar
-*/
 void wishlistSwap(WishlistUser *wishlist, int i, int j) {
     if (i > 0 && i <= wishlist->number && j > 0 && j <= wishlist->number) {
-        // Store items before swapping
         char item1[MaxEl], item2[MaxEl];
         char *tmp1 = GetLL(wishlist->wishlist_item, i);
         char *tmp2 = GetLL(wishlist->wishlist_item, j);
         
-        // Manual array copy
+        // manual copy string
         int k;
         for(k = 0; tmp1[k] != '\0'; k++) item1[k] = tmp1[k];
         item1[k] = '\0';
@@ -221,7 +197,6 @@ void wishlistSwap(WishlistUser *wishlist, int i, int j) {
     }
     wishlistShow(wishlist);
 }
-
 
 
 
@@ -267,21 +242,63 @@ int main(){
         },
         .itemLength = 4
     };
+    // WishlistUser wishlist;
+    // CreateEmptyLL(&wishlist.wishlist_item);
+    // wishlist.number = 0;
+    // wishlistAdd(&itemList, &wishlist);
+    // wishlistAdd(&itemList, &wishlist);
+    // wishlistClear(&wishlist);
+    // wishlistAdd(&itemList, &wishlist);
+    // wishlistAdd(&itemList, &wishlist);
+    // // wishlistAdd(&itemList, &wishlist);
+
+    // // // wishlistShow(&wishlist);
+
+    // wishlistRemove(&wishlist);
+    // // // wishlistShow(&wishlist);
+    // // wishlistRemove(&wishlist);
+    // // wishlistShow(&wishlist);
+    // wishlistSwap(&wishlist, 1, 2);
+    
     WishlistUser wishlist;
     CreateEmptyLL(&wishlist.wishlist_item);
     wishlist.number = 0;
-    wishlistAdd(&itemList, &wishlist);
-    // wishlistAdd(&itemList, &wishlist);
-    // wishlistAdd(&itemList, &wishlist);
-    // wishlistAdd(&itemList, &wishlist);
 
-    // wishlistShow(&wishlist);
-    // // wishlistClear(&wishlist);
-    // wishlistRemove(&wishlist);
-    // wishlistShow(&wishlist);
-    // wishlistRemove(&wishlist);
-    // wishlistShow(&wishlist);
-    wishlistSwap(&wishlist, 1, 2);
+    printf("\n=== Testing Add ===\n");
+    wishlistAdd(&itemList, &wishlist);
+    printf("DEBUG: After first add - number: %d\n", wishlist.number);
     
+    wishlistAdd(&itemList, &wishlist);
+    printf("DEBUG: After second add - number: %d\n", wishlist.number);
+    
+    printf("\n=== Testing Clear ===\n");
+    wishlistClear(&wishlist);
+    printf("DEBUG: After clear - number: %d\n", wishlist.number);
+    
+    printf("\n=== Testing Add Again ===\n");
+    wishlistAdd(&itemList, &wishlist);
+    printf("DEBUG: After add - number: %d\n", wishlist.number);
+    
+    wishlistAdd(&itemList, &wishlist);
+    printf("DEBUG: After add - number: %d\n", wishlist.number);
+
+    printf("\n=== Testing Remove ===\n");
+    printf("DEBUG: Before remove - List state:\n");
+    wishlistShow(&wishlist);
+    wishlistRemove(&wishlist);
+    printf("DEBUG: After remove - number: %d\n", wishlist.number);
+
+    printf("\n=== Testing Swap ===\n");
+    printf("DEBUG: Before swap - List state:\n");
+    wishlistShow(&wishlist);
+    wishlistSwap(&wishlist, 1, 2);
+    printf("DEBUG: After swap - List state:\n");
+    wishlistShow(&wishlist);
+    printf("\n=== Testing Final Add ===\n");
+    printf("DEBUG: Items before final add: %d\n", wishlist.number);
+    wishlistAdd(&itemList, &wishlist);
+    printf("DEBUG: Items after final add: %d\n", wishlist.number);
+    wishlistShow(&wishlist);
+
     return 0;
 }
