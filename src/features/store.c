@@ -167,11 +167,11 @@ void DeleteAtItem(ListItem *L, IdxType i) {
 }
 
 IdxType LastIdxItem(ListItem L) {
-	int i = 0;
-	while ((i < MaxEl) && (L.item[i+1].name != '\0')) {
-		i += 1;
-	}
-	return i;
+    int i = 0;
+    while ((i < MaxEl) && (L.item[i].name[0] != '\0')) {
+        i += 1;
+    }
+    return i - 1;
 }
 
 boolean SearchItem(ListItem L, char *X) {
@@ -245,28 +245,28 @@ boolean isWordInt(Word w) {
     return TRUE;
 }
 
-int main() {
-    ListItem itemList = {
-        .item = {
-        {"AK47", 20},
-        {"Lalabu", 20},
-        {"Ayam Goreng Crisbar", 10},
-        {"Kunjaw UAS Alstrukdat", 50}
-        },
-        .itemLength = 4
-    };
+// int main() {
+//     ListItem itemList = {
+//         .item = {
+//         {"AK47", 20},
+//         {"Lalabu", 20},
+//         {"Ayam Goreng Crisbar", 10},
+//         {"Kunjaw UAS Alstrukdat", 50}
+//         },
+//         .itemLength = 4
+//     };
 
-    QueueItem requestQueue;
-    CreateQueueItem(&requestQueue);
+//     QueueItem requestQueue;
+//     CreateQueueItem(&requestQueue);
 
-    storeList(&itemList);
-    storeRequest(&itemList, &requestQueue);
-    storeRequest(&itemList, &requestQueue);
-    storeRequest(&itemList, &requestQueue);
-    storeSupply(&itemList, &requestQueue);
-    storeSupply(&itemList, &requestQueue);
-    storeSupply(&itemList, &requestQueue);
-    storeRemove(&itemList);
-    storeList(&itemList);
-    return 0;
-}
+//     storeList(&itemList);
+//     storeRequest(&itemList, &requestQueue);
+//     storeRequest(&itemList, &requestQueue);
+//     storeRequest(&itemList, &requestQueue);
+//     storeSupply(&itemList, &requestQueue);
+//     storeSupply(&itemList, &requestQueue);
+//     storeSupply(&itemList, &requestQueue);
+//     storeRemove(&itemList);
+//     storeList(&itemList);
+//     return 0;
+// }
