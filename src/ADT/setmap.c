@@ -86,9 +86,24 @@ void DisplayMap(Map M, ListItem L, int *subtotal){
     } else {
         printf("Barang         Jumlah    Total\n");
         for (int i = 0; i < M.Count; i++) {
-            int total = Value(M, M.Elements[i].Key) * L.item[i].price;
-            *subtotal += total;
-            printf("%-14s %-9d %d\n", M.Elements[i].Key, M.Elements[i].Value, total);
+            int harga = 0;
+            boolean found = FALSE;
+            for (int j = 0; j < L.itemLength; j++) {
+                if (my_strcmp(L.item[j].name, M.Elements[i].Key)) {
+                    harga = L.item[j].price;
+                    found = TRUE;
+                    break;
+                }
+            }
+
+            if (found) {
+                int total = harga * M.Elements[i].Value;
+                *subtotal += total;
+                printf("%-15s %-8d %-d\n", M.Elements[i].Key, M.Elements[i].Value, total);
+            }
+            else {
+                printf("%-15s %-8d (Harga tidak ditemukan)\n", M.Elements[i].Key, M.Elements[i].Value);
+            }
         }
     }
 }
