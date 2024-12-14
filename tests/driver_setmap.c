@@ -4,18 +4,26 @@
 #include <string.h>
 
 int main(){
+    ListItem L = {
+        .item = {
+        {"AK47", 20},
+        {"Lalabu", 20}
+        },
+        .itemLength = 2
+    };
+
     Map M;
     CreateEmptyMap(&M);
 
-    keytype ayam = "Ayam";
-    keytype sapi = "Sapi";
-    keytype kambing = "Kambing";
+    int subtotal = 0;
 
-    Insert(&M, ayam, 10);
-    Insert(&M, sapi, 5);
-    Insert(&M, kambing, 3);
+    keytype ak47 = "AK47";
+    keytype lalabu = "Lalabu";
+
+    Insert(&M, ak47, 2);
+    Insert(&M, lalabu, 5);
     
-    DisplayMap(M);
+    DisplayMap(M, L, &subtotal);
 
     int choice;
     keytype name;
@@ -81,14 +89,17 @@ int main(){
                 if (IsMemberMap(M, name)) {
                     printf("Barang %s ada dalam map.\n", name);
                 } else {
-                    printf("Barang %s tidak ada dalam map.\n", name);
+                    printf("Barang %s tidak ada dalam map.\n");
                 }
                 break;
 
             case 5:
-                // Display Map
+                // Display Map  
+                subtotal = 0;
+
                 printf("\n");
-                DisplayMap(M);
+                DisplayMap(M, L, &subtotal);
+                printf("Total: %d\n", subtotal);
                 break;
 
             case 0:
@@ -105,4 +116,5 @@ int main(){
     return 0;
 }
 
+// beberapa issue mungkin terjadi di driver ini karena fungsi fungsinya diadapt untuk bekerja di cart.c
 // gcc -o driversetmap driver_setmap.c ../src/ADT/setmap.c ../src/features/work.c ../src/ADT/mesinkata.c ../src/ADT/mesinkarakter.c

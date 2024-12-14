@@ -80,22 +80,25 @@ boolean IsMemberMap(Map M, keytype k){
 }
 /* Mengembalikan true jika k adalah member dari M */
 
-void DisplayMap(Map M) {
+void DisplayMap(Map M, ListItem L, int *subtotal){
     if (IsEmptyMap(M)) {
         printf("Map is empty.\n");
     } else {
+        printf("Barang         Jumlah    Total\n");
         for (int i = 0; i < M.Count; i++) {
-            printf("Key: %s, Value: %d\n", M.Elements[i].Key, M.Elements[i].Value);
+            int total = Value(M, M.Elements[i].Key) * L.item[i].price;
+            *subtotal += total;
+            printf("%-14s %-9d %d\n", M.Elements[i].Key, M.Elements[i].Value, total);
         }
     }
 }
 
 /* ********* Util ********* gajadi dipake tp keep dulu siapa tau nanti kepake */
-// char* my_strcpy(char* destination, const char* source) {
-//     char* ptr = destination;
-//     while (*source != '\0') {
-//         *ptr++ = *source++;
-//     }
-//     *ptr = '\0';
-//     return destination;
-// }
+char* my_strcpy(char* destination, const char* source) {
+    char* ptr = destination;
+    while (*source != '\0') {
+        *ptr++ = *source++;
+    }
+    *ptr = '\0';
+    return destination;
+}
