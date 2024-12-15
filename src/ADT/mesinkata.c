@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "../../include/ADT/mesinkata.h"
 #include "../../include/ADT/mesinkarakter.h"
 #include "../../include/ADT/boolean.h"
@@ -214,6 +215,37 @@ int WordToInt(Word W)
     for (i=0; i<W.Length; i++) {
         res = res*10 + (W.TabWord[i] - '0');
     } return res;
+}
+
+double WordToDouble(Word word) 
+{
+    /* Mengembalikan nilai double dari Word W */
+    double result = 0.0;
+    int i = 0;
+    double fraction = 0.0;
+    int decimalPlace = 1;
+    boolean isDecimal = FALSE;
+
+
+    boolean isNegative = (word.TabWord[0] == '-');
+    if (isNegative) i++;
+
+    for (; i < word.Length; i++) {
+        if (word.TabWord[i] == '.') {
+            isDecimal = TRUE;
+            continue;
+        }
+
+        if (!isDecimal) {
+            result = result * 10 + (word.TabWord[i] - '0');
+        } else {
+            fraction = fraction + (word.TabWord[i] - '0') / (pow(10, decimalPlace));
+            decimalPlace++;
+        }
+    }
+
+    result += fraction;
+    return isNegative ? -result : result;
 }
 
 void LoadWordsFromFile(const char *fileName, char ***wordsList, int *wordCount) {
