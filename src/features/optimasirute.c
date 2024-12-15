@@ -115,7 +115,7 @@ int main() {
     printf(">> OPTIMASIRUTE\n");
     
     printf("Masukkan jumlah lokasi pengiriman (node): ");
-    STARTWORD();  // Gunakan STARTWORD alih-alih STARTLINE
+    STARTWORD(); 
     lokasi = currentWord;
 
     if (!isKataInt(lokasi)) {
@@ -130,7 +130,7 @@ int main() {
     }
     
     printf("Masukkan jumlah rute (edge): ");
-    STARTWORD();  // Gunakan STARTWORD alih-alih STARTLINE
+    STARTWORD();  
     route = currentWord;
 
     if (!isKataInt(route)) {
@@ -151,7 +151,7 @@ int main() {
     printf("format: <asal> <tujuan> <jarak>\n");
     printf("Contoh: 0 1 40 berarti jarak dari lokasi 0 ke 1 adalah 40\n");
     
-    for(int i = 0; i < jumlahRute; i++) {
+    for (int i = 0; i < jumlahRute; i++) {
         int asal, tujuan;
         double bobot;
 
@@ -189,39 +189,52 @@ int main() {
             DealokasiMatrixJarak(jarak, jumlahLokasi);
             return 1;
         }
-        
-        jarak[asal][tujuan] = bobot;
-        jarak[tujuan][asal] = bobot;
-    }
 
-    if(!isConnected(jarak, jumlahLokasi)) {
-        printf("Graf tidak terhubung!\n");
-        DealokasiMatrixJarak(jarak, jumlahLokasi);
-        return 1;
-    }
-
-    printf("\nData diterima, silakan tunggu...\n");
-
-    SolusiRute* solusi = optimasiRute(jarak, jumlahLokasi);
-    
-    if(solusi->totalJarak == INFINITY) {
-        printf("\nTidak ditemukan rute valid!\n");
-    } else {
-        printf("A-ha! Rute paling efektif adalah ");
-        for(int i = 0; i < jumlahLokasi; i++) {
-            printf("%d", solusi->jalur[i]);
-            if(i < jumlahLokasi - 1) printf("-");
+        if (jarak[asal][tujuan] != INFINITY) {
+            if (bobot < jarak[asal][tujuan]) {
+                jarak[asal][tujuan] = bobot;
+                jarak[tujuan][asal] = bobot;
+            }
+        } 
+        else {
+            jarak[asal][tujuan] = bobot;
+            jarak[tujuan][asal] = bobot;
         }
-        printf("-%d.\n", solusi->jalur[0]);
     }
-    
-    DealokasiMatrixJarak(jarak, jumlahLokasi);
-    free(solusi->jalur);
-    free(solusi);
-    
-    return 0;
+
+
+        if(!isConnected(jarak, jumlahLokasi)) {
+            printf("Graf tidak terhubung!\n");
+            DealokasiMatrixJarak(jarak, jumlahLokasi);
+            return 1;
+        }
+
+        printf("\nData diterima, silakan tunggu...\n");
+
+        SolusiRute* solusi = optimasiRute(jarak, jumlahLokasi);
+        
+        if(solusi->totalJarak == INFINITY) {
+            printf("\nTidak ditemukan rute valid!\n");
+        } 
+        
+        else {
+            printf("A-ha! Rute paling efektif adalah ");
+            for (int i = 0; i < jumlahLokasi; i++) {
+                printf("%d", solusi->jalur[i]);
+                if(i < jumlahLokasi - 1) printf("-");
+            }
+            printf("-%d.\n", solusi->jalur[0]);
+        }
+        
+        DealokasiMatrixJarak(jarak, jumlahLokasi);
+        free(solusi->jalur);
+        free(solusi);
+        
+        return 0;
 }
 
 int OptimasiRuteEkspedisi() {
     return main();
 }
+
+
