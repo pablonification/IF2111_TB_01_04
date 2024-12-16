@@ -5,7 +5,7 @@
 #include "../ADT/mesinkata.h"
 
 #define MAX_LOKASI 100
-#define INFINITY 999999
+#define infinity 999999
 
 // Struktur untuk menyimpan solusi rute
 typedef struct {
