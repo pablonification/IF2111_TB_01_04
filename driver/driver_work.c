@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include "../../include/ADT/mesinkata.h"
-#include "../../include/features/work.h"
+#include "../include/ADT/mesinkata.h"
+#include "../include/features/work.h"
 
 void delay(int seconds) {
     time_t start_time = time(NULL);

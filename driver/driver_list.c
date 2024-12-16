@@ -1,5 +1,8 @@
+/* Compile command dengan directory terdalam : /IF2111_TB_04_01
+Compiler: gcc -o dl driver/driver_list.c src/ADT/list.c  */
+
 #include <stdio.h>
-#include "../../include/ADT/list.h"
+#include "../include/ADT/list.h"
 
 int main () {
     List l1 = MakeList();

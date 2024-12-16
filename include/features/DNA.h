@@ -1,5 +1,5 @@
-#ifndef BONUS2_H
-#define BONUS2_H
+#ifndef DNA_H
+#define DNA_H
 
 #include <stdio.h>
 #include "misc.h"
@@ -11,4 +11,4 @@ void DNAtoRNA(Word DNA, Word *RNA);
 char translateCodon(char *codon);
 void processDNA();
 
-#endif // BONUS2_H
+#endif // DNA_H

@@ -1,6 +1,9 @@
+/* Compile command dengan directory terdalam : /IF2111_TB_04_01
+Compiler: gcc -o dmkt driver/driver_mesinkata.c src/ADT/mesinkata.c src/ADT/mesinkarakter.c */
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../include/ADT/mesinkata.h"
+#include "../include/ADT/mesinkata.h"
 
 int main() {
     Word item1;

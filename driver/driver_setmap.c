@@ -1,3 +1,6 @@
+/* Compile command dengan directory terdalam : /IF2111_TB_04_01
+Compiler: gcc -o dsm driver/driver_setmap.c src/ADT/setmap.c  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/ADT/setmap.h"

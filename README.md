@@ -47,7 +47,7 @@ PURRMART adalah aplikasi C yang mensimulasikan permainan pasar di mana pengguna 
 - `wordl32.c`: Implementasi fitur permainan Wordle.
 - `rng.c`: Implementasi fitur generator angka acak.
 - `qwordl3.c`: Implementasi fitur permainan Quantum Wordle.
-- `bonus2.c`: Implementasi fitur bonus tambahan.
+- `DNA.c`: Implementasi fitur bonus tambahan.
 
 **File Header (`include` direktori):**
 
@@ -78,4 +78,4 @@ PURRMART adalah aplikasi C yang mensimulasikan permainan pasar di mana pengguna 
 Untuk mengkompilasi dan menjalankan aplikasi, jalankan perintah berikut di terminal:
 
 ```bash
-gcc -I include src/features/main.c src/features/misc.c src/ADT/mesinkarakter.c src/ADT/mesinkata.c src/ADT/queue.c src/ADT/list.c src/features/wordl32.c src/features/rng.c src/features/qwordl3.c src/features/bonus2.c -o main
+gcc -I include src/features/main.c src/features/misc.c src/ADT/mesinkarakter.c src/ADT/mesinkata.c src/ADT/queue.c src/ADT/list.c src/features/wordl32.c src/features/rng.c src/features/qwordl3.c src/features/DNA.c -o main

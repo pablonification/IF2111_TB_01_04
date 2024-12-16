@@ -9,7 +9,7 @@
 #include "wordl32.h"
 #include "rng.h"
 #include "qwordl3.h"
-#include "bonus2.h"
+#include "DNA.h"
 
 #define MAX_LEN 50
 #define MAX_USERS 100
@@ -40,7 +40,7 @@ typedef struct {
     boolean isStarted;
     boolean isLoaded;
     boolean isLogin;
-} GameState;
+} Global;
 
 // typedef struct{
 //     char workName[100]; // nama pekerjaan
@@ -49,20 +49,20 @@ typedef struct {
 // } Work;
 
 void showMainMenu();
-boolean Start(GameState *gameState);
-void Load(const char *filename, GameState *gameState);
-boolean loadGameState(GameState *gameState, const char *filename);
+boolean Start(Global *Global);
+void Load(const char *filename, Global *Global);
+boolean loadGlobal(Global *Global, const char *filename);
 void Login(User *users, int user_count);
 int findUser(User *users, int user_count, const char *username, const char *password);
-void Register(GameState *gameState);
-void Save(const char *filename, GameState *gameState);
+void Register(Global *Global);
+void Save(const char *filename, Global *Global);
 void Logout(User *users, int user_count);
 int customStringCMP(const char *str1, const char *str2);
 void customStringCPY(char *dest, const char *src);
 void insertLastItem(ListItem *itemlist, Item item);
-void makeListItem(GameState *gameState);
+void makeListItem(Global *Global);
 
-void printLoad(GameState *gameState);
+void printLoad(Global *Global);
 
 // work
 unsigned my_strlen(char *str);
