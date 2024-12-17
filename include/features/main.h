@@ -5,6 +5,9 @@
 #include "../ADT/queue.h"
 #include "../ADT/list.h"
 #include "../ADT/mesinkarakter.h"
+#include "../ADT/stack.h"
+#include "../ADT/listlinier.h"
+#include "../ADT/setmap.h"
 #include "misc.h"
 #include "wordl32.h"
 #include "rng.h"
@@ -20,6 +23,11 @@ typedef struct{
     char name[MAX_LEN];
     char password[MAX_LEN];
     int money;
+    int historyCount;
+    int wishlistCount;
+    Stack history;
+    ListLinier wishlist;
+    Map cart;
 } User;
 
 typedef struct{
@@ -34,7 +42,7 @@ typedef struct {
 
 typedef struct {
     ListItem itemList;
-    User users[MAX_LEN];
+    User users[MAX_USERS];
     int userCount;
     QueueItem requestQueue;
     boolean isStarted;
@@ -61,8 +69,8 @@ int customStringCMP(const char *str1, const char *str2);
 void customStringCPY(char *dest, const char *src);
 void insertLastItem(ListItem *itemlist, Item item);
 void makeListItem(Global *Global);
-
-void printLoad(Global *Global);
+void profile(User *user);
+void printStack(Stack *S);
 
 // work
 unsigned my_strlen(char *str);
