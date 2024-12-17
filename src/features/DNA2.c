@@ -86,6 +86,6 @@ int deteksiKebocoranDNA(){
     return 0;
 }
 
-int main(){
-    return deteksiKebocoranDNA();
-}
+// int main(){
+//     return deteksiKebocoranDNA();
+// }
