@@ -2,20 +2,20 @@
 #include "../../include/ADT/stack.h"
 
 void CreateEmpty(Stack *S) {
-    S->TOP = Nil;
+    S->TOP = Nill;
 }
 
-boolean IsEmpty(Stack S) {
-    return (S.TOP == Nil);
+boolean IsEmptyStack(Stack S) {
+    return (S.TOP == Nill);
 }
 
-boolean IsFull(Stack S) {
+boolean IsFullStack(Stack S) {
     return (S.TOP == MaxEl-1);
 }
 
-void Push(Stack *S, infotype X) {
-    if (!IsFull(*S)) {
-        if (IsEmpty(*S)) {
+void Push(Stack *S, infotypeStack X) {
+    if (!IsFullStack(*S)) {
+        if (IsEmptyStack(*S)) {
             S->TOP = 0;
         } else {
             S->TOP++;
@@ -25,12 +25,12 @@ void Push(Stack *S, infotype X) {
     }
 }
 
-void Pop(Stack *S, infotype *X) {
-    if (!IsEmpty(*S)) {
+void Pop(Stack *S, infotypeStack *X) {
+    if (!IsEmptyStack(*S)) {
         stringCopy(X->name, S->T[S->TOP].name);
         X->harga = S->T[S->TOP].harga;
         if (S->TOP == 0) {
-            S->TOP = Nil;
+            S->TOP = Nill;
         } else {
             S->TOP--;
         }
