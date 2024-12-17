@@ -6,54 +6,55 @@
 #define stackt_H
 
 #include "boolean.h"
+#include "../features/misc.h"
 
-#define Nil -1
+#define Nill -1
 #define MaxEl 100
-/* Nil adalah stack dengan elemen kosong . */
+#define MAX_LEN 50
 
-typedef int infotype;
-typedef int address;   /* indeks tabel */
+// Original stack definitions
+typedef int address;
 
-/* Contoh deklarasi variabel bertype stack dengan ciri TOP : */
-/* Versi I : dengan menyimpan tabel dan alamat top secara eksplisit*/
+// Definisi StackItem untuk riwayat pembelian
+typedef struct {
+    char name[MAX_LEN];  // Nama item yang dibeli
+    int harga;           // Harga item
+} infotypeStack;
+
+// Definisi Stack untuk menyimpan riwayat pembelian
 typedef struct { 
-  infotype T[MaxEl]; /* tabel penyimpan elemen */
-  address TOP;  /* alamat TOP: elemen puncak */
+    infotypeStack T[MaxEl];  // Array of StackItem
+    address TOP;        // Indeks top of stack
 } Stack;
-/* Definisi stack S kosong : S.TOP = Nil */
-/* Elemen yang dipakai menyimpan nilai Stack T[0]..T[MaxEl-1] */
-/* Jika S adalah Stack maka akses elemen : */
-   /* S.T[(S.TOP)] untuk mengakses elemen TOP */
-   /* S.TOP adalah alamat elemen TOP */
 
-/* Definisi akses dengan Selektor : Set dan Get */
+// Definisi akses original
 #define Top(S) (S).TOP
 #define InfoTop(S) (S).T[(S).TOP]
 
-/* ************ Prototype ************ */
-/* *** Konstruktor/Kreator *** */
+
+/* *** Prototype untuk Stack Riwayat Pembelian *** */
 void CreateEmpty(Stack *S);
-/* I.S. sembarang; */
-/* F.S. Membuat sebuah stack S yang kosong berkapasitas MaxEl */
-/* jadi indeksnya antara 0.. MaxEl */
-/* Ciri stack kosong : TOP bernilai Nil */
+/* I.S. Sembarang */
+/* F.S. Membuat sebuah stack history S yang kosong berkapasitas MaxEl */
+/* Ciri stack kosong: TOP bernilai Nil */
 
-/* ************ Predikat Untuk test keadaan KOLEKSI ************ */
-boolean IsEmpty(Stack S);
-/* Mengirim true jika Stack kosong: lihat definisi di atas */
-boolean IsFull(Stack S);
-/* Mengirim true jika tabel penampung nilai elemen stack penuh */
+boolean IsEmptyStack(Stack S);
+/* Mengirim true jika Stack History kosong: TOP bernilai Nil */
 
-/* ************ Menambahkan sebuah elemen ke Stack ************ */
-void Push(Stack * S, infotype X);
-/* Menambahkan X sebagai elemen Stack S. */
-/* I.S. S mungkin kosong, tabel penampung elemen stack TIDAK penuh */
-/* F.S. X menjadi TOP yang baru,TOP bertambah 1 */
+boolean IsFullStack(Stack S);
+/* Mengirim true jika stack History penuh */
+/* Ciri stack penuh: TOP bernilai MaxEl */
 
-/* ************ Menghapus sebuah elemen Stack ************ */
-void Pop(Stack * S, infotype* X);
-/* Menghapus X dari Stack S. */
-/* I.S. S  tidak mungkin kosong */
-/* F.S. X adalah nilai elemen TOP yang lama, TOP berkurang 1 */
+void Push(Stack *S, infotypeStack X);
+/* Menambahkan item X sebagai elemen Stack History S */
+/* I.S. S mungkin kosong, S tidak penuh */
+/* F.S. X menjadi element TOP yang baru, TOP bertambah 1 */
+/* Copy nama item dan harga ke dalam stack */
+
+void Pop(Stack *S, infotypeStack *X);
+/* Menghapus item X dari Stack History S */
+/* I.S. S tidak kosong */
+/* F.S. X adalah nilai elemen TOP yang lama (nama dan harga item) */
+/* TOP berkurang 1, elemen TOP yang lama dikembalikan ke X */
 
 #endif

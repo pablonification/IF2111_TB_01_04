@@ -1,5 +1,5 @@
 /* Compile command dengan directory terdalam : /IF2111_TB_04_01
-gcc -o tes src/ADT/listlinier.c src/features/misc.c src/ADT/mesinkata.c src/ADT/mesinkarakter.c */  
+gcc -o dll src/ADT/listlinier.c src/features/misc.c src/ADT/mesinkata.c src/ADT/mesinkarakter.c */  
 
 #include <stdio.h>
 #include "../include/ADT/listlinier.h"

@@ -59,7 +59,7 @@ boolean compareWordss(const char *word1, const char *word2) {
 }
 
 void INITIALIZED_QWORDL3(char ***wordsList, int *wordCount) {
-    LoadWordsFromFile("../../data/words.txt", wordsList, wordCount);
+    LoadWordsFromFile("data/words.txt", wordsList, wordCount);
 }
 
 void playQuantumWordl3(int *money) {

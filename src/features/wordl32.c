@@ -127,8 +127,8 @@ void playWordl3(int *money) {
         }
 
         if (win) {
-            printf("Selamat, Anda menang!\n+1500 rupiah telah ditambahkan ke akun Anda.\n");
-            *money += 1500;
+            printf("Selamat, Anda menang!\n+1000 rupiah telah ditambahkan ke akun Anda.\n");
+            *money += 1000;
         } else {
             printf("Boo! Anda kalah. Jawaban yang benar adalah: %s\n", answer);
         }

@@ -9,7 +9,7 @@
 
 /* *** Konstruktor/Kreator *** */
 void CreateEmptyMap(Map *M){
-    M->Count = Nil;
+    M->Count = NilMap;
 }
 /* I.S. Sembarang */
 /* F.S. Membuat sebuah Map M kosong berkapasitas MaxEl */
@@ -17,7 +17,7 @@ void CreateEmptyMap(Map *M){
 
 /* ********* Predikat Untuk test keadaan KOLEKSI ********* */
 boolean IsEmptyMap(Map M){
-    return M.Count == Nil;
+    return M.Count == NilMap;
 }
 /* Mengirim true jika Map M kosong*/
 /* Ciri Map kosong : count bernilai Nil */
@@ -80,7 +80,7 @@ boolean IsMemberMap(Map M, keytype k){
 }
 /* Mengembalikan true jika k adalah member dari M */
 
-void DisplayMap(Map M, ListItem L, int *subtotal){
+/*void DisplayMap(Map M, ListItem L, int *subtotal){
     if (IsEmptyMap(M)) {
         printf("Map is empty.\n");
     } else {
@@ -106,7 +106,7 @@ void DisplayMap(Map M, ListItem L, int *subtotal){
             }
         }
     }
-}
+}*/
 
 /* ********* Util ********* gajadi dipake tp keep dulu siapa tau nanti kepake */
 char* my_strcpy(char* destination, const char* source) {

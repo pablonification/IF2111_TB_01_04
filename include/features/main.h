@@ -5,11 +5,14 @@
 #include "../ADT/queue.h"
 #include "../ADT/list.h"
 #include "../ADT/mesinkarakter.h"
+#include "../ADT/stack.h"
+#include "../ADT/listlinier.h"
+#include "../ADT/setmap.h"
 #include "misc.h"
 #include "wordl32.h"
 #include "rng.h"
 #include "qwordl3.h"
-#include "bonus2.h"
+#include "DNA.h"
 
 #define MAX_LEN 50
 #define MAX_USERS 100
@@ -20,6 +23,11 @@ typedef struct{
     char name[MAX_LEN];
     char password[MAX_LEN];
     int money;
+    int historyCount;
+    int wishlistCount;
+    Stack history;
+    ListLinier wishlist;
+    Map cart;
 } User;
 
 typedef struct{
@@ -34,13 +42,13 @@ typedef struct {
 
 typedef struct {
     ListItem itemList;
-    User users[MAX_LEN];
+    User users[MAX_USERS];
     int userCount;
     QueueItem requestQueue;
     boolean isStarted;
     boolean isLoaded;
     boolean isLogin;
-} GameState;
+} Global;
 
 // typedef struct{
 //     char workName[100]; // nama pekerjaan
@@ -49,20 +57,20 @@ typedef struct {
 // } Work;
 
 void showMainMenu();
-boolean Start(GameState *gameState);
-void Load(const char *filename, GameState *gameState);
-boolean loadGameState(GameState *gameState, const char *filename);
+boolean Start(Global *Global);
+void Load(const char *filename, Global *Global);
+boolean loadGlobal(Global *Global, const char *filename);
 void Login(User *users, int user_count);
 int findUser(User *users, int user_count, const char *username, const char *password);
-void Register(GameState *gameState);
-void Save(const char *filename, GameState *gameState);
+void Register(Global *Global);
+void Save(const char *filename, Global *Global);
 void Logout(User *users, int user_count);
 int customStringCMP(const char *str1, const char *str2);
 void customStringCPY(char *dest, const char *src);
 void insertLastItem(ListItem *itemlist, Item item);
-void makeListItem(GameState *gameState);
-
-void printLoad(GameState *gameState);
+void makeListItem(Global *Global);
+void profile(User *user);
+void printStack(Stack *S);
 
 // work
 unsigned my_strlen(char *str);

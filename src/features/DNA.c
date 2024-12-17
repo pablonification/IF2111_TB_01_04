@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../../include/features/bonus2.h"
+#include "../../include/features/DNA.h"
 
 void DNAtoRNA(Word DNA, Word *RNA) {
     int idx = 0;
