@@ -103,6 +103,10 @@ int readItem(FILE *f, const char *format, int *num, char *str) {
     return fscanf(f, format, num, str);
 }
 
+int readItem2(FILE *f, const char *format, char *str){
+    return fscanf(f, format, str);
+}
+
 int readUser(FILE *f, const char *format, int *num, char *str1, char *str2) {
 /* Membaca data user (angka dan 2 string) dari file
        Format yang didukung: "%d %s %s"
