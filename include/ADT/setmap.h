@@ -2,7 +2,7 @@
 #define map_H
 #include <stdio.h>
 #include "boolean.h"
-#include "..\features/main.h"
+
 
 /* MODUL Map
 Deklarasi stack yang dengan implementasi array eksplisit-statik rata kiri
@@ -10,7 +10,7 @@ Deklarasi stack yang dengan implementasi array eksplisit-statik rata kiri
 
 // #define false 0
 // #define true 1
-#define Nil 0
+#define NilMap 0
 #define MaxEl 100
 #define Undefined -999
 
@@ -22,10 +22,10 @@ typedef int address;
 typedef struct {
 	keytype Key;
 	valuetype Value;
-} infotype;
+} infotypemap;
 
 typedef struct {
-	infotype Elements[MaxEl];
+	infotypemap Elements[MaxEl];
 	address Count;
 } Map;
 
@@ -70,7 +70,7 @@ void Delete(Map *M, keytype k);
 boolean IsMemberMap(Map M, keytype k);
 /* Mengembalikan true jika k adalah member dari M */
 
-void DisplayMap(Map M, ListItem L, int *subtotal);
+//void DisplayMap(Map M, ListItem L, int *subtotal);
 /* Mencetak isi Map ke terminal */
 
 // /* ********* Util ********* gajadi dipake tp keep dulu aja siapa tau nanti kepake*/
