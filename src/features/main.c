@@ -13,7 +13,7 @@ int main(){
 }
 
 void showMainMenu(){   
-    GameState gameState = {0};
+    Global gameState = {0};
     gameState.isStarted = FALSE; 
     gameState.isLoaded = FALSE;
     gameState.isLogin = FALSE;
@@ -60,7 +60,6 @@ void showMainMenu(){
                 wordToString(filename, file);
                 Load(file, &gameState);
                 gameState.isLoaded = TRUE;
-                gameState.users[0].money = 1000;
             } else{
                 printf("Game sudah dimulai. Tidak bisa load file konfigurasi.\n");
             }
@@ -118,6 +117,15 @@ void showMainMenu(){
             } else {
                 Register(&gameState);
                 gameState.isLogin = TRUE;
+            }
+        }
+        else if (compareWords("PROFILE", command, 7)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } else {
+                profile(gameState.users);
             }
         }
         else if (compareWords("WORK", command, 4)){
@@ -224,7 +232,7 @@ void showMainMenu(){
     }
 }
 
-boolean Start(GameState *gameState) {
+boolean Start(Global *gameState) {
     if (!gameState->isLoaded) {
         printf("Anda harus load file konfigurasi terlebih dahulu.\n");
         return FALSE;
@@ -236,7 +244,7 @@ boolean Start(GameState *gameState) {
 
 // Implement other functions as in your original code...
 
-void Load(const char *filename, GameState *gameState) {
+void Load(const char *filename, Global *global) {
     if (filename == NULL || *filename == '\0') {
         printf("Nama file tidak valid.\n");
         return;
@@ -252,14 +260,17 @@ void Load(const char *filename, GameState *gameState) {
         return;
     }
 
-    makeListItem(gameState);
+    makeListItem(global);
 
+    // Item di Store
     int itemCount;
+    boolean succread_item = FALSE;
     if (readFile(file, "%d", &itemCount) != 1) {
         printf("Kesalahan format file: jumlah item tidak valid.\n");
         closeFile(file);
         return;
     }
+    printf("DEBUG: Reading %d items\n", itemCount);
 
     for (int i = 0; i < itemCount; i++) {
         int price;
@@ -270,41 +281,102 @@ void Load(const char *filename, GameState *gameState) {
             closeFile(file);
             return;
         }
+        printf("DEBUG: Read item %d: %s (price: %d)\n", i+1, name, price);
 
-        gameState->itemList.item[i].price = price;
-        customStringCPY(gameState->itemList.item[i].name, name);
-        gameState->itemList.itemLength++;
+        global->itemList.item[i].price = price;
+        customStringCPY(global->itemList.item[i].name, name);
+        global->itemList.itemLength++;
+        succread_item = TRUE;
     }
 
+    // Jumlah User
     int userCount;
+    boolean succread_user = FALSE;
+    boolean succread_ph = FALSE;
+    boolean succread_wl = FALSE;
     if (readFile(file, "%d", &userCount) != 1) {
         printf("Kesalahan format file: jumlah user tidak valid.\n");
         closeFile(file);
         return;
     }
+    printf("DEBUG: Reading %d users\n", userCount);
 
     for (int i = 0; i < userCount; i++) {
         int money;
         char username[MAX_LEN], password[MAX_LEN];
-        
+
         if (readUser(file, "%d %s %s", &money, username, password) != 3) {
             printf("Kesalahan format file: data user tidak valid.\n");
             closeFile(file);
             return;
         }
+        printf("DEBUG: Read user %d: %s (money: %d)\n", i+1, username, money);
 
-        gameState->users[i].money = money;
-        printf("%d\n", money);
-        customStringCPY(gameState->users[i].name, username);
-        customStringCPY(gameState->users[i].password, password);
-        gameState->userCount++;
+        global->users[i].money = money;
+        customStringCPY(global->users[i].name, username);
+        customStringCPY(global->users[i].password, password);
+        global->userCount++;
+        global->users[i].history.TOP = -1;
+        succread_user = TRUE; 
+
+        // Load purchase history
+        int historyCount;
+        if (readFile(file, "%d", &historyCount) != 1) {
+            printf("Kesalahan format file: jumlah riwayat pembelian tidak valid.\n");
+            closeFile(file);
+            return;
+        }
+        printf("DEBUG: Reading %d purchase history\n", historyCount);
+
+        succread_ph = TRUE;
+        for (int j = 0; j < historyCount; j++) {
+            infotypeStack item;
+            int cost;
+            char itemName[MAX_LEN];
+            if (readItem(file, "%d %[^\n]", &cost, itemName) != 2) {
+                printf("Kesalahan format file: data riwayat pembelian tidak valid.\n");
+                closeFile(file);
+                return;
+            }
+            item.harga = cost;
+            customStringCPY(item.name, itemName);
+            Push(&global->users[i].history, item);
+        }
+        printf("\nDEBUG: Purchase History for user %s:\n", global->users[i].name);
+        printStack(&global->users[i].history);
+
+        // Load wishlist
+        int wishlistCount;
+        if (readFile(file, "%d", &wishlistCount) != 1) {
+            printf("Kesalahan format file: jumlah wishlist tidak valid.\n");
+            closeFile(file);
+            return;
+        }
+        printf("DEBUG: Reading %d wishlist\n", wishlistCount);
+
+        succread_wl = TRUE;
+        global->users[i].wishlist.First = NULL; 
+        for (int j = 0; j < wishlistCount; j++) {
+            char wishItem[MAX_LEN];
+            if (readItem2(file, " %49[^\n]", wishItem) != 1) {
+                printf("Kesalahan format file: data wishlist tidak valid.\n");
+                closeFile(file);
+                return;
+            }
+            InsertFirstLL(&global->users[i].wishlist, wishItem);
+            printf("DEBUG: Read wishlist %d: %s\n", j+1, global->users[i].wishlist.First->info);
+        }
     }
 
-    gameState->isLoaded = TRUE;
+    if (succread_item && succread_user && succread_ph && succread_wl) {
+        global->isLoaded = TRUE;
+        printf("File konfigurasi berhasil diload. PURRMART siap digunakan.\n");
+    } else {
+        printf("Gagal load file konfigurasi. Silakan cek file konfigurasi.\n");
+    }
     closeFile(file);
-    printLoad(gameState);
-    printf("File konfigurasi berhasil diload. PURRMART siap digunakan.\n");
 }
+
 
 
 int findUser(User *users, int user_count, const char *username, const char *password) {
@@ -336,8 +408,6 @@ void Login(User *users, int user_count) {
     if(userIndex != -1) {
         customStringCPY(currentUser, users[userIndex].name);
         printf("Anda telah berhasil login sebagai %s.\n", currentUser);
-        users->money = users[userIndex].money;
-
     }
     else {
         printf("Username atau password salah. Silakan coba lagi.\n");
@@ -350,7 +420,7 @@ void Logout(User *users, int user_count) {
     currentUser[0] = '\0';  // Clear the currentUser string
 }
 
-void Register(GameState *gameState) {
+void Register(Global *gameState) {
     if (!gameState->isLoaded && !gameState->isStarted) {
         printf("Game belum dimulai. Silakan load dan start terlebih dahulu\n");
         return;
@@ -383,22 +453,15 @@ void Register(GameState *gameState) {
     customStringCPY(gameState->users[gameState->userCount].name, userstr);
     customStringCPY(gameState->users[gameState->userCount].password, pwdstr);
     gameState->users[gameState->userCount].money = 0;
+    gameState->users[gameState->userCount].history.TOP = -1;
+    gameState->users[gameState->userCount].wishlist.First = NULL;
     gameState->userCount++;
 
     printf("Akun dengan username %s telah berhasil dibuat.\n", userstr);
     printf("Silakan LOGIN untuk melanjutkan.\n");
 }
 
-void Save(const char *filename, GameState *gameState) {
-    if (!gameState->isLoaded && !gameState->isStarted) {
-        printf("Game belum dimulai. Tidak ada data yang disimpan.\n");
-        return;
-    }
-    if (filename == NULL || *filename == '\0') {
-        printf("Nama file tidak valid.\n");
-        return;
-    }
-
+void Save(const char *filename, Global *gameState) {
     char filepath[100];
     customStringCPY(filepath, "data/");
     stringConcat(filepath, filename);
@@ -409,25 +472,72 @@ void Save(const char *filename, GameState *gameState) {
         return;
     }
 
+    // Save items in store
     writeLen(file, "%d\n", gameState->itemList.itemLength);
-
     for (int i = 0; i < gameState->itemList.itemLength; i++) {
         writeItem(file, "%d %s\n", 
             gameState->itemList.item[i].price,
             gameState->itemList.item[i].name);
     }
 
+    // Save users count
     writeLen(file, "%d\n", gameState->userCount);
 
+    // For each user, save their data including history and wishlist
     for (int i = 0; i < gameState->userCount; i++) {
+        // Save user basic info
         writeUser(file, "%d %s %s\n",
             gameState->users[i].money,
             gameState->users[i].name,
             gameState->users[i].password);
+
+        // Save purchase history
+        Stack *history = &gameState->users[i].history;
+        int historyCount = history->TOP + 1;
+        writeLen(file, "%d\n", historyCount);
+        
+        // Write history items from bottom to top to maintain order when loading
+        for (int j = 0; j < historyCount; j++) {
+            writeItem(file, "%d %s\n",
+                history->T[j].harga,
+                history->T[j].name);
+        }
+
+        // Save wishlist
+        ListLinier *wishlist = &gameState->users[i].wishlist;
+        int wishlistCount = NbElmt(*wishlist);
+        writeLen(file, "%d\n", wishlistCount);
+
+        // Write wishlist items
+        addressLL curr = wishlist->First;
+        while (curr != Nil) {
+            fprintf(file, "%s\n", curr->info);
+            curr = curr->next;
+        }
     }
 
     closeFile(file);
     printf("Game berhasil disimpan dalam %s.\n", filepath);
+}
+
+void profile(User *users) {
+    // Find the current user's index
+    int userIndex = -1;
+    for (int i = 0; i < MAX_USERS; i++) {
+        if (customStringCMP(users[i].name, currentUser) == 0) {
+            userIndex = i;
+            break;
+        }
+    }
+    
+    if (userIndex != -1) {
+        printf("Username: %s\n", users[userIndex].name);
+        printf("Saldo: %d\n", users[userIndex].money);
+        printf("Riwayat Pembelian:\n");
+        printStack(&users[userIndex].history);
+        printf("Wishlist:\n");
+        displayListLinier(users[userIndex].wishlist);
+    }
 }
 
 int customStringCMP(const char *str1, const char *str2){
@@ -459,7 +569,7 @@ void insertLastItem(ListItem *itemlist, Item item){
     }
 }
 
-void makeListItem(GameState *gameState) {
+void makeListItem(Global *gameState) {
     for (int i = 0; i < MaxEl; i++) {
         gameState->itemList.item[i].price = 0;
         gameState->itemList.item[i].name[0] = '\0';
@@ -474,36 +584,20 @@ void makeListItem(GameState *gameState) {
 }
 
 /* buat ngetes hasil load-an tadi*/
-void printLoad(GameState *gameState) {
-    printf("\n=== Testing Game State ===\n");
-    
-    if (gameState->itemList.itemLength == 0) {
-        printf("Tidak ada item.\n");
-    } else {
-        for (int i = 0; i < gameState->itemList.itemLength; i++) {
-                printf("%d. %s (Harga: %d)\n", 
-                    i + 1, 
-                    gameState->itemList.item[i].name, 
-                    gameState->itemList.item[i].price);
-        }
+void printStack(Stack *S) {
+    printf("\nDEBUG: Printing Stack Contents:\n");
+    if (IsEmptyStack(*S)) {
+        printf("Stack is empty\n");
+        return;
     }
     
-    
-    printf("\nDaftar User (%d user):\n", gameState->userCount);
-    if (gameState->userCount == 0) {
-        printf("Tidak ada user terdaftar.\n");
-    } else {
-        for (int i = 0; i < gameState->userCount; i++) {
-            printf("%d. Username: %s, Password: %s, Saldo: %d\n", 
-                   i + 1, 
-                   gameState->users[i].name, 
-                   gameState->users[i].password, 
-                   gameState->users[i].money);
-        }
+    for (int i = S->TOP; i >= 0; i--) {
+        printf("Stack[%d]: %s (cost: %d)\n", 
+               S->TOP - i + 1, 
+               S->T[i].name, 
+               S->T[i].harga);
     }
-
-    printf("\nStatus Inisialisasi: %s\n", 
-           gameState->isLoaded ? "Sudah Terinisialisasi" : "Belum Terinisialisasi");
+    printf("Total items in stack: %d\n", S->TOP + 1);
 }
 
 // Work
