@@ -7,6 +7,7 @@
 
 #include "boolean.h"
 #include "../features/misc.h"
+#include "../features/misc.h"
 
 #define Nill -1
 #define MaxEl 100
