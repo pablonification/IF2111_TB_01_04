@@ -2,6 +2,7 @@
 #include <time.h>
 #include "../../include/ADT/mesinkata.h"
 #include "../../include/features/work.h"
+#include "../../include/features/misc.h"
 
 //IMPLEMENTASI FUNGSI DAN PROSEDUR WORK
 
@@ -66,22 +67,24 @@ void work(int *balance){
 
     int workCount = sizeof(workList) / sizeof(workList[0]); //jumlah pekerjaan tersedia
 
-    printf(">> WORK\nDaftar pekerjaan:\n"); //print daftar pekerjaan yang tersedia
+    printf("Daftar pekerjaan:\n"); //print daftar pekerjaan yang tersedia
     for(int i = 0; i < workCount; i++){
         printf("%d. %s (pendapatan: %d, durasi: %ds)\n", i+1, workList[i].workName, workList[i].workPayment, workList[i].workDuration);
     }
 
     boolean validWork = FALSE; //inisialisasi
-    char selectedWork[100];
+    Word selectedWork;
+    char selectedWorkStr[100];
     int selectedWorkIndex;
 
     while(!validWork){
         printf("\nPilih nama pekerjaan: ");
-        STARTWORD(); //baca input
-        collectInput(selectedWork);
+        STARTLINE();
+        selectedWork = currentWord;
+        wordToString(selectedWork, selectedWorkStr);
 
         for (int i = 0; i < workCount; i++){ //cek apakah pekerjaan yang dipilih valid
-            if (my_strcmp(selectedWork, workList[i].workName) == 0){ //jika valid
+            if (my_strcmp(selectedWorkStr, workList[i].workName)){ //jika valid
                 validWork = TRUE;
                 selectedWorkIndex = i;
                 break;
@@ -91,8 +94,8 @@ void work(int *balance){
             printf("Pekerjaan tidak valid, silakan coba lagi. "); 
         }
     }
-
-    printf("Anda sedang bekerja sebagai %s. Harap tunggu...\n", selectedWork);
+    printf("%d\n", selectedWorkIndex);
+    printf("Anda sedang bekerja sebagai %s. Harap tunggu...\n", workList[selectedWorkIndex].workName);
     delay(workList[selectedWorkIndex].workDuration);
     printf("Pekerjaan telah selesai. Anda mendapatkan gaji $%d\n", workList[selectedWorkIndex].workPayment);
 

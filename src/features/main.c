@@ -42,11 +42,10 @@ void showMainMenu(){
         command = currentWord;
 
         if (compareWords("START", command, 5)){
-            if (!gameState.isLoaded) {
+            if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Anda harus load file konfigurasi terlebih dahulu.\n");
-            } else {
+            } else if (gameState.isLoaded && !gameState.isStarted){
                 Start(&gameState);
-                gameState.isStarted = TRUE;
             }
         } 
         else if (compareWords("LOAD", command, 4)){
@@ -59,8 +58,9 @@ void showMainMenu(){
                 char file[MAX_LEN];
                 wordToString(filename, file);
                 Load(file, &gameState);
-                gameState.isLoaded = TRUE;
-            } else{
+            } else if  (!gameState.isStarted && gameState.isLoaded){
+                printf("Program belum di-Start. Silahkan START terlebih dahulu.\n");
+            } else if (gameState.isStarted && gameState.isLoaded){
                 printf("Game sudah dimulai. Tidak bisa load file konfigurasi.\n");
             }
         }
@@ -69,7 +69,7 @@ void showMainMenu(){
                 printf("START -> Untuk masuk sesi baru\n");
                 printf("LOAD -> Untuk memulai sesi berdasarkan file konfigurasi\n");
                 printf("QUIT -> Untuk keluar dari program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){ 
+            } else if (gameState.isLoaded && !gameState.isStarted && !gameState.isLogin){ 
                 printf("=====[ Login Menu Help PURRMART ]=====\n");
                 printf("REGISTER -> Untuk melakukan pendaftaran akun baru\n");
                 printf("LOGIN -> Untuk masuk ke dalam akun dan memulai sesi\n");
@@ -90,6 +90,8 @@ void showMainMenu(){
         else if (compareWords("LOGIN", command, 5)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && gameState.isLogin){
                 printf("Anda masih tercatat sebagai %s. Silahkan LOGOUT terlebih dahulu.\n", currentUser);
             } else {
@@ -102,6 +104,8 @@ void showMainMenu(){
         else if (compareWords("LOGOUT", command, 6)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Anda belum login. Silakan login terlebih dahulu\n");
             } else {
@@ -112,6 +116,8 @@ void showMainMenu(){
         else if (compareWords("REGISTER", command, 8)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && gameState.isLogin){
                 printf("Anda sudah login. Silahkan LOGOUT terlebih dahulu.\n");
             } else {
@@ -122,15 +128,30 @@ void showMainMenu(){
         else if (compareWords("PROFILE", command, 7)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
                 profile(gameState.users);
             }
         }
+        else if (compareWords("HISTORY", command, 7)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } else {
+                history(&gameState.users->history);
+            }
+        }
         else if (compareWords("WORK", command, 4)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
@@ -140,6 +161,8 @@ void showMainMenu(){
         else if (compareWords("WORK CHALLENGE", command, 14)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
@@ -167,6 +190,8 @@ void showMainMenu(){
         else if (compareWords("STORE LIST", command, 10)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
@@ -176,6 +201,8 @@ void showMainMenu(){
         else if (compareWords("STORE REQUEST", command, 13)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } 
@@ -187,6 +214,8 @@ void showMainMenu(){
         else if (compareWords("STORE REQUEST BIOWEAPON", command, 23)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } 
@@ -195,9 +224,35 @@ void showMainMenu(){
             }
 
         }
+        else if (compareWords("GLOBALALIGNMENT", command, command.Length)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } 
+            else {
+                deteksiKebocoranDNA();
+            }
+        }
+        else if (compareWords("OPTIMASIRUTE", command, command.Length)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } 
+            else {
+                OptimasiRuteEkspedisi();
+            }
+        }
         else if (compareWords("STORE SUPPLY", command, 12)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
@@ -207,15 +262,123 @@ void showMainMenu(){
         else if (compareWords("STORE REMOVE", command, 12)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
                 storeRemove(&gameState.itemList);
             }
         }
+
+        // else if (compareWords("WISHLIST SHOW", command, command.Length)){
+        //     if (!gameState.isLoaded && !gameState.isStarted){
+        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+        //     } else if (gameState.isLoaded && !gameState.isStarted){
+        //         printf("Anda belum start program\n");
+        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+        //         printf("Lakukan login atau register terlebih dahulu\n");
+        //     } else {
+        //         wishlistShow(&gameState.users);
+        //     }
+        // }
+        // else if (compareWords("WISHLIST ADD", command, command.Length)){
+        //     if (!gameState.isLoaded && !gameState.isStarted){
+        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+        //     } else if (gameState.isLoaded && !gameState.isStarted){
+        //         printf("Anda belum start program\n");
+        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+        //         printf("Lakukan login atau register terlebih dahulu\n");
+        //     } else {
+        //         wishlistAdd(&gameState.itemList, &gameState.users);
+        //     }
+        // }
+        // else if (compareWords("WISHLIST REMOVE", command, command.Length)){
+        //     if (!gameState.isLoaded && !gameState.isStarted){
+        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+        //     } else if (gameState.isLoaded && !gameState.isStarted){
+        //         printf("Anda belum start program\n");
+        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+        //         printf("Lakukan login atau register terlebih dahulu\n");
+        //     } else {
+        //         wishlistRemove(&gameState.users);
+        //     }
+        // }
+        else if (compareWords("CART ADD", command, command.Length)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } else {
+                Word itemCart, tempQty;
+                int qtyCart;
+
+                printf("Masukkan nama item yang ingin ditambahkan ke cart: ");
+                STARTLINE();
+                itemCart = currentWord;
+
+                printf("Masukkan jumlah item yang ingin ditambahkan ke cart: ");
+                STARTLINE();
+                tempQty = currentWord;
+                int Qty = WordToInt(tempQty);
+                
+                wordToString(itemCart, gameState.users->cart.Elements->Key);
+                cartAdd(&gameState.users->cart, &gameState.itemList, &gameState.users->cart.Elements->Key, Qty);
+            }
+        }
+        else if (compareWords("CART REMOVE", command, command.Length)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } else {
+                Word itemCart, tempQty;
+                int qtyCart;
+
+                printf("Masukkan nama item yang ingin ditambahkan ke cart: ");
+                STARTLINE();
+                itemCart = currentWord;
+
+                printf("Masukkan jumlah item yang ingin ditambahkan ke cart: ");
+                STARTLINE();
+                tempQty = currentWord;
+                int qtyCart = WordToInt(tempQty);
+                
+                wordToString(itemCart, gameState.users->cart.Elements->Key);
+                cartRemove(&gameState.users->cart, &itemCart, qtyCart);
+            }
+        }
+        else if (compareWords("CART SHOW", command, command.Length)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } else {
+                cartShow(&gameState.users->cart, &gameState.itemList);
+            }
+        }
+        else if (compareWords("CART PAY", command, command.Length)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } else {
+                cartPay(&gameState.users->cart, gameState.itemList);
+            }
+        }
         else if (compareWords("SAVE", command, 4)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
@@ -232,14 +395,9 @@ void showMainMenu(){
     }
 }
 
-boolean Start(Global *gameState) {
-    if (!gameState->isLoaded) {
-        printf("Anda harus load file konfigurasi terlebih dahulu.\n");
-        return FALSE;
-    } else {
-        printf("Game berhasil dimulai. Selamat bermain!\n");
-        return TRUE;
-    }
+void Start(Global *gameState) {
+    gameState->isStarted = TRUE;
+    printf("Game berhasil dimulai. Selamat bermain!\n");
 }
 
 // Implement other functions as in your original code...
@@ -376,8 +534,6 @@ void Load(const char *filename, Global *global) {
     }
     closeFile(file);
 }
-
-
 
 int findUser(User *users, int user_count, const char *username, const char *password) {
     for (int i = 0; i < user_count; i++) {
@@ -531,10 +687,6 @@ void profile(User *users) {
     }
     
     if (userIndex != -1) {
-        printf("Username: %s\n", users[userIndex].name);
-        printf("Saldo: %d\n", users[userIndex].money);
-        printf("Riwayat Pembelian:\n");
-        printStack(&users[userIndex].history);
         printf("Wishlist:\n");
         displayListLinier(users[userIndex].wishlist);
     }
@@ -600,100 +752,6 @@ void printStack(Stack *S) {
     printf("Total items in stack: %d\n", S->TOP + 1);
 }
 
-// Work
-
-void delay(int seconds) {
-    time_t start_time = time(NULL);
-    while (time(NULL) - start_time < seconds);
-}
-
-//Implementasi fungsi pengumpulan input
-void collectInput(char *input){ //input per kata jadiin kalimat
-    input[0] = '\0'; //inisialisasi
-    Word currentWord;
-
-    while(!EndWord){
-        int len = my_strlen(input);
-
-        if(len + currentWord.Length + 1 > 100){ //cek apakah kata yang akan dimasukkan melebihi panjang maksimum
-            break;
-        }
-
-        for (int i = 0; i < currentWord.Length; i++){
-            input[len + i] = currentWord.TabWord[i];
-        }
-        input[len + currentWord.Length] = ' '; //tambahin spasi tiap akhir kata
-        input[len + currentWord.Length + 1] = '\0'; //terminate string
-        ADVWORD();
-    }
-    
-    int len = my_strlen(input);
-    if(len > 0 && input[len - 1] == ' '){
-        input[len - 1] = '\0'; //hapus spasi terakhir
-    }
-}
-
-unsigned my_strlen(char *str){
-    unsigned len = 0;
-    while(str[len] != '\0'){
-        len++;
-    }
-    return len;
-}
-
-boolean my_strcmp(char *str1, char *str2){
-    int i = 0;
-    while(str1[i] != '\0' && str2[i] != '\0'){
-        if(str1[i] != str2[i]){
-            return FALSE;
-        }
-        i++;
-    }
-    return str1[i] == str2[i];
-}
-
-void work(int *balance){
-    Work workList[] = {
-        {"Asisten Praktikum Alstrukdat", 1000, 10},
-        {"Penghangat Kursi Labdas", 500, 6},
-        {"Teknisi Wifi Eduroam", 700, 8}
-    };
-
-    int workCount = sizeof(workList) / sizeof(workList[0]); //jumlah pekerjaan tersedia
-
-    printf(">> WORK\nDaftar pekerjaan:\n"); //print daftar pekerjaan yang tersedia
-    for(int i = 0; i < workCount; i++){
-        printf("%d. %s (pendapatan: %d, durasi: %ds)\n", i+1, workList[i].workName, workList[i].workPayment, workList[i].workDuration);
-    }
-
-    boolean validWork = FALSE; //inisialisasi
-    char selectedWork[100];
-    int selectedWorkIndex;
-
-    while(!validWork){
-        printf("\nPilih nama pekerjaan: ");
-        STARTWORD(); //baca input
-        collectInput(selectedWork);
-
-        for (int i = 0; i < workCount; i++){ //cek apakah pekerjaan yang dipilih valid
-            if (my_strcmp(selectedWork, workList[i].workName) == 0){ //jika valid
-                validWork = TRUE;
-                selectedWorkIndex = i;
-                break;
-            }
-        }
-        if (!validWork){ //jika tidak valid, kembali ke loop, input lagi
-            printf("Pekerjaan tidak valid, silakan coba lagi. "); 
-        }
-    }
-
-    printf("Anda sedang bekerja sebagai %s. Harap tunggu...\n", selectedWork);
-    delay(workList[selectedWorkIndex].workDuration);
-    printf("Pekerjaan telah selesai. Anda mendapatkan gaji $%d\n", workList[selectedWorkIndex].workPayment);
-
-    balance += workList[selectedWorkIndex].workPayment;
-}
-
 // store
 
 void storeList (ListItem *L) {
@@ -704,7 +762,7 @@ void storeList (ListItem *L) {
         printf("List barang yang ada di toko: \n");
         for (int i  = 0; i < L->itemLength; i ++) {
             printf("");
-            printf("%d. %s\n", i + 1, L->item[i].name);
+            printf("%d. %s - Harga: %d\n", i + 1, L->item[i].name, L-> item[i].price);
         }
     // }   
     printf("\n");
@@ -929,4 +987,535 @@ boolean isWordInt(Word w) {
         }
     }
     return TRUE;
+}
+
+// wishlist
+/*
+ini belum nanganin kasus input tidak valid atau enter langsung &&&&&&&&&&&&&&&&&&&&&&&&&
+*/
+
+// Fitur wishlistShow
+
+/*
+WISHLIST SHOW adalah command yang digunakan untuk menunjukkan barang-barang yang sudah dimasukkan ke dalam wishlist. 
+Tampilan:
+Berikut adalah isi wishlist-mu:
+1 Ayam Geprek Bakar Crispy Besthal
+2 Ayam Mangut Besthal
+3 Karaage Don
+4 Torikatsu Don
+(nomor merupakan posisi barang dalam wishlist)
+*/
+/*void wishlistShow(WishlistUser *wishlist) {
+    if(!IsEmptyLL(wishlist->wishlist_item)) {
+        printf("Berikut adalah isi wishlist-mu:\n");
+        addressLL P = wishlist->wishlist_item.First;
+        int idx = 1;
+        while (P != Nil) {
+            printf("%d %s\n", idx++, P->info);
+            P = P->next;
+        }
+    } else {
+        printf("Wishlist kamu kosong!\n");
+    }
+}
+
+// Fitur wishlistAdd
+
+
+WISHLIST ADD merupakan command yang digunakan untuk menambahkan suatau barang ke wishlist. Menggunakan fungsio InsertLastLL dari ADT ListLinier.
+
+Tampilan:
+Masukkan nama barang: Ayam Geprek Bakar Crispy Besthal
+
+Berhasil menambahkan Ayam Geprek Bakar Crispy Besthal ke wishlist!
+
+Alur:
+- Menerima input nama barang dari pengguna  
+- Cek barang apakah sudah ada di store
+    - Jika barang ditemukan dalam store, maka barang berhasil ditambahkan ke wishlist dengan menggunakan fungsi InsertLastLL    
+    - Jika barang ditemukan dalam store dan sudah ada di wishlist, maka barang tidak dapat ditambahkan ke wishlist
+    - Jika barang tidak ditemukan dalam store, maka barang tidak dapat ditambahkan ke wishlist
+*/
+// void wishlistAdd(ListItem *L, Wishlist *wishlist) {
+//     // Terima input nama barang dari pengguna
+//     Word item_name;
+//     printf("Masukkan nama barang: ");
+//     STARTLINE(); // kaya scanf
+
+//     char item_namestr[MaxEl];
+//     item_name = currentWord;    
+//     wordToString(item_name, item_namestr); 
+
+//     // Cek apakah barang sudah ada di store
+//     // // debug kasus AK47 udah ada di wishlist &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//     // InsertLastLL(&wishlist->wishlist_item, "AK47");
+//     boolean isFoundInList = SearchItem(*L, item_namestr);
+//     if (isFoundInList) {
+//         // Cek apakah barang sudah ada di wishlist
+//         if (isMemberLL(wishlist->wishlist_item, item_namestr)) {
+//             printf("%s sudah ada di wishlist\n", item_namestr);
+//             wishlistAdd(L, wishlist); // kalo udah ada di wishlist, minta input lagi
+//         } else {
+//             InsertLastLL(&wishlist->wishlist_item, item_namestr);
+//             wishlist->number++; // increment jumlah barang di wishlist
+//             printf("Berhasil menambahkan %s ke wishlist!\n", item_namestr);
+//         }
+//     } else { // Barang tidak ditemukan di store
+//         printf("Tidak ada barang dengan nama %s!\n", item_namestr);
+//         wishlistAdd(L, wishlist); // kalo udah ada di wishlist, minta input lagi
+//     }
+//     // debug masuk atau ngga, MASUK tinggal integrasi sama config tapi ntaran ajalah &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//     wishlistShow(wishlist);
+
+// }
+
+// Fitur wishlistClear
+/*
+WISHLIST CLEAR adalah command yang digunakan untuk menghapus semua barang yang terdapat di dalam WISHLIST. 
+
+Tampilan:
+Wishlist telah dikosongkan.
+*/
+// void wishlistClear(WishlistUser *wishlist){
+//     // apakah wishlist kosong?
+//     if (IsEmptyLL(wishlist->wishlist_item)) {
+//         printf("Wishlist sudah kosong.\n");
+//     } else {
+//         ClearLL(&wishlist->wishlist_item);
+//         printf("Wishlist telah dikosongkan.\n");
+//     }
+// }
+
+// // Fitur wishlistRemove
+// 
+// WISHLIST REMOVE adalah command yang digunakan untuk menghapus barang dari wishlist berdasarkan nama barang yang dimasukkan pengguna. Sedangkan jika wishlistRemove diikuti oleh nomor urut barang, maka barang yang dihapus adalah barang pada posisi tersebut. wishlistRemove <i> (berdasarkan posisi)
+
+// Tampilan:
+// // Contoh menghapus barang “Lalabu” dari WISHLIST
+// >> WISHLIST REMOVE
+// Masukkan nama barang yang akan dihapus : Lalabu
+// Lalabu berhasil dihapus dari WISHLIST! 
+
+// // Command mati; Kembali ke main menu
+// // Contoh penghapusan wishlist yang gagal (Barang tidak ada di WISHLIST)
+
+// >> WISHLIST REMOVE
+// Masukkan nama barang yang akan dihapus : LoremIpsum
+// Penghapusan barang WISHLIST gagal dilakukan, LoremIpsum tidak ada di WISHLIST!
+
+// // Command mati; Kembali ke main menu
+
+
+// */
+
+// /*
+// Step:
+// - Menentukan apakah pemanggilan fungsi wishlistRemove diikuti oleh nama barang atau nomor urut barang
+// - Jika diikuti oleh nama barang, maka gunakan fungsi DeleteByValueLL
+// - Jika diikuti oleh nomor urut barang, maka gunakan fungsi DeleteAtLL
+// */
+
+// boolean isNumber(char *str){
+//     int i = 0;
+//     while(str[i] != '\0'){
+//         if(str[i] < '0' || str[i] > '9'){
+//             return FALSE;
+//         }
+//         i++;
+//     }
+//     return TRUE;
+// }
+
+// void wishlistRemove(WishlistUser *wishlist){
+//     // Terima input nama barang dari pengguna
+//     Word input;
+//     printf("Masukkan nama/nomor barang yang akan dihapus: ");
+//     STARTLINE(); // kaya scanf
+
+//     char inputstr[MaxEl];
+//     input = currentWord;    
+//     wordToString(input, inputstr);
+
+//     // Cek apakah input berupa nomor atau nama barang
+//     if (isNumber(inputstr)) {
+//         int idx = convertWordToInt(input);
+//         if (idx > 0 && idx <= wishlist->number) {
+//             DeleteAtLL(&wishlist->wishlist_item, idx-1);
+//             printf("Barang pada posisi %d berhasil dihapus dari wishlist!\n", idx);
+//         } else {
+//             printf("Penghapusan barang wishlist gagal dilakukan, posisi %d tidak ada di wishlist!\n", idx);
+//             wishlistRemove(wishlist); // kalo index salah, minta input lagi
+//         }
+//     } else {
+//         // Cek apakah barang sudah ada di wishlist
+//         if (isMemberLL(wishlist->wishlist_item, inputstr)) {
+//             DeleteByValueLL(&wishlist->wishlist_item, inputstr);
+//             printf("%s berhasil dihapus dari wishlist!\n", inputstr);
+//         } else {
+//             printf("Penghapusan barang wishlist gagal dilakukan, %s tidak ada di wishlist!\n", inputstr);
+//             wishlistRemove(wishlist); // kalo barangnya ga ada, minta input lagi
+//         }
+//     }
+//     wishlistShow(wishlist);
+// }
+
+
+
+// // Fitur wishlistSwap <i> <j> (berdasarkan posisi)
+// /*
+// WISHLIST SWAP merupakan command yang digunakan untuk menukar barang posisi ke-i dengan barang posisi ke-j pada wishlist. Posisi i dan j merupakan urutan barang pada wishlist, urutan dimulai dari 1. 
+
+// Tampillan:
+// >> WISHLIST SWAP 1 2
+// Berhasil menukar posisi Ayam Geprek Bakar Crispy Besthal dengan Ayam Mangut Besthal pada wishlist!
+// // Urutan Ayam Geprek Bakar Crispy Besthal berubah dari 1 menjadi 2. Sebaliknya, urutan Ayam Mangut Besthal berubah dari 2 menjadi 1
+// >> WISHLIST SWAP 1 2
+// Gagal menukar posisi Ayam Geprek Bakar Crispy Besthal!
+// // Hanya terdapat satu barang (Ayam Geprek Bakar Crispy Besthal) pada wishlist sehingga posisinya tidak dapat ditukar
+// */
+// void wishlistSwap(WishlistUser *wishlist, int i, int j) {
+//     if (i > 0 && i <= wishlist->number && j > 0 && j <= wishlist->number) {
+//         // Store items before swapping
+//         char item1[MaxEl], item2[MaxEl];
+//         char *tmp1 = GetLL(wishlist->wishlist_item, i);
+//         char *tmp2 = GetLL(wishlist->wishlist_item, j);
+        
+//         // Manual array copy
+//         int k;
+//         for(k = 0; tmp1[k] != '\0'; k++) item1[k] = tmp1[k];
+//         item1[k] = '\0';
+//         for(k = 0; tmp2[k] != '\0'; k++) item2[k] = tmp2[k];
+//         item2[k] = '\0';
+        
+//         swapListLinier(&wishlist->wishlist_item, i-1, j-1);
+        
+//         printf("Urutan %s berubah dari %d menjadi %d. Sebaliknya, urutan %s berubah dari %d menjadi %d\n", 
+//                item1, i, j, item2, j, i);
+//     } else {
+//         if (wishlist->number <= 1) {
+//             printf("Hanya terdapat satu barang (%s) pada wishlist sehingga posisinya tidak dapat ditukar\n", 
+//                    GetLL(wishlist->wishlist_item, 1));
+//         } else {
+//             printf("Posisi tidak valid!\n");
+//         }
+//     }
+//     wishlistShow(wishlist);
+// }
+
+// /* biar jalan NTAR HAPUS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+// int customStringCMP(const char *str1, const char *str2){
+//     int i = 0;
+//     while(str1[i] != '\0' && str2[i] != '\0'){
+//         if(str1[i] != str2[i]){
+//             return str1[i] - str2[i];
+//         }
+//         i++;
+//     }
+//     return str1[i] - str2[i];
+// }
+
+// void customStringCPY(char *dest, const char *src){
+//     int i = 0;
+//     while(src[i] != '\0'){
+//         dest[i] = src[i];
+//         i++;
+//     }
+//     dest[i] = '\0';
+// }
+
+// void insertLastItem(ListItem *itemlist, Item item){
+//     if (itemlist->itemLength < MaxEl) {
+//         itemlist->item[itemlist->itemLength] = item;
+//         itemlist->itemLength++;
+//     } else {
+//         printf("Item sudah penuh. Tidak bisa menambahkan item %s\n", item.name);
+//     }
+// }
+
+// // driver main untuk testing sementara
+// int main(){
+//     // testing wishlistAdd
+//     ListItem itemList = {
+//         .item = {
+//         {"AK47", 20},
+//         {"Lalabu", 20},
+//         {"Ayam Goreng Crisbar", 10},
+//         {"Kunjaw UAS Alstrukdat", 50}
+//         },
+//         .itemLength = 4
+//     };
+//     WishlistUser wishlist;
+//     CreateEmptyLL(&wishlist.wishlist_item);
+//     wishlist.number = 0;
+//     wishlistAdd(&itemList, &wishlist);
+//     // wishlistAdd(&itemList, &wishlist);
+//     // wishlistAdd(&itemList, &wishlist);
+//     // wishlistAdd(&itemList, &wishlist);
+
+//     // wishlistShow(&wishlist);
+//     // // wishlistClear(&wishlist);
+//     // wishlistRemove(&wishlist);
+//     // wishlistShow(&wishlist);
+//     // wishlistRemove(&wishlist);
+//     // wishlistShow(&wishlist);
+//     wishlistSwap(&wishlist, 1, 2);
+    
+//     return 0;
+// }*/
+
+// Cart Function
+void cartPay(Map *M, ListItem L) {
+    Global userprofile = {0};
+    int price = 0;
+    int total = 0;
+    int val;
+    char input[50];
+    int uanguser = userprofile.users->money;
+
+    printf("Kamu akan membeli barang-barang berikut.\n");
+    if (IsEmptyMap(*M)) {
+        printf("Keranjang kamu kosong!\n");
+    }
+    else {
+        printf("Kuantitas       Nama            Total\n");
+        for (int i = 0; i < (*M).Count; i++) {
+            val = (*M).Elements[i].Value;
+            price = val * L.item[i].price;
+            printf("%-10d %-20s %d", val, (*M).Elements[i].Key, price);
+            total += price;
+        }
+        printf("Total biaya yang harus dikeluarkan adalah %d, apakah jadi dibeli?\n", total);
+        printf("(Ya/Tidak)\n");
+
+        STARTLINE();
+        collectInput(input);
+        wordToString(currentWord, input);     
+
+        if (my_strcmp("Ya", input)) {
+            if (total > uanguser) {
+                printf("\n");
+                printf("Uang kamu hanya %d, tidak cukup untuk membeli keranjang!\n", userprofile.users->money);
+            }
+            else {
+                printf("Selamat kamu telah membeli barang-barang tersebut!\n");
+                uanguser -= total;
+            }
+        } 
+    }
+}
+
+int cart(Map M, ListItem L){
+    char input[50];
+    char *firstWord, *secondWord, *thirdWord, *fourthWord;
+    int subtotal = 0;
+
+    if (IsEmptyMap(M)){
+        printf("Keranjang anda masih kosong.\n");
+    }
+    else{
+        printf("Isi Keranjang: \n");
+        DisplayMap(M, L, &subtotal);
+    }
+
+    while(1){
+        STARTLINE();
+        collectInput(input);
+        wordToString(currentWord, input);
+            
+        firstWord = my_strtok(input, " "); // baca kata pertama
+        secondWord = my_strtok(NULL, " "); // baca kata kedua
+        thirdWord = my_strtok(NULL, " "); // baca kata ketiga
+        fourthWord = my_strtok(NULL, " "); // baca kata keempat
+
+        keytype barang = "";
+        valuetype jumlah = 0;
+        if (thirdWord != NULL && fourthWord != NULL) {
+            my_strcpy(barang, thirdWord);
+            jumlah = atoi(fourthWord);
+        }
+
+        if (my_strcmp(firstWord, "HELP")){
+            printf("Command list: \n");
+            printf("1. CART ADD <barang> <jumlah>\n");
+            printf("2. CART REMOVE <barang> <jumlah>\n");
+            printf("3. CART SHOW\n");
+            printf("4. CART PAY\n");
+            printf("5. EXIT\n");
+        }
+        else if (my_strcmp(firstWord, "EXIT")){
+            break;
+        }
+        else if (my_strcmp(firstWord, "CART")){
+            if (my_strcmp(secondWord, "ADD")){
+                cartAdd(&M, &L, barang, jumlah);
+            }
+            else if (my_strcmp(secondWord, "REMOVE")){
+                cartRemove(&M, barang, jumlah);
+            }
+            else if (my_strcmp(secondWord, "SHOW")){
+                cartShow(&M, &L);
+                printf("Total biaya yang harus dikeluarkan: %d\n", subtotal);
+            }
+        //     // else if (my_strcmp(secondWord, "PAY")){
+        //     //     cartPay(M, L);
+        //     // } beluumm implementt
+        }
+        else{
+            printf("Command tidak valid. Ketik HELP untuk melihat list command\n");
+        }
+    }
+    return 0;
+}
+
+
+void cartRemove(Map *M, keytype *k, valuetype v){
+    int i = 0;
+    boolean found = FALSE;
+
+    if (IsEmptyMap(*M)){
+        printf("Tidak bise remove, keranjang kosong.\n");
+        return;
+    }
+
+    if (v <= 0){
+        printf("Jumlah barang tidak valid.\n");
+        return;
+    }
+
+    if (!IsMemberMap(*M, k)){
+        printf("Barang tidak ada di keranjang.\n");
+        return;
+    }
+
+    valuetype currentJumlah = Value(*M, k);
+
+    if (currentJumlah < v){
+        printf("Gagal mengurangi. Hanya terdapat %d %s di keranjang.\n", currentJumlah, k);
+    }
+    else if (currentJumlah == v){
+        Delete(M, k);
+        printf("%s sebanyak %d berhasil dihapus dari keranjang.\n", k, v);
+    }
+    else{
+        for (int i = 0; i < M->Count; i++) {
+            if (my_strcmp(M->Elements[i].Key, k)) {
+                M->Elements[i].Value -= v;
+                printf("%s sebanyak %d berhasil dihapus dari keranjang.\n", k, v);
+                break;
+            }
+        }
+    }
+}   
+
+
+void cartShow(Map *M, ListItem *L){
+    if (IsEmptyMap(*M)){
+        printf("Keranjang anda masih kosong.\n");
+    }
+    else{
+        int subtotal = 0;
+        printf("Isi Keranjangmu: \n");
+        DisplayMap(*M, *L, &subtotal);
+    }
+}
+
+// void cartPay(Map *M, Stack *H, int *balance);
+// GARAP HISTORY DULU
+
+char* my_strtok(char* str, const char* delim) {
+    static char* last;
+    if (str) {
+        last = str;
+    }
+    if (!last) {
+        return NULL;
+    }
+    char* start = last;
+    while (*last) {
+        const char* d = delim;
+        while (*d) {
+            if (*last == *d) {
+                break;
+            }
+            d++;
+        }
+        if (*d) {
+            break;
+        }
+        last++;
+    }
+    if (*last) {
+        *last = '\0';
+        last++;
+    } else {
+        last = NULL;
+    }
+    return start;
+}
+
+void cartAdd(Map *M, ListItem *L, keytype k, valuetype v){
+
+    if (v <= 0){
+        printf("Jumlah barang tidak valid.\n");
+        return;
+    }
+
+    if (IsFullMap(*M)){
+        printf("Keranjang penuh.\n");
+        return;
+    }
+
+    int i = 0;
+    boolean found = FALSE;
+
+    while (i < L->itemLength && !found) {
+        if(my_strcmp(L->item[i].name, k)){
+            found = TRUE;
+            break;
+        }
+        i++;
+    }
+
+    if (found){
+        if (!IsMemberMap(*M, k)){
+            Insert(M, k, v);
+            printf("%s sebanyak %d berhasil ditambahkan ke keranjang.\n", k, v);
+        }
+        else{
+            M->Elements[i-1].Value += v;
+            printf("%s sebanyak %d berhasil ditambahkan ke keranjang.\n", k, v);
+        }
+    }
+    else{
+        printf("Barang tidak ditemukan.\n");
+    }
+}
+
+void DisplayMap(Map M, ListItem L, int *subtotal){
+    if (IsEmptyMap(M)) {
+        printf("Map is empty.\n");
+    } else {
+        printf("Barang         Jumlah    Total\n");
+        for (int i = 0; i < M.Count; i++) {
+            int harga = 0;
+            boolean found = FALSE;
+            for (int j = 0; j < L.itemLength; j++) {
+                if (my_strcmp(L.item[j].name, M.Elements[i].Key)) {
+                    harga = L.item[j].price;
+                    found = TRUE;
+                    break;
+                }
+            }
+
+            if (found) {
+                int total = harga * M.Elements[i].Value;
+                *subtotal += total;
+                printf("%-15s %-8d %-d\n", M.Elements[i].Key, M.Elements[i].Value, total);
+            }
+            else {
+                printf("%-15s %-8d (Harga tidak ditemukan)\n", M.Elements[i].Key, M.Elements[i].Value);
+            }
+        }
+    }
 }

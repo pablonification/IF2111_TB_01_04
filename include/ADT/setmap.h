@@ -70,7 +70,7 @@ void Delete(Map *M, keytype k);
 boolean IsMemberMap(Map M, keytype k);
 /* Mengembalikan true jika k adalah member dari M */
 
-//void DisplayMap(Map M, ListItem L, int *subtotal);
+void DisplayMap(Map M, ListItem *L, int *subtotal);
 /* Mencetak isi Map ke terminal */
 
 // /* ********* Util ********* gajadi dipake tp keep dulu aja siapa tau nanti kepake*/

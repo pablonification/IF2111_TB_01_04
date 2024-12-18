@@ -18,7 +18,7 @@ void storeList (ListItem *L) {
         printf("List barang yang ada di toko: \n");
         for (int i  = 0; i < L->itemLength; i ++) {
             printf("");
-            printf("%d. %s\n", i + 1, L->item[i].name);
+            printf("%d. %s - Harga: %d\n", i + 1, L->item[i].name, L-> item[i].price);
         }
     // }   
     printf("\n");

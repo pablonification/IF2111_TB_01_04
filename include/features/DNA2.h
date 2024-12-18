@@ -3,9 +3,10 @@
 #include "../ADT/mesinkata.h"
 #include "misc.h"
 
-const int match = 1;
-const int mismatch = 0;
-const int gap = -1;
+static int mismatch = 0;
+static int gap = -1;
+static int match = 1;
+
 
 boolean isDNAvalid(Word sequence);
 /* Mengembalikan true jika sequence merupakan DNA valid, yaitu hanya terdiri dari karakter A, T, C, dan G */

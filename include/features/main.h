@@ -8,11 +8,14 @@
 #include "../ADT/stack.h"
 #include "../ADT/listlinier.h"
 #include "../ADT/setmap.h"
+#include "optimasirute.h"
+#include "DNA2.h"
 #include "misc.h"
 #include "wordl32.h"
 #include "rng.h"
 #include "qwordl3.h"
 #include "DNA.h"
+#include "history.h"
 
 #define MAX_LEN 50
 #define MAX_USERS 100
@@ -41,6 +44,11 @@ typedef struct {
 } ListItem;
 
 typedef struct {
+    ListLinier wishlist_item;
+    int number;
+} WishlistUser;
+
+typedef struct {
     ListItem itemList;
     User users[MAX_USERS];
     int userCount;
@@ -50,16 +58,10 @@ typedef struct {
     boolean isLogin;
 } Global;
 
-// typedef struct{
-//     char workName[100]; // nama pekerjaan
-//     int workPayment;    // gaji
-//     int workDuration;   // durasi kerja
-// } Work;
 
 void showMainMenu();
-boolean Start(Global *Global);
+void Start(Global *Global);
 void Load(const char *filename, Global *Global);
-boolean loadGlobal(Global *Global, const char *filename);
 void Login(User *users, int user_count);
 int findUser(User *users, int user_count, const char *username, const char *password);
 void Register(Global *Global);
@@ -105,4 +107,26 @@ boolean SearchItem(ListItem L, char *X);
 
 boolean isWordInt(Word w);
 
+// Wishlist
+// void wishlistShow(WishlistUser *wishlist);
+// void wishlistAdd(ListItem *L, WishlistUser *wishlist);
+// void wishlistClear(WishlistUser *wishlist);
+// boolean isNumber(char *str);
+// void wishlistRemove(WishlistUser *wishlist);
+// void wishlistSwap(WishlistUser *wishlist, int i, int j);
+
+// Cart
+void cartPay(Map *M, ListItem L);
+
+int cart(Map M, ListItem L);
+
+void cartRemove(Map *M, keytype k, valuetype v);
+
+void cartShow(Map *M, ListItem *L);
+
+char* my_strtok(char* str, const char* delim);
+
+void cartAdd(Map *M, ListItem *L, keytype k, valuetype v);
+
+void DisplayMap(Map M, ListItem L, int *subtotal);
 #endif
