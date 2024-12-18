@@ -8,6 +8,7 @@
 #include "../ADT/stack.h"
 #include "../ADT/listlinier.h"
 #include "../ADT/setmap.h"
+// #include "wishlist.h"
 #include "optimasirute.h"
 #include "DNA2.h"
 #include "misc.h"
@@ -22,15 +23,19 @@
 
 extern char currentUser[MAX_LEN];
 
+typedef struct {
+    ListLinier wishlist_item;
+    int number;
+} WishlistUser;
+
 typedef struct{
     char name[MAX_LEN];
     char password[MAX_LEN];
     int money;
     int historyCount;
-    int wishlistCount;
     Stack history;
-    ListLinier wishlist;
     Map cart;
+    WishlistUser wishlist;
 } User;
 
 typedef struct{
@@ -42,11 +47,6 @@ typedef struct {
     Item item[MaxEl];
     int itemLength;
 } ListItem;
-
-typedef struct {
-    ListLinier wishlist_item;
-    int number;
-} WishlistUser;
 
 typedef struct {
     ListItem itemList;
@@ -108,25 +108,25 @@ boolean SearchItem(ListItem L, char *X);
 boolean isWordInt(Word w);
 
 // Wishlist
-// void wishlistShow(WishlistUser *wishlist);
-// void wishlistAdd(ListItem *L, WishlistUser *wishlist);
-// void wishlistClear(WishlistUser *wishlist);
-// boolean isNumber(char *str);
-// void wishlistRemove(WishlistUser *wishlist);
-// void wishlistSwap(WishlistUser *wishlist, int i, int j);
+void wishlistShow(WishlistUser *wishlist);
+void wishlistAdd(ListItem *L, WishlistUser *wishlist);
+void wishlistClear(WishlistUser *wishlist);
+boolean isNumber(char *str);
+void wishlistRemove(WishlistUser *wishlist);
+void wishlistSwap(WishlistUser *wishlist, int i, int j);
 
 // Cart
-void cartPay(Map *M, ListItem L);
+// void cartPay(Map *M, ListItem L);
 
-int cart(Map M, ListItem L);
+// int cart(Map M, ListItem L);
 
-void cartRemove(Map *M, keytype k, valuetype v);
+// void cartRemove(Map *M, keytype k, valuetype v);
 
-void cartShow(Map *M, ListItem *L);
+// void cartShow(Map *M, ListItem *L);
 
 char* my_strtok(char* str, const char* delim);
 
-void cartAdd(Map *M, ListItem *L, keytype k, valuetype v);
+// void cartAdd(Map *M, ListItem *L, keytype k, valuetype v);
 
 void DisplayMap(Map M, ListItem L, int *subtotal);
 #endif
