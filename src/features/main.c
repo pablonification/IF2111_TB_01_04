@@ -18,6 +18,7 @@ void showMainMenu(){
     gameState.isLoaded = FALSE;
     gameState.isLogin = FALSE;
     makeListItem(&gameState);
+    CreateEmptyLL(&gameState.users->wishlist.wishlist_item);
 
     printf("                                                                                           \n"
            "                                                                                           \n"
@@ -1191,32 +1192,66 @@ void wishlistRemove(WishlistUser *wishlist) {
 // Fitur wishlistSwap
 // Menukar posisi dua barang dalam wishlist
 void wishlistSwap(WishlistUser *wishlist, int i, int j) {
-    printf("DEBUG: Entered wishlistSwap function\n");
-    printf("DEBUG WISHLIST NUMBER %d\n", wishlist->number);
-    if (i > 0 && i <= wishlist->number && j > 0 && j <= wishlist->number) {
-        char item1[MaxEl], item2[MaxEl];
-        char *tmp1 = GetLL(wishlist->wishlist_item, i);
-        char *tmp2 = GetLL(wishlist->wishlist_item, j);
-        
-        // Salin nama barang
-        int k;
-        for (k = 0; tmp1[k] != '\0'; k++) item1[k] = tmp1[k];
-        item1[k] = '\0';
-        for (k = 0; tmp2[k] != '\0'; k++) item2[k] = tmp2[k];
-        item2[k] = '\0';
-        printf("TANDA1%%%%%%%%\n");
-        swapListLinier(&wishlist->wishlist_item, i - 1, j - 1);
-        
-        printf("Urutan %s berubah dari %d menjadi %d. Sebaliknya, urutan %s berubah dari %d menjadi %d\n", 
-               item1, i, j, item2, j, i);
-    } else {
-        if (wishlist->number <= 1) {
-            printf("Hanya terdapat satu barang (%s) pada wishlist sehingga posisinya tidak dapat ditukar\n", 
-                   GetLL(wishlist->wishlist_item, 1));
-        } else {
-            printf("Posisi tidak valid!\n");
-        }
+    // First check if wishlist pointer is valid
+    if (wishlist == NULL) {
+        printf("Error: Invalid wishlist pointer\n");
+        return;
     }
+
+    // Debug print more details
+    printf("DEBUG: Wishlist pointer = %p\n", (void*)wishlist);
+    printf("DEBUG: Wishlist number = %d\n", wishlist->number);
+    printf("DEBUG: First node pointer = %p\n", (void*)wishlist->wishlist_item.First);
+
+    // Add a safe check for First node
+    if (wishlist->wishlist_item.First == NULL) {
+        printf("Wishlist kosong (First node is NULL)\n");
+        return;
+    }
+
+    // Rest of your validation logic
+    if (wishlist->number <= 1) {
+        printf("Wishlist hanya memiliki satu item\n");
+        return;
+    }
+
+    if (i <= 0 || j <= 0 || i > wishlist->number || j > wishlist->number) {
+        printf("Posisi tidak valid! (i=%d, j=%d, max=%d)\n", i, j, wishlist->number);
+        return;
+    }
+
+    // Get the nodes safely
+    addressLL curr = wishlist->wishlist_item.First;
+    addressLL node1 = NULL;
+    addressLL node2 = NULL;
+    int pos = 1;
+
+    // Find nodes with validity checks
+    while (curr != NULL) {
+        printf("DEBUG: Checking position %d, current node = %p\n", pos, (void*)curr);
+        if (pos == i) {
+            node1 = curr;
+        }
+        if (pos == j) {
+            node2 = curr;
+        }
+        curr = curr->next;
+        pos++;
+    }
+
+    // Verify we found both nodes
+    if (node1 == NULL || node2 == NULL) {
+        printf("Error: Could not find one or both nodes\n");
+        return;
+    }
+
+    // Perform the swap
+    char tempInfo[100];
+    my_strcpy(tempInfo, node1->info);
+    my_strcpy(node1->info, node2->info);
+    my_strcpy(node2->info, tempInfo);
+
+    printf("Sukses menukar posisi barang ke-%d dengan barang ke-%d\n", i, j);
 }
 
 // // Fungsi tambahan untuk string manipulasi
