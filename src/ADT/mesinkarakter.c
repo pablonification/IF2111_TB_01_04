@@ -5,8 +5,10 @@
 
 char currentChar;
 boolean EOP;
+boolean isFile;
 static FILE *pita = NULL;
 static int retval;
+FILE *pitaFile;
 
 void RESETPITA() {
 /* Mengembalikan state awal pita (kosong tanpa inputan) supaya pita dapat 
@@ -69,6 +71,23 @@ void START() {
     ADV();
 }
 
+void START2(char *path, char *type)
+{
+    if (path[0] == '\0' && type[0] == '\0')
+    {
+        isFile = FALSE;
+        pita = stdin;
+        ADV();
+    }
+    else
+    {
+        isFile = TRUE;
+        pitaFile = fopen(path, type);
+        if (pitaFile != NULL)
+            ADV();
+    }
+}
+
 void ADV() {
 /* Pita dimajukan satu karakter.
    I.S. : Karakter pada jendela = currentChar, currentChar != MARK
@@ -80,6 +99,14 @@ void ADV() {
     // ALGORITMA
     retval = fscanf(pita, "%c", &currentChar);
     EOP = (currentChar == MARK);
+}
+
+char GetCC(){
+    return currentChar;
+}
+
+boolean IsEOP(){
+    return retval == EOF;
 }
 
 FILE* openFile(const char* filepath, const char* mode) {

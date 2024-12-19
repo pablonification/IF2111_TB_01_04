@@ -43,6 +43,9 @@ void ADV();
    F.S. : currentChar adalah karakter berikutnya dari currentChar yang lama,
           currentChar mungkin = MARK
           Jika  currentChar = MARK maka EOP akan menyala (true) */
+char GetCC();
+boolean IsEOP();
+void START2(char *path, char *type);
 
 
 FILE* openFile(const char* filepath, const char* mode);

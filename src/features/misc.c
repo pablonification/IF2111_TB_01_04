@@ -108,3 +108,15 @@ int max(int a, int b, int c) {
     return c;
 }
 
+boolean IsEqual(char *str2, Word str1)
+{
+    int i = 0;
+    boolean checker = (str1.Length == stringLength(str2));
+    while (str1.TabWord[i] != '\0' && str2[i] != '\0' && checker)
+    {
+        if (str1.TabWord[i] != str2[i])
+            checker = FALSE;
+        i++;
+    }
+    return checker;
+}

@@ -38,34 +38,41 @@ void showMainMenu(){
 
     while (1) {
         printf(">> ");
-        Word command;
-        STARTLINE();
-        command = currentWord;
+        STARTWORD2("", "");
 
-        if (compareWords("START", command, 5)){
+        if (compareWords("START", currentWord, 5)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Anda harus load file konfigurasi terlebih dahulu.\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
                 Start(&gameState);
             }
         } 
-        else if (compareWords("LOAD", command, 4)){
+        else if (compareWords("LOAD", currentWord, 4)){
             if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Masukkan nama file yang akan diload: ");
-                Word filename;
-                STARTLINE();
-                filename = currentWord;
+                Word filenameWord;
+                ADVWORD();
+                filenameWord = currentWord;
 
-                char file[MAX_LEN];
-                wordToString(filename, file);
-                Load(file, &gameState);
+                char filename[MAX_LEN] = {0};
+
+                if (filenameWord.Length > 0) {
+                    for (int i = 0; i < filenameWord.Length; i++) {
+                        filename[i] = filenameWord.TabWord[i];
+                    }
+                    filename[filenameWord.Length] = '\0';
+            
+                    printf("Loading file: %s\n", filename);
+                    Load(filename, &gameState);
+                } else {
+                    printf("Error: Filename tidak diberikan.\n");
+                }
             } else if  (!gameState.isStarted && gameState.isLoaded){
                 printf("Program belum di-Start. Silahkan START terlebih dahulu.\n");
             } else if (gameState.isStarted && gameState.isLoaded){
                 printf("Game sudah dimulai. Tidak bisa load file konfigurasi.\n");
             }
         }
-        else if (compareWords("HELP", command, 4)){
+        else if (compareWords("HELP", currentWord, 4)){
             if (!gameState.isLoaded && !gameState.isStarted && !gameState.isLogin){
                 printf("START -> Untuk masuk sesi baru\n");
                 printf("LOAD -> Untuk memulai sesi berdasarkan file konfigurasi\n");
@@ -95,7 +102,7 @@ void showMainMenu(){
                 printf("QUIT -> Untuk keluar dari program\n");
             }
         }
-        else if (compareWords("LOGIN", command, 5)){
+        else if (compareWords("LOGIN", currentWord, 5)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -109,7 +116,7 @@ void showMainMenu(){
                 //printf("%d\n", gameState.users->money);
             }
         }
-        else if (compareWords("LOGOUT", command, 6)){
+        else if (compareWords("LOGOUT", currentWord, 6)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -121,7 +128,7 @@ void showMainMenu(){
                 gameState.isLogin = FALSE;
             }
         }
-        else if (compareWords("REGISTER", command, 8)){
+        else if (compareWords("REGISTER", currentWord, 8)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -133,7 +140,7 @@ void showMainMenu(){
                 gameState.isLogin = TRUE;
             }
         }
-        else if (compareWords("PROFILE", command, 7)){
+        else if (compareWords("PROFILE", currentWord, 7)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -141,10 +148,10 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
-                profile(gameState.users);
+                profile(&gameState.users);
             }
         }
-        else if (compareWords("HISTORY", command, 7)){
+        else if (compareWords("HISTORY", currentWord, 7)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -155,7 +162,9 @@ void showMainMenu(){
                 history(&gameState.users->history);
             }
         }
-        else if (compareWords("WORK", command, 4)){
+
+        // WORK
+        else if (IsEqual("WORK", currentWord)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -163,165 +172,112 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
-                work(&gameState.users->money);
-            } 
-        }
-        else if (compareWords("WORK CHALLENGE", command, 14)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } else {
-                printf("Daftar challenge yang tersedia:\n");
-                printf("1. Tebak Angka (biaya main=200)\n");
-                printf("2. W0RDL399 (biaya main=500)\n");
-                printf("3. QUANTUM W0RDL399 (biaya main=1000)\n");
+                ADVWORD();
+                if (IsEqual("CHALLENGE", currentWord)){
+                    printf("Daftar challenge yang tersedia:\n");
+                    printf("1. Tebak Angka (biaya main=200)\n");
+                    printf("2. W0RDL399 (biaya main=500)\n");
+                    printf("3. QUANTUM W0RDL399 (biaya main=1000)\n");
 
-                printf("Masukan challenge yang hendak dimainkan: ");
-                Word choice;
-                STARTLINE();
-                choice = currentWord;
+                    printf("Masukan challenge yang hendak dimainkan: ");
+                    Word choice;
+                    STARTLINE();
+                    choice = currentWord;
 
-                if (compareWords("1", choice, 1)){
-                    tebakAngkaRNG(&gameState.users->money);
-                }
-                else if (compareWords("2", choice, 1)){
-                    playWordl3(&gameState.users->money);
-                }
-                else if (compareWords("3", choice, 1)){
-                    playQuantumWordl3(&gameState.users->money);
-                }
-            }
-        }
-        else if (compareWords("STORE LIST", command, 10)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } else {
-                storeList(&gameState.itemList);
-            }
-        }
-        else if (compareWords("STORE REQUEST", command, 13)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } 
-            else {
-                storeRequest(&gameState.itemList, &gameState.requestQueue);
-            }
-
-        }
-        else if (compareWords("STORE REQUEST BIOWEAPON", command, 23)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } 
-            else {
-                processDNA();
-            }
-
-        }
-
-        // Integrasi wishlist pada main
-        else if (compareWords("WISHLIST SHOW", command, 13)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } else {
-                wishlistShow(&gameState.users->wishlist);
-            }
-        }
-        else if (compareWords("WISHLIST ADD", command, 12)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } 
-            else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            } 
-            else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } 
-            else {
-                wishlistAdd(&gameState.itemList, &gameState.users->wishlist);
-            }
-        }
-        else if (compareWords("WISHLIST REMOVE", command, 15)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            }
-            else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            }
-            else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            }
-            else {
-                wishlistRemove(&gameState.users->wishlist);
-            }
-        }
-        else if (compareWords("WISHLIST CLEAR", command, 14)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            }
-            else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            }
-            else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            }
-            else {
-                wishlistClear(&gameState.users->wishlist);
-            }
-        }
-
-        // wishlistSwap
-        else if (compareWords("WISHLIST SWAP", command, 13)) {
-            if (!gameState.isLoaded && !gameState.isStarted) {
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } else if (gameState.isLoaded && !gameState.isStarted) {
-                printf("Anda belum start program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin) {
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } else {
-                // Handling harus bawa i dan j pake STARTLINE dll
-                int i, j;
-                Word wordI, wordJ;
-
-                printf("Masukkan nomor urut barang pertama: ");
-                STARTLINE();
-                wordI = currentWord;
-                i = WordToInt(wordI);
-
-                printf("Masukkan nomor urut barang kedua: ");
-                STARTLINE();
-                wordJ = currentWord;
-                j = WordToInt(wordJ);
-
-                printf("DEBUG: Calling wishlistSwap with i=%d, j=%d\n", i, j); // Debug statement
-
-                if (i > 0 && j > 0) {
-                    wishlistSwap(&gameState.users->wishlist, i, j);
+                    if (compareWords("1", choice, 1)){
+                        tebakAngkaRNG(&gameState.users->money);
+                    }
+                    else if (compareWords("2", choice, 1)){
+                        playWordl3(&gameState.users->money);
+                    }
+                    else if (compareWords("3", choice, 1)){
+                        playQuantumWordl3(&gameState.users->money);
+                    }
                 } else {
-                    printf("Nomor urut tidak valid. Silakan coba lagi.\n");
+                    work(&gameState.users->money);
+                }
+            }
+        }
+    
+        // STORE
+        else if (IsEqual("STORE", currentWord)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } else {
+                ADVWORD();
+                if (IsEqual("SUPPLY", currentWord)){
+                    storeSupply(&gameState.itemList, &gameState.requestQueue);
+                }
+                else if (IsEqual("REMOVE", currentWord)){
+                    storeRemove(&gameState.itemList);
+                }
+                else if (IsEqual("LIST", currentWord)){
+                    storeList(&gameState.itemList);
+                }
+                else if (IsEqual("REQUEST", currentWord)){
+                    if (IsEqual("BIOWEAPON", currentWord)){
+                        processDNA();
+                    }
+                    else {
+                    storeRequest(&gameState.itemList, &gameState.requestQueue);
+                    }
                 }
             }
         }
 
-        else if (compareWords("GLOBALALIGNMENT", command, command.Length)){
+        // WISHLIST
+        else if (IsEqual("WISHLIST", currentWord)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            }
+            else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            }
+            else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            }
+            else {
+                ADVWORD();
+                if (IsEqual("CLEAR", currentWord)){
+                    wishlistClear(&gameState.users->wishlist);
+                }
+                else if (IsEqual("SHOW", currentWord)){
+                    wishlistShow(&gameState.users->wishlist);
+                }
+                else if (IsEqual("ADD", currentWord)){
+                    wishlistAdd(&gameState.itemList, &gameState.users->wishlist);
+                }
+                else if (IsEqual("REMOVE", currentWord)){
+                    wishlistRemove(&gameState.users->wishlist);
+                }
+                else if (IsEqual("SWAP", currentWord)){
+                    int i, j;
+                    Word wordI, wordJ;
+                    ADVWORD();
+
+                    wordI = currentWord;
+                    i = WordToInt(wordI);
+
+                    ADVWORD();
+                    wordJ = currentWord;
+                    j = WordToInt(wordJ);
+
+                    printf("DEBUG: Calling wishlistSwap with i=%d, j=%d\n", i, j); // Debug statement
+
+                    if (i > 0 && j > 0) {
+                        wishlistSwap(&gameState.users->wishlist, i, j);
+                    } else {
+                        printf("Nomor urut tidak valid. Silakan coba lagi.\n");
+                    }
+                }
+            }
+      
+        }
+        else if (compareWords("GLOBALALIGNMENT", currentWord, currentWord.Length)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -333,7 +289,7 @@ void showMainMenu(){
                 deteksiKebocoranDNA();
             }
         }
-        else if (compareWords("OPTIMASIRUTE", command, command.Length)){
+        else if (compareWords("OPTIMASIRUTE", currentWord, currentWord.Length)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -345,62 +301,7 @@ void showMainMenu(){
                 OptimasiRuteEkspedisi();
             }
         }
-        else if (compareWords("STORE SUPPLY", command, 12)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } else {
-                storeSupply(&gameState.itemList, &gameState.requestQueue);
-            }
-        }
-        else if (compareWords("STORE REMOVE", command, 12)){
-            if (!gameState.isLoaded && !gameState.isStarted){
-                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-            } else if (gameState.isLoaded && !gameState.isStarted){
-                printf("Anda belum start program\n");
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-                printf("Lakukan login atau register terlebih dahulu\n");
-            } else {
-                storeRemove(&gameState.itemList);
-            }
-        }
-
-        // else if (compareWords("WISHLIST SHOW", command, command.Length)){
-        //     if (!gameState.isLoaded && !gameState.isStarted){
-        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-        //     } else if (gameState.isLoaded && !gameState.isStarted){
-        //         printf("Anda belum start program\n");
-        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-        //         printf("Lakukan login atau register terlebih dahulu\n");
-        //     } else {
-        //         wishlistShow(&gameState.users);
-        //     }
-        // }
-        // else if (compareWords("WISHLIST ADD", command, command.Length)){
-        //     if (!gameState.isLoaded && !gameState.isStarted){
-        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-        //     } else if (gameState.isLoaded && !gameState.isStarted){
-        //         printf("Anda belum start program\n");
-        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-        //         printf("Lakukan login atau register terlebih dahulu\n");
-        //     } else {
-        //         wishlistAdd(&gameState.itemList, &gameState.users);
-        //     }
-        // }
-        // else if (compareWords("WISHLIST REMOVE", command, command.Length)){
-        //     if (!gameState.isLoaded && !gameState.isStarted){
-        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-        //     } else if (gameState.isLoaded && !gameState.isStarted){
-        //         printf("Anda belum start program\n");
-        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-        //         printf("Lakukan login atau register terlebih dahulu\n");
-        //     } else {
-        //         wishlistRemove(&gameState.users);
-        //     }
-        // }
+ 
         // else if (compareWords("CART ADD", command, command.Length)){
         //     if (!gameState.isLoaded && !gameState.isStarted){
         //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
@@ -471,7 +372,7 @@ void showMainMenu(){
         //         cartPay(&gameState.users->cart, gameState.itemList);
         //     }
         // }
-        else if (compareWords("SAVE", command, 4)){
+        else if (compareWords("SAVE", currentWord, 4)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
             } else if (gameState.isLoaded && !gameState.isStarted){
@@ -482,7 +383,7 @@ void showMainMenu(){
                  Save("savefile.txt", &gameState);
             }
         }
-        else if (compareWords("QUIT", command, 4)){
+        else if (compareWords("QUIT", currentWord, 4)){
             printf("Keluar dari program... \n");
             break;
         }
@@ -783,10 +684,10 @@ void profile(User *users) {
             break;
         }
     }
-    printf("Usernane: %s\n", users[userIndex].name);
-    printf("Money: %d\n", users[userIndex].money);
-    
     if (userIndex != -1) {
+        User* currentUserData = &users[userIndex];
+        printf("Username: %s\n", currentUserData->name);
+        printf("Money: %d\n", currentUserData->money);
         printf("Wishlist:\n");
         displayListLinier(users[userIndex].wishlist.wishlist_item);
     }
@@ -1161,8 +1062,7 @@ boolean isNumber(char *str) {
 
 void wishlistRemove(WishlistUser *wishlist) {
     Word input;
-    printf("Masukkan nama/nomor barang yang akan dihapus: ");
-    STARTLINE();
+    ADVWORD();
 
     char inputstr[MaxEl];
     input = currentWord;    

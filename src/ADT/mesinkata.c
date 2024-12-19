@@ -47,43 +47,39 @@ void STARTWORD() {
     }
 }
 
-void ADVWORD() {
-/* I.S. : currentChar adalah karakter pertama kata yang akan diakuisisi
-   F.S. : currentWord adalah kata terakhir yang sudah diakuisisi,
-          currentChar adalah karakter pertama dari kata berikutnya, mungkin MARK
-          Jika currentChar = MARK, EndWord = TRUE.
-   Proses : Akuisisi kata menggunakan procedure SalinWord */
-    // KAMUS LOKAL
+void STARTWORD2(char *path, char *type){
+    START2(path, type);
+    ADVWORD();
+}
 
-    // ALGORITMA
-    ResetCurrentWord();
+void ADVWORD()
+{
     IgnoreBlanks();
-    if (currentChar == MARK) EndWord = TRUE;
-    else {
+    if (GetCC() == BLANK || GetCC() == MARK)
+        EndWord = TRUE;
+    else
+    {
         EndWord = FALSE;
         CopyWord();
-        IgnoreBlanks();
     }
+    IgnoreBlanks();
 }
 
 void CopyWord() {
-/* Mengakuisisi kata, menyimpan dalam currentWord.
-   I.S. : currentChar adalah karakter pertama dari kata
-   F.S. : currentWord berisi kata yang sudah diakuisisi;
-          currentChar = BLANK atau currentChar = MARK;
-          currentChar adalah karakter sesudah karakter terakhir yang diakuisisi.
-          Jika panjang kata melebihi NMax, maka sisa kata "dipotong" */
-    // KAMUS LOKAL
-
-    // ALGORITMA
-    currentWord.Length = 0;
-    while (currentChar != BLANK && currentChar != MARK) {
-        if (currentWord.Length < NMax) { // jika lebih akan terpotong
-            currentWord.TabWord[currentWord.Length++] = currentChar;
-            ADV();
-        } else
-            break;
-            }
+    int i = 0;
+    while (!IsEOP() && !EndWord)
+    {
+        currentWord.TabWord[i] = GetCC();
+        ADV();
+        if (GetCC() == BLANK || GetCC() == MARK)
+            EndWord = TRUE;
+        i++;
+    }
+    if (i < NMax)
+        currentWord.Length = i;
+    else
+        currentWord.Length = NMax;
+    currentWord.TabWord[i] = '\0';
 }
 
 void STARTWORDFILE(char* path) {
@@ -283,5 +279,3 @@ void LoadWordsFromFile(const char *fileName, char ***wordsList, int *wordCount) 
 
     fclose(file);
 }
-
-

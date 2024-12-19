@@ -14,5 +14,6 @@ boolean stringEqual(char *str1, char *str2);
 boolean compareWords(const char *str, Word word, int length);
 void wordToString(Word word, char *str);
 int max(int a, int b, int c);
+boolean IsEqual(char *str2, Word str1);
 
 #endif

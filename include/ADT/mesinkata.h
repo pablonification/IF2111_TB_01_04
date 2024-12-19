@@ -30,7 +30,7 @@ void IgnoreBlanks();
    I.S. : currentChar sembarang
    F.S. : currentChar ≠ BLANK atau currentChar = MARK */
 
-void STARTWORD();
+void STARTWORD2(char *path, char *type);
 /* Kata dibaca dengan prosedur START() yang akan membaca dari input 
    user, akuisisi kata menggunakan CopyWord.
    I.S. : currentChar sembarang
@@ -82,6 +82,8 @@ void STARTLINE();
    F.S. : EndWord = true, dan currentChar = MARK;
           atau EndWord = false, currentWord adalah kata yang sudah diakuisisi,
           currentChar karakter pertama sesudah karakter terakhir kata */
+
+void STARTWORD();
 
 boolean isKataEqual(Word W1, Word W2);
 /* Mengembalikan true bila Word W1 sama dengan Word W2. */
