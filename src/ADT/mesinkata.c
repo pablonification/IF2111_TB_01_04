@@ -5,6 +5,16 @@
 #include "../../include/ADT/mesinkarakter.h"
 #include "../../include/ADT/boolean.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 boolean EndWord;
 Word currentWord;
 
@@ -248,13 +258,13 @@ void LoadWordsFromFile(const char *fileName, char ***wordsList, int *wordCount) 
     // For wordle work challange
     FILE *file = fopen(fileName, "r");
     if (!file) {
-        printf("Error: Unable to open file %s.\n", fileName);
+        printf(RED"Error: Unable to open file %s.\n"WHITE, fileName);
         exit(1);
     }
 
     *wordsList = calloc(100, sizeof(char *));
     if (*wordsList == NULL) {
-        printf("Error: Memory allocation failed.\n");
+        printf(RED"Error: Memory allocation failed.\n"WHITE);
         fclose(file);
         exit(1);
     }
@@ -265,7 +275,7 @@ void LoadWordsFromFile(const char *fileName, char ***wordsList, int *wordCount) 
     while (fscanf(file, "%5s", buffer) != EOF) {
         (*wordsList)[*wordCount] = malloc(6 * sizeof(char));
         if ((*wordsList)[*wordCount] == NULL) {
-            printf("Error: Memory allocation failed for word %d.\n", *wordCount);
+            printf(RED"Error: Memory allocation failed for word %d.\n"WHITE, *wordCount);
             fclose(file);
             exit(1);
         }

@@ -4,7 +4,7 @@
 20 Ayam Goreng Crisbar
 500 Meong
 2
-100 user1 alstrukdatkeren
+1000 user1 alstrukdatkeren
 6
 40 AK47
 100 AK47

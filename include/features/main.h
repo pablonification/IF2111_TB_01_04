@@ -114,6 +114,7 @@ void wishlistClear(WishlistUser *wishlist);
 boolean isNumber(char *str);
 void wishlistRemove(WishlistUser *wishlist);
 void wishlistSwap(WishlistUser *wishlist, int i, int j);
+boolean isWordEmpty(Word w);
 
 // Cart
 // void cartPay(Map *M, ListItem L);

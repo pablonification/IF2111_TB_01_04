@@ -5,6 +5,16 @@
 #include "../../include/ADT/mesinkata.h"
 #include "../../include/ADT/mesinkarakter.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 /* ********* Prototype ********* */
 
 /* *** Konstruktor/Kreator *** */
@@ -80,33 +90,33 @@ boolean IsMemberMap(Map M, keytype k){
 }
 /* Mengembalikan true jika k adalah member dari M */
 
-/*void DisplayMap(Map M, ListItem L, int *subtotal){
-    if (IsEmptyMap(M)) {
-        printf("Map is empty.\n");
-    } else {
-        printf("Barang         Jumlah    Total\n");
-        for (int i = 0; i < M.Count; i++) {
-            int harga = 0;
-            boolean found = FALSE;
-            for (int j = 0; j < L.itemLength; j++) {
-                if (my_strcmp(L.item[j].name, M.Elements[i].Key)) {
-                    harga = L.item[j].price;
-                    found = TRUE;
-                    break;
-                }
-            }
+// void DisplayMap(Map M, ListItem L, int *subtotal){
+//     if (IsEmptyMap(M)) {
+//         printf(RED"Map is empty.\n"WHITE);
+//     } else {
+//         printf(CYAN"Barang         Jumlah    Total\n"WHITE);
+//         for (int i = 0; i < M.Count; i++) {
+//             int harga = 0;
+//             boolean found = FALSE;
+//             for (int j = 0; j < L.itemLength; j++) {
+//                 if (my_strcmp(L.item[j].name, M.Elements[i].Key)) {
+//                     harga = L.item[j].price;
+//                     found = TRUE;
+//                     break;
+//                 }
+//             }
 
-            if (found) {
-                int total = harga * M.Elements[i].Value;
-                *subtotal += total;
-                printf("%-15s %-8d %-d\n", M.Elements[i].Key, M.Elements[i].Value, total);
-            }
-            else {
-                printf("%-15s %-8d (Harga tidak ditemukan)\n", M.Elements[i].Key, M.Elements[i].Value);
-            }
-        }
-    }
-}*/
+//             if (found) {
+//                 int total = harga * M.Elements[i].Value;
+//                 *subtotal += total;
+//                 printf(CYAN"%-15s %-8d %-d\n"WHITE, M.Elements[i].Key, M.Elements[i].Value, total);
+//             }
+//             else {
+//                 printf(CYAN"%-15s %-8d (Harga tidak ditemukan)\n"WHITE, M.Elements[i].Key, M.Elements[i].Value);
+//             }
+//         }
+//     }
+// }
 
 /* ********* Util ********* gajadi dipake tp keep dulu siapa tau nanti kepake */
 char* my_strcpy(char* destination, const char* source) {

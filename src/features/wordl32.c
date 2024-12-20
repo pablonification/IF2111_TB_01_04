@@ -8,6 +8,16 @@
 #include "../../include/features/misc.h"
 #include "../../include/features/qwordl3.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 #define WORD_LENGTH 5
 #define MAX_ATTEMPTS 5
 
@@ -66,7 +76,7 @@ boolean isValidGuess(Word guess) {
 
 void playWordl3(int *money) {
     if (*money < 500){
-        printf("Uang anda kurang, challange ini membutuhkan 500 koin, koin anda saat ini %d\n", *money);
+        printf(RED"Uang anda kurang, challange ini membutuhkan 500 koin, koin anda saat ini %d\n"WHITE, *money);
         return;
     } else {
         *money -= 500;
@@ -91,13 +101,13 @@ void playWordl3(int *money) {
         boolean win = FALSE;
         Word guess;
 
-        printf("WELCOME TO W0RDL3, YOU HAVE %d CHANCES TO ANSWER BEFORE YOU LOSE!\n", MAX_ATTEMPTS);
+        printf(CYAN"WELCOME TO W0RDL3, YOU HAVE %d CHANCES TO ANSWER BEFORE YOU LOSE!\n"WHITE, MAX_ATTEMPTS);
 
         while (attempts < MAX_ATTEMPTS && !win) {
             for (int i = 0; i < MAX_ATTEMPTS; i++) {
                 printf("%s\n", board[i]);
             }
-        printf("ANSWER>>>>>>>>>>%s\n", answer);
+        // printf(CYAN"ANSWER>>>>>>>>>>%s\n"WHITE, answer);
             printf("Masukkan kata tebakan Anda: ");
             do {
                 STARTLINE();
@@ -105,7 +115,7 @@ void playWordl3(int *money) {
 
 
                 if (guess.Length != WORD_LENGTH) {
-                    printf("Invalid input! Please enter a %d-letter word: ", WORD_LENGTH);
+                    printf(RED"Invalid input! Please enter a %d-letter word: "WHITE, WORD_LENGTH);
                 }
             } while (guess.Length != WORD_LENGTH);
 
@@ -127,10 +137,10 @@ void playWordl3(int *money) {
         }
 
         if (win) {
-            printf("Selamat, Anda menang!\n+1000 rupiah telah ditambahkan ke akun Anda.\n");
+            printf(GREEN"Selamat, Anda menang!\n+1000 rupiah telah ditambahkan ke akun Anda.\n"WHITE);
             *money += 1000;
         } else {
-            printf("Boo! Anda kalah. Jawaban yang benar adalah: %s\n", answer);
+            printf(RED"Boo! Anda kalah. Jawaban yang benar adalah: %s\n"WHITE, answer);
         }
 
         free(wordsList);

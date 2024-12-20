@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include "../../include/features/DNA.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 void DNAtoRNA(Word DNA, Word *RNA) {
     int idx = 0;
     while (idx < DNA.Length) {
@@ -17,8 +27,8 @@ void DNAtoRNA(Word DNA, Word *RNA) {
     }
     RNA->Length = DNA.Length;
     RNA->TabWord[RNA->Length] = '\0';
-    printf("RNA: %s\n", RNA->TabWord);
-    printf("Index: %d\n", idx);
+    printf(CYAN"RNA: %s\n"WHITE, RNA->TabWord);
+    printf(CYAN"Index: %d\n"WHITE, idx);
 }
 
 char translateCodon(char *codon) {
@@ -91,14 +101,14 @@ void processDNA(){
             idx += 3;
         }
         protein[proteinIdx] = '\0';
-        printf("Protein >>>> %s\n", protein);
+        printf(CYAN"Protein >>>> %s\n"WHITE, protein);
 
         // check ada ? gk
         validProtein = 1;
         for(int i = 0; i < proteinIdx; i++){
             if(protein[i] == '?'){
                 validProtein = 0;
-                printf("Protein mengandung codon yang invalid. Tolong masukkan DNA yang valid!\n");
+                printf(RED"Protein mengandung codon yang invalid. Tolong masukkan DNA yang valid!\n"WHITE);
                 break;
             }
         }
@@ -111,7 +121,7 @@ void processDNA(){
     scanWord(&secretCode);
 
     int idxSC = secretCode.Length;
-    printf("%d <<<<<<<< index secret code\n", idxSC);
+    printf(CYAN"%d <<<<<<<< index secret code\n"WHITE, idxSC);
 
     // Check if secretCode is in protein
     int found = 0;
@@ -127,9 +137,9 @@ void processDNA(){
     }
 
     if (found) {
-        printf("Senjata biologis mengandung kode, barang akan ditambahkan ke dalam queue!\n");
+        printf(GREEN"Senjata biologis mengandung kode, barang akan ditambahkan ke dalam queue!\n"WHITE);
     } else {
-        printf("Kode rahasia tidak ditemukan, maka senjata biologis sudah disabotase, barang ditolak!\n");
+        printf(RED"Kode rahasia tidak ditemukan, maka senjata biologis sudah disabotase, barang ditolak!\n"WHITE);
     }
 }
 
