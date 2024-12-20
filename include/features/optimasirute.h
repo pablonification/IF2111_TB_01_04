@@ -33,4 +33,4 @@ SolusiRute* optimasiRute(double** jarak, int n);
 void bestRoute(double** jarak, int n, int depth, int* jalurSekarang, int* visited, double jarakSaatIni, SolusiRute* solusiTerbaik);
 
 // Fungsi utama untuk optimasi rute
-int OptimasiRuteEkspedisi();
+int OptimasiRute();

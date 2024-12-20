@@ -118,7 +118,7 @@ int cekDeadEnd(double** jarak, int n) {
     return FALSE;
 }
 
-int OptimasiRuteEkspedisi() {
+int OptimasiRute() {
     int jumlahLokasi, jumlahRute;
     Word lokasi, route;
 
@@ -244,7 +244,7 @@ int OptimasiRuteEkspedisi() {
 }
 
 // int main() {
-//     return OptimasiRuteEkspedisi();
+//     return OptimasiRute();
 // }
 
 

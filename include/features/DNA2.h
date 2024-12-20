@@ -17,7 +17,7 @@ int needlemanWunsch(Word ref, Word query, char *alignedRef, char *alignedQuery, 
 void traceback(Word ref, Word query, int **matrix, int m, int n, char *alignedRef, char *alignedQuery, int *alignedLength);
 /* Fungsi melakukan handling gap pada pencetakan alignedRef dan alignedQuery (sudah disejajarkan) */
 
-int deteksiKebocoranDNA();
+int GlobalAlignment();
 /* Fungsi utama untuk deteksi kebocoran DNA */
 
 
