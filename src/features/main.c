@@ -29,6 +29,7 @@ void showMainMenu(){
     gameState.isLogin = FALSE;
     makeListItem(&gameState);
     CreateEmptyLL(&gameState.users->wishlist.wishlist_item);
+    CreateEmptyMap(&gameState.users->cart);
     CreateQueueItem(&gameState.requestQueue); // kalo ada apa apa comment aja
 
     printf(GREEN"                                                                                           \n"
@@ -321,76 +322,68 @@ void showMainMenu(){
             }
         }
  
-        // else if (compareWords("CART ADD", command, command.Length)){
-        //     if (!gameState.isLoaded && !gameState.isStarted){
-        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-        //     } else if (gameState.isLoaded && !gameState.isStarted){
-        //         printf("Anda belum start program\n");
-        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-        //         printf("Lakukan login atau register terlebih dahulu\n");
-        //     } else {
-        //         Word itemCart, tempQty;
-        //         int qtyCart;
+        // CART
+        else if (compareWords("CART", currentWord, currentWord.Length)){
+            if (!gameState.isLoaded && !gameState.isStarted){
+                printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
+            } else if (gameState.isLoaded && !gameState.isStarted){
+                printf("Anda belum start program\n");
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+                printf("Lakukan login atau register terlebih dahulu\n");
+            } else {
+                int userIndex = -1;
+                for (int i = 0; i < gameState.userCount; i++) {
+                    if (customStringCMP(gameState.users[i].name, currentUser) == 0) {
+                        userIndex = i;
+                        break;
+                    }
+                }
 
-        //         printf("Masukkan nama item yang ingin ditambahkan ke cart: ");
-        //         STARTLINE();
-        //         itemCart = currentWord;
+                if (userIndex == -1) {
+                    printf(RED"Error: User tidak ditemukan\n"WHITE);
+                    return;
+                }
 
-        //         printf("Masukkan jumlah item yang ingin ditambahkan ke cart: ");
-        //         STARTLINE();
-        //         tempQty = currentWord;
-        //         int Qty = WordToInt(tempQty);
+                ADVWORD();
+                if (IsEqual("SHOW", currentWord)){
+                    cartShow(&gameState.users[userIndex], gameState.itemList);
+                } else if (IsEqual("PAY", currentWord)){
+                    cartPay(&gameState.users[userIndex], gameState.itemList);
+                } else if (IsEqual("ADD", currentWord)){
+                    Word itemCart, tempQty;
+                    int qtyCart;
+                    char itemStr[MAX_LEN];
+
+                    ADVWORD();
+                    itemCart = currentWord;
+                    wordToString(itemCart, itemStr);
+
+                    ADVWORD();
+                    tempQty = currentWord;
+                    int Qty = WordToInt(tempQty);
                 
-        //         wordToString(itemCart, gameState.users->cart.Elements->Key);
-        //         cartAdd(&gameState.users->cart, &gameState.itemList, &gameState.users->cart.Elements->Key, Qty);
-        //     }
-        // }
-        // else if (compareWords("CART REMOVE", command, command.Length)){
-        //     if (!gameState.isLoaded && !gameState.isStarted){
-        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-        //     } else if (gameState.isLoaded && !gameState.isStarted){
-        //         printf("Anda belum start program\n");
-        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-        //         printf("Lakukan login atau register terlebih dahulu\n");
-        //     } else {
-        //         Word itemCart, tempQty;
-        //         int qtyCart;
+                    cartAdd(&gameState.users[userIndex], &gameState.itemList, itemStr, &Qty);
+                } else if (IsEqual("REMOVE", currentWord)){
+                    Word itemCart, tempQty;
+                    int qtyCart;
+                    char itemStr[MAX_LEN];
 
-        //         printf("Masukkan nama item yang ingin ditambahkan ke cart: ");
-        //         STARTLINE();
-        //         itemCart = currentWord;
+                    ADVWORD();
+                    itemCart = currentWord;
+                    wordToString(itemCart, itemStr);
 
-        //         printf("Masukkan jumlah item yang ingin ditambahkan ke cart: ");
-        //         STARTLINE();
-        //         tempQty = currentWord;
-        //         int qtyCart = WordToInt(tempQty);
-                
-        //         wordToString(itemCart, gameState.users->cart.Elements->Key);
-        //         cartRemove(&gameState.users->cart, &itemCart, qtyCart);
-        //     }
-        // }
-        // else if (compareWords("CART SHOW", command, command.Length)){
-        //     if (!gameState.isLoaded && !gameState.isStarted){
-        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-        //     } else if (gameState.isLoaded && !gameState.isStarted){
-        //         printf("Anda belum start program\n");
-        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-        //         printf("Lakukan login atau register terlebih dahulu\n");
-        //     } else {
-        //         cartShow(&gameState.users->cart, &gameState.itemList);
-        //     }
-        // }
-        // else if (compareWords("CART PAY", command, command.Length)){
-        //     if (!gameState.isLoaded && !gameState.isStarted){
-        //         printf("Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n");
-        //     } else if (gameState.isLoaded && !gameState.isStarted){
-        //         printf("Anda belum start program\n");
-        //     } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
-        //         printf("Lakukan login atau register terlebih dahulu\n");
-        //     } else {
-        //         cartPay(&gameState.users->cart, gameState.itemList);
-        //     }
-        // }
+                    ADVWORD();
+                    tempQty = currentWord;
+                    int Qty = WordToInt(tempQty);
+
+                    cartRemove(&gameState.users[userIndex], itemStr, &Qty);
+                } else if (IsEqual("PAY", currentWord)){
+                    cartPay(&gameState.users[userIndex], gameState.itemList);
+                }
+            }
+        }
+
+
         else if (compareWords("SAVE", currentWord, 4)){
             if (!gameState.isLoaded && !gameState.isStarted){
                 printf(RED"Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n"WHITE);
@@ -1232,26 +1225,6 @@ void wishlistSwap(WishlistUser *wishlist, int i, int j) {
     printf(GREEN"Sukses menukar posisi barang ke-%d dengan barang ke-%d\n"WHITE, i, j);
 }
 
-// // Fungsi tambahan untuk string manipulasi
-// int customStringCMP(const char *str1, const char *str2) {
-//     int i = 0;
-//     while (str1[i] != '\0' && str2[i] != '\0') {
-//         if (str1[i] != str2[i]) {
-//             return str1[i] - str2[i];
-//         }
-//         i++;
-//     }
-//     return str1[i] - str2[i];
-// }
-
-// void customStringCPY(char *dest, const char *src) {
-//     int i = 0;
-//     while (src[i] != '\0') {
-//         dest[i] = src[i];
-//         i++;
-//     }
-//     dest[i] = '\0';
-// }
 
 void insertLastItem(ListItem *itemlist, Item item) {
     if (itemlist->itemLength < MaxEl) {
@@ -1262,293 +1235,200 @@ void insertLastItem(ListItem *itemlist, Item item) {
     }
 }
 
-// // driver main untuk testing sementara
-// int main(){
-//     // testing wishlistAdd
-//     ListItem itemList = {
-//         .item = {
-//         {"AK47", 20},
-//         {"Lalabu", 20},
-//         {"Ayam Goreng Crisbar", 10},
-//         {"Kunjaw UAS Alstrukdat", 50}
-//         },
-//         .itemLength = 4
-//     };
-//     WishlistUser wishlist;
-//     CreateEmptyLL(&wishlist.wishlist_item);
-//     wishlist.number = 0;
-//     wishlistAdd(&itemList, &wishlist);
-//     // wishlistAdd(&itemList, &wishlist);
-//     // wishlistAdd(&itemList, &wishlist);
-//     // wishlistAdd(&itemList, &wishlist);
+// Cart Implementation
+void cartPay(User *profile, ListItem L) {
+    int price = 0;
+    int total = 0;
+    int val;
+    char input[50];
 
-//     // wishlistShow(&wishlist);
-//     // // wishlistClear(&wishlist);
-//     // wishlistRemove(&wishlist);
-//     // wishlistShow(&wishlist);
-//     // wishlistRemove(&wishlist);
-//     // wishlistShow(&wishlist);
-//     wishlistSwap(&wishlist, 1, 2);
+    int userIndex = -1;
+    for (int i = 0; i < MAX_USERS; i++) {
+        if (customStringCMP(profile[i].name, currentUser) == 0) {
+            userIndex = i;
+            break;
+        }
+    }
+
+    int uanguser = profile[userIndex].money;
     
-//     return 0;
-// }*/
+    printf("Kamu akan membeli barang-barang berikut.\n");
+    if (IsEmptyMap(profile->cart)) {
+        printf("Keranjang kamu kosong!\n");
+    }
+    else {
+        printf("Kuantitas       Nama            Total\n");
+        for (int i = 0; i < profile->cart.Count; i++) {
+            val = profile->cart.Elements[i].Value;
+            price = val * L.item[i].price;
+            printf("%-10d %-20s %d", val, profile->cart.Elements[i].Key, price);
+            total += price;
+        }
+        printf("Total biaya yang harus dikeluarkan adalah %d, apakah jadi dibeli?\n", total);
+        printf("(Ya/Tidak)\n");
 
-// Cart Function
-// void cartPay(Map *M, ListItem L) {
-//     Global userprofile = {0};
-//     int price = 0;
-//     int total = 0;
-//     int val;
-//     char input[50];
-//     int uanguser = userprofile.users->money;
+        STARTLINE();
+        collectInput(input);
+        wordToString(currentWord, input);     
 
-//     printf("Kamu akan membeli barang-barang berikut.\n");
-//     if (IsEmptyMap(*M)) {
-//         printf("Keranjang kamu kosong!\n");
-//     }
-//     else {
-//         printf("Kuantitas       Nama            Total\n");
-//         for (int i = 0; i < (*M).Count; i++) {
-//             val = (*M).Elements[i].Value;
-//             price = val * L.item[i].price;
-//             printf("%-10d %-20s %d", val, (*M).Elements[i].Key, price);
-//             total += price;
-//         }
-//         printf("Total biaya yang harus dikeluarkan adalah %d, apakah jadi dibeli?\n", total);
-//         printf("(Ya/Tidak)\n");
+        if (my_strcmp("Ya", input)) {
+            if (total > uanguser) {
+                printf("\n");
+                printf("Uang kamu hanya %d, tidak cukup untuk membeli keranjang!\n", uanguser);
+            }
+            else {
+                printf("Selamat kamu telah membeli barang-barang tersebut!\n");
+                uanguser -= total;
+            }
+        } 
+    }
+}
 
-//         STARTLINE();
-//         collectInput(input);
-//         wordToString(currentWord, input);     
+void cartRemove(User *profile, char* removestr, int* idxint){
+    int i = 0;
+    boolean found = FALSE;
 
-//         if (my_strcmp("Ya", input)) {
-//             if (total > uanguser) {
-//                 printf("\n");
-//                 printf("Uang kamu hanya %d, tidak cukup untuk membeli keranjang!\n", userprofile.users->money);
-//             }
-//             else {
-//                 printf("Selamat kamu telah membeli barang-barang tersebut!\n");
-//                 uanguser -= total;
-//             }
-//         } 
-//     }
-// }
+    if (IsEmptyMap(profile->cart)){
+        printf("Tidak bise remove, keranjang kosong.\n");
+        return;
+    }
 
-// int cart(Map M, ListItem L){
-//     char input[50];
-//     char *firstWord, *secondWord, *thirdWord, *fourthWord;
-//     int subtotal = 0;
+    if (*idxint <= 0){
+        printf("Jumlah barang tidak valid.\n");
+        return;
+    }
 
-//     if (IsEmptyMap(M)){
-//         printf("Keranjang anda masih kosong.\n");
-//     }
-//     else{
-//         printf("Isi Keranjang: \n");
-//         DisplayMap(M, L, &subtotal);
-//     }
+    if (!IsMemberMap(profile->cart, removestr)){
+        printf("Barang tidak ada di keranjang.\n");
+        return;
+    }
 
-//     while(1){
-//         STARTLINE();
-//         collectInput(input);
-//         wordToString(currentWord, input);
-            
-//         firstWord = my_strtok(input, " "); // baca kata pertama
-//         secondWord = my_strtok(NULL, " "); // baca kata kedua
-//         thirdWord = my_strtok(NULL, " "); // baca kata ketiga
-//         fourthWord = my_strtok(NULL, " "); // baca kata keempat
+    valuetype currentJumlah = Value(profile->cart, profile->cart.Elements->Key);
 
-//         keytype barang = "";
-//         valuetype jumlah = 0;
-//         if (thirdWord != NULL && fourthWord != NULL) {
-//             my_strcpy(barang, thirdWord);
-//             jumlah = atoi(fourthWord);
-//         }
+    if (currentJumlah < *idxint){
+        printf("Gagal mengurangi. Hanya terdapat %d %s di keranjang.\n", currentJumlah, profile->cart.Elements->Key);
+    }
+    else if (currentJumlah == *idxint){
+        Delete(&profile->cart, profile->cart.Elements->Key);
+        printf("%s sebanyak %d berhasil dihapus dari keranjang.\n", profile->cart.Elements->Key, profile->cart.Elements->Value);
+    }
+    else{
+        for (int i = 0; i < profile->cart.Count; i++) {
+            if (my_strcmp(profile->cart.Elements[i].Key, removestr)){
+                profile->cart.Elements[i].Value -= *idxint;
+                printf("%s sebanyak %d berhasil dihapus dari keranjang.\n", removestr, *idxint);
+                break;
+            }
+        }
+    }
+}
 
-//         if (my_strcmp(firstWord, "HELP")){
-//             printf("Command list: \n");
-//             printf("1. CART ADD <barang> <jumlah>\n");
-//             printf("2. CART REMOVE <barang> <jumlah>\n");
-//             printf("3. CART SHOW\n");
-//             printf("4. CART PAY\n");
-//             printf("5. EXIT\n");
-//         }
-//         else if (my_strcmp(firstWord, "EXIT")){
-//             break;
-//         }
-//         else if (my_strcmp(firstWord, "CART")){
-//             if (my_strcmp(secondWord, "ADD")){
-//                 cartAdd(&M, &L, barang, jumlah);
-//             }
-//             else if (my_strcmp(secondWord, "REMOVE")){
-//                 cartRemove(&M, barang, jumlah);
-//             }
-//             else if (my_strcmp(secondWord, "SHOW")){
-//                 cartShow(&M, &L);
-//                 printf("Total biaya yang harus dikeluarkan: %d\n", subtotal);
-//             }
-//         //     // else if (my_strcmp(secondWord, "PAY")){
-//         //     //     cartPay(M, L);
-//         //     // } beluumm implementt
-//         }
-//         else{
-//             printf("Command tidak valid. Ketik HELP untuk melihat list command\n");
-//         }
-//     }
-//     return 0;
-// }
+void cartShow(User *profile, ListItem L){
+    if (IsEmptyMap(profile->cart)){
+        printf("Keranjang anda masih kosong.\n");
+    }
+    else{
+        int subtotal = 0;
+        printf("Isi Keranjangmu: \n");
+        DisplayMap(profile, L);
+    }
+}
 
+// void cartPay(Map *M, Stack *H, int *balance);
+// GARAP HISTORY DULU
 
-// void cartRemove(Map *M, keytype *k, valuetype v){
-//     int i = 0;
-//     boolean found = FALSE;
-
-//     if (IsEmptyMap(*M)){
-//         printf("Tidak bise remove, keranjang kosong.\n");
-//         return;
-//     }
-
-//     if (v <= 0){
-//         printf("Jumlah barang tidak valid.\n");
-//         return;
-//     }
-
-//     if (!IsMemberMap(*M, k)){
-//         printf("Barang tidak ada di keranjang.\n");
-//         return;
-//     }
-
-//     valuetype currentJumlah = Value(*M, k);
-
-//     if (currentJumlah < v){
-//         printf("Gagal mengurangi. Hanya terdapat %d %s di keranjang.\n", currentJumlah, k);
-//     }
-//     else if (currentJumlah == v){
-//         Delete(M, k);
-//         printf("%s sebanyak %d berhasil dihapus dari keranjang.\n", k, v);
-//     }
-//     else{
-//         for (int i = 0; i < M->Count; i++) {
-//             if (my_strcmp(M->Elements[i].Key, k)) {
-//                 M->Elements[i].Value -= v;
-//                 printf("%s sebanyak %d berhasil dihapus dari keranjang.\n", k, v);
-//                 break;
-//             }
-//         }
-//     }
-// }   
-
-
-// void cartShow(Map *M, ListItem *L){
-//     if (IsEmptyMap(*M)){
-//         printf("Keranjang anda masih kosong.\n");
-//     }
-//     else{
-//         int subtotal = 0;
-//         printf("Isi Keranjangmu: \n");
-//         DisplayMap(*M, *L, &subtotal);
-//     }
-// }
-
-// // void cartPay(Map *M, Stack *H, int *balance);
-// // GARAP HISTORY DULU
-
-// char* my_strtok(char* str, const char* delim) {
-//     static char* last;
-//     if (str) {
-//         last = str;
-//     }
-//     if (!last) {
-//         return NULL;
-//     }
-//     char* start = last;
-//     while (*last) {
-//         const char* d = delim;
-//         while (*d) {
-//             if (*last == *d) {
-//                 break;
-//             }
-//             d++;
-//         }
-//         if (*d) {
-//             break;
-//         }
-//         last++;
-//     }
-//     if (*last) {
-//         *last = '\0';
-//         last++;
-//     } else {
-//         last = NULL;
-//     }
-//     return start;
-// }
-
-// void cartAdd(Map *M, ListItem *L, keytype k, valuetype v){
-
-//     if (v <= 0){
-//         printf("Jumlah barang tidak valid.\n");
-//         return;
-//     }
-
-//     if (IsFullMap(*M)){
-//         printf("Keranjang penuh.\n");
-//         return;
-//     }
-
-//     int i = 0;
-//     boolean found = FALSE;
-
-//     while (i < L->itemLength && !found) {
-//         if(my_strcmp(L->item[i].name, k)){
-//             found = TRUE;
-//             break;
-//         }
-//         i++;
-//     }
-
-//     if (found){
-//         if (!IsMemberMap(*M, k)){
-//             Insert(M, k, v);
-//             printf("%s sebanyak %d berhasil ditambahkan ke keranjang.\n", k, v);
-//         }
-//         else{
-//             M->Elements[i-1].Value += v;
-//             printf("%s sebanyak %d berhasil ditambahkan ke keranjang.\n", k, v);
-//         }
-//     }
-//     else{
-//         printf("Barang tidak ditemukan.\n");
-//     }
-// }
-
-void DisplayMap(Map M, ListItem L, int *subtotal){
-    if (IsEmptyMap(M)) {
-        printf(RED"Map is empty.\n"WHITE);
+char* my_strtok(char* str, const char* delim) {
+    static char* last;
+    if (str) {
+        last = str;
+    }
+    if (!last) {
+        return NULL;
+    }
+    char* start = last;
+    while (*last) {
+        const char* d = delim;
+        while (*d) {
+            if (*last == *d) {
+                break;
+            }
+            d++;
+        }
+        if (*d) {
+            break;
+        }
+        last++;
+    }
+    if (*last) {
+        *last = '\0';
+        last++;
     } else {
-        printf(CYAN"Barang         Jumlah    Total\n"WHITE);
-        if (IsEmptyMap(M)) {
-            printf(RED"Map is empty.\n"WHITE);
-        } else {
-            printf(CYAN"Barang         Jumlah    Total\n"WHITE);
-            for (int i = 0; i < M.Count; i++) {
-                int harga = 0;
-                boolean found = FALSE;
-                for (int j = 0; j < L.itemLength; j++) {
-                    if (my_strcmp(L.item[j].name, M.Elements[i].Key)) {
-                        harga = L.item[j].price;
-                        found = TRUE;
-                        break;
-                    }
-                }
+        last = NULL;
+    }
+    return start;
+}
 
-                if (found) {
-                    int total = harga * M.Elements[i].Value;
-                    *subtotal += total;
-                    printf(CYAN"%-15s %-8d %-d\n"WHITE, M.Elements[i].Key, M.Elements[i].Value, total);
+void cartAdd(User *profile, ListItem *L, char* addstr, int* qtyint) {
+    if (*qtyint <= 0){
+        printf("Jumlah barang tidak valid.\n");
+        return;
+    }
+
+    if (IsFullMap(profile->cart)){
+        printf("Keranjang penuh.\n");
+        return;
+    }
+
+    int i = 0;
+    boolean found = FALSE;
+
+    while (i < L->itemLength && !found) {
+        if(my_strcmp(L->item[i].name, addstr)){
+            found = TRUE;
+            break;
+        }
+        i++;
+    }
+
+    if (found){
+        if (!IsMemberMap(profile->cart, addstr)){
+            Insert(&profile->cart, addstr, *qtyint);
+            printf("%s sebanyak %d berhasil ditambahkan ke keranjang.\n", addstr, *qtyint);
+        }
+        else{
+            profile->cart.Elements[i-1].Value += *qtyint;
+            printf("%s sebanyak %d berhasil ditambahkan ke keranjang.\n", addstr, *qtyint);
+        }
+    }
+    else{
+        printf("Barang tidak ditemukan.\n");
+    }
+}
+
+void DisplayMap(User *profile, ListItem L){
+    int total;
+    if (IsEmptyMap(profile->cart)) {
+        printf("Map is empty.\n");
+    } else {
+        printf("Barang         Jumlah    Total\n");
+        for (int i = 0; i < profile->cart.Count; i++) {
+            int harga = 0;
+            boolean found = FALSE;
+            for (int j = 0; j < L.itemLength; j++) {
+                if (my_strcmp(L.item[j].name, profile->cart.Elements[i].Key)) {
+                    harga = L.item[j].price;
+                    found = TRUE;
+                    break;
                 }
-                else {
-                    printf(CYAN"%-15s %-8d (Harga tidak ditemukan)\n"WHITE, M.Elements[i].Key, M.Elements[i].Value);
-                }
+            }
+
+            if (found) {
+                int harga_per_barang = harga * profile->cart.Elements[i].Value;
+                total += harga_per_barang;
+                printf("%-15s %-8d %-d\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value, harga_per_barang);
+            }
+            else {
+                printf("%-15s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
             }
         }
     }

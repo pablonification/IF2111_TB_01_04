@@ -117,17 +117,15 @@ void wishlistSwap(WishlistUser *wishlist, int i, int j);
 boolean isWordEmpty(Word w);
 
 // Cart
-// void cartPay(Map *M, ListItem L);
+void cartPay(User *profile, ListItem L) ;
 
-// int cart(Map M, ListItem L);
+void cartRemove(User *profile, char* removestr, int* idxint);
 
-// void cartRemove(Map *M, keytype k, valuetype v);
-
-// void cartShow(Map *M, ListItem *L);
+void cartShow(User *profile, ListItem L);
 
 char* my_strtok(char* str, const char* delim);
 
-// void cartAdd(Map *M, ListItem *L, keytype k, valuetype v);
+void cartAdd(User *profile, ListItem *L, char* addstr, int* qtyint) ;
 
-void DisplayMap(Map M, ListItem L, int *subtotal);
+void DisplayMap(User *profile, ListItem L);
 #endif
