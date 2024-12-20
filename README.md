@@ -78,4 +78,4 @@ PURRMART adalah aplikasi C yang mensimulasikan permainan pasar di mana pengguna 
 Untuk mengkompilasi dan menjalankan aplikasi, jalankan perintah berikut di terminal:
 
 ```bash
-gcc -I include src/features/main.c src/features/misc.c src/ADT/mesinkarakter.c src/ADT/mesinkata.c src/ADT/queue.c src/ADT/list.c src/features/wordl32.c src/features/rng.c src/features/qwordl3.c src/features/DNA.c -o main
+gcc -g -I include src/features/main.c src/features/misc.c src/ADT/mesinkarakter.c src/ADT/mesinkata.c src/ADT/queue.c  src/features/wordl32.c src/features/rng.c src/features/qwordl3.c src/ADT/stack.c src/ADT/listlinier.c src/ADT/setmap.c src/features/DNA.c src/features/work.c src/features/history.c src/features/DNA2.c src/features/optimasirute.c -o main 
