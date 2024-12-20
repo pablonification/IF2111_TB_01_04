@@ -52,6 +52,7 @@ typedef struct {
     ListItem itemList;
     User users[MAX_USERS];
     int userCount;
+    int userIndex;
     QueueItem requestQueue;
     boolean isStarted;
     boolean isLoaded;
@@ -117,15 +118,15 @@ void wishlistSwap(WishlistUser *wishlist, int i, int j);
 boolean isWordEmpty(Word w);
 
 // Cart
-void cartPay(User *profile, ListItem L) ;
+void cartPay(Global *gameState, User *profile, ListItem L) ;
 
-void cartRemove(User *profile, char* removestr, int* idxint);
+void cartRemove(Global *gameState, User *profile, char* removestr, int* idxint);
 
-void cartShow(User *profile, ListItem L);
+void cartShow(Global *gameState, User *profile, ListItem L);
 
 char* my_strtok(char* str, const char* delim);
 
-void cartAdd(User *profile, ListItem *L, char* addstr, int* qtyint) ;
+void cartAdd(Global *gameState, User *profile, ListItem *L, char* addstr, int* qtyint) ;
 
 void DisplayMap(User *profile, ListItem L);
 #endif

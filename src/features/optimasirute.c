@@ -118,7 +118,7 @@ int cekDeadEnd(double** jarak, int n) {
     return FALSE;
 }
 
-int OptimasiRuteEkspedisi() {
+int OptimasiRute() {
     int jumlahLokasi, jumlahRute;
     Word lokasi, route;
 
@@ -149,12 +149,31 @@ int OptimasiRuteEkspedisi() {
     }
 
     jumlahRute = WordToInt(route);
+
+    if(jumlahRute < 2 || jumlahRute > MAX_LOKASI * (MAX_LOKASI - 1) / 2) {
+        printf(RED "Jumlah lokasi tidak valid!" WHITE "\n");
+        return 1;
+    }
     
     if(jumlahRute < jumlahLokasi - 1) {
         printf(RED "Jumlah rute terlalu sedikit untuk membentuk graf terhubung!" WHITE "\n");
         return 1;
     }
     
+    if (jumlahLokasi == 2){
+        printf(RED "Hanya ada 1 rute yang mungkin!" WHITE "\n");
+        while (jumlahRute > 1){
+            printf("Masukkan jumlah rute (edge): ");
+            STARTWORD();  
+            route = currentWord;
+
+            if (!isKataInt(route)) {
+                printf(RED "Input harus berupa angka!" WHITE "\n");
+            }
+
+        jumlahRute = WordToInt(route);
+        }
+    }
     double** jarak = AlokasiMatrixJarak(jumlahLokasi);
     
     printf("Masukkan jarak antarlokasi (weight):\n");
@@ -210,6 +229,12 @@ int OptimasiRuteEkspedisi() {
             jarak[asal][tujuan] = bobot;
             jarak[tujuan][asal] = bobot;
         }
+
+        if (jumlahLokasi == 2 && i == 0){
+            jarak[1][0] = bobot;
+            jarak[0][1] = bobot;
+            break;
+        }
     }
 
 
@@ -222,18 +247,32 @@ int OptimasiRuteEkspedisi() {
     printf("\n" YELLOW "Data diterima, silakan tunggu..." WHITE "\n");
 
     SolusiRute* solusi = optimasiRute(jarak, jumlahLokasi);
-        
-    if(solusi->totalJarak == infinity) {
-        printf("\n" RED "Tidak ditemukan rute valid!" WHITE "\n");
-    } 
-        
-    else {
-        printf(GREEN "A-ha! Rute paling efektif adalah ");
-        for (int i = 0; i < jumlahLokasi; i++) {
-            printf("%d", solusi->jalur[i]);
-            if(i < jumlahLokasi - 1) printf("-");
+    if (jumlahLokasi == 2){
+        if (cekDeadEnd(jarak, jumlahLokasi)){
+            printf("\n" RED "Tidak ditemukan rute valid!" WHITE "\n");
         }
-        printf("-%d." WHITE "\n", solusi->jalur[0]);
+        else {
+            printf(GREEN "A-ha! Rute paling efektif adalah ");
+            for (int i = 0; i < jumlahLokasi; i++) {
+                printf("%d", solusi->jalur[i]);
+                if(i < jumlahLokasi - 1) printf("-");
+            }
+            printf("-%d." WHITE "\n", solusi->jalur[0]);
+        }
+    }
+    else {
+        if(solusi->totalJarak == infinity) {
+            printf("\n" RED "Tidak ditemukan rute valid!" WHITE "\n");
+        } 
+            
+        else {
+            printf(GREEN "A-ha! Rute paling efektif adalah ");
+            for (int i = 0; i < jumlahLokasi; i++) {
+                printf("%d", solusi->jalur[i]);
+                if(i < jumlahLokasi - 1) printf("-");
+            }
+            printf("-%d." WHITE "\n", solusi->jalur[0]);
+        }
     }
         
     DealokasiMatrixJarak(jarak, jumlahLokasi);
@@ -244,7 +283,5 @@ int OptimasiRuteEkspedisi() {
 }
 
 // int main() {
-//     return OptimasiRuteEkspedisi();
+//     return OptimasiRute();
 // }
-
-

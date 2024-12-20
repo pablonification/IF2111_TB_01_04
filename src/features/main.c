@@ -134,10 +134,9 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && gameState.isLogin){
                 printf(RED"Anda masih tercatat sebagai %s. Silahkan LOGOUT terlebih dahulu.\n"WHITE, currentUser);
             } else {
-                Login(&gameState, gameState.users, gameState.userCount);
-                //gameState.isLogin = TRUE;
-                //gameState.users->money = gameState.users[0].money;
-                //printf("%d\n", gameState.users->money);
+
+                Login(&gameState, &gameState.users, gameState.userCount);
+
             }
         }
         else if (compareWords("LOGOUT", currentWord, 6)){
@@ -148,7 +147,7 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf(RED"Anda belum login. Silakan login terlebih dahulu\n"WHITE);
             } else {
-                Logout(gameState.users, gameState.userCount);
+                Logout(&gameState.users[gameState.userIndex], gameState.userCount);
                 gameState.isLogin = FALSE;
             }
         }
@@ -161,7 +160,7 @@ void showMainMenu(){
                 printf(RED"Anda sudah login. Silahkan LOGOUT terlebih dahulu.\n"WHITE);
             } else {
                 Register(&gameState);
-                gameState.isLogin = TRUE;
+                // gameState.isLogin = TRUE;
             }
         }
         else if (compareWords("PROFILE", currentWord, 7)){
@@ -172,7 +171,7 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf(RED"Lakukan login atau register terlebih dahulu\n"WHITE);
             } else {
-                profile(gameState.users);
+                profile(&gameState.users[gameState.userIndex]);
             }
         }
         else if (compareWords("HISTORY", currentWord, 7)){
@@ -183,7 +182,7 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf(RED"Lakukan login atau register terlebih dahulu\n"WHITE);
             } else {
-                history(&gameState.users->history);
+                history(&gameState.users[gameState.userIndex].history);
             }
         }
 
@@ -209,16 +208,16 @@ void showMainMenu(){
                     choice = currentWord;
 
                     if (compareWords("1", choice, 1)){
-                        tebakAngkaRNG(&gameState.users->money);
+                        tebakAngkaRNG(&gameState.users[gameState.userIndex].money);
                     }
                     else if (compareWords("2", choice, 1)){
-                        playWordl3(&gameState.users->money);
+                        playWordl3(&gameState.users[gameState.userIndex].money);
                     }
                     else if (compareWords("3", choice, 1)){
-                        playQuantumWordl3(&gameState.users->money);
+                        playQuantumWordl3(&gameState.users[gameState.userIndex].money);
                     }
                 } else {
-                    work(&gameState.users->money);
+                    work(&gameState.users[gameState.userIndex].money);
                 }
             }
         }
@@ -267,16 +266,16 @@ void showMainMenu(){
             else {
                 ADVWORD();
                 if (IsEqual("CLEAR", currentWord)){
-                    wishlistClear(&gameState.users->wishlist);
+                    wishlistClear(&gameState.users[gameState.userIndex].wishlist);
                 }
                 else if (IsEqual("SHOW", currentWord)){
-                    wishlistShow(&gameState.users->wishlist);
+                    wishlistShow(&gameState.users[gameState.userIndex].wishlist);
                 }
                 else if (IsEqual("ADD", currentWord)){
-                    wishlistAdd(&gameState.itemList, &gameState.users->wishlist);
+                    wishlistAdd(&gameState.itemList, &gameState.users[gameState.userIndex].wishlist);
                 }
                 else if (IsEqual("REMOVE", currentWord)){
-                    wishlistRemove(&gameState.users->wishlist);
+                    wishlistRemove(&gameState.users[gameState.userIndex].wishlist);
                 }
                 else if (IsEqual("SWAP", currentWord)){
                     int i, j;
@@ -293,7 +292,7 @@ void showMainMenu(){
                     printf("DEBUG: Calling wishlistSwap with i=%d, j=%d\n", i, j); // Debug statement
 
                     if (i > 0 && j > 0) {
-                        wishlistSwap(&gameState.users->wishlist, i, j);
+                        wishlistSwap(&gameState.users[gameState.userIndex].wishlist, i, j);
                     } else {
                         printf(RED"Nomor urut tidak valid. Silakan coba lagi.\n"WHITE);
                     }
@@ -322,7 +321,7 @@ void showMainMenu(){
                 printf(RED"Lakukan login atau register terlebih dahulu\n"WHITE);
             } 
             else {
-                OptimasiRuteEkspedisi();
+                OptimasiRute();
             }
         }
  
@@ -335,24 +334,11 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf("Lakukan login atau register terlebih dahulu\n");
             } else {
-                int userIndex = -1;
-                for (int i = 0; i < gameState.userCount; i++) {
-                    if (customStringCMP(gameState.users[i].name, currentUser) == 0) {
-                        userIndex = i;
-                        break;
-                    }
-                }
-
-                if (userIndex == -1) {
-                    printf(RED"Error: User tidak ditemukan\n"WHITE);
-                    return;
-                }
-
                 ADVWORD();
                 if (IsEqual("SHOW", currentWord)){
-                    cartShow(&gameState.users[userIndex], gameState.itemList);
+                    cartShow(&gameState, &gameState.users[gameState.userIndex], gameState.itemList);
                 } else if (IsEqual("PAY", currentWord)){
-                    cartPay(&gameState.users[userIndex], gameState.itemList);
+                    cartPay(&gameState, &gameState.users[gameState.userIndex], gameState.itemList);
                 } else if (IsEqual("ADD", currentWord)){
                     Word itemCart, tempQty;
                     int qtyCart;
@@ -366,7 +352,7 @@ void showMainMenu(){
                     tempQty = currentWord;
                     int Qty = WordToInt(tempQty);
                 
-                    cartAdd(&gameState.users[userIndex], &gameState.itemList, itemStr, &Qty);
+                    cartAdd(&gameState, &gameState.users[gameState.userIndex], &gameState.itemList, itemStr, &Qty);
                 } else if (IsEqual("REMOVE", currentWord)){
                     Word itemCart, tempQty;
                     int qtyCart;
@@ -380,10 +366,8 @@ void showMainMenu(){
                     tempQty = currentWord;
                     int Qty = WordToInt(tempQty);
 
-                    cartRemove(&gameState.users[userIndex], itemStr, &Qty);
-                } else if (IsEqual("PAY", currentWord)){
-                    cartPay(&gameState.users[userIndex], gameState.itemList);
-                }
+                    cartRemove(&gameState, &gameState.users[gameState.userIndex], itemStr, &Qty);
+                } 
             }
         }
 
@@ -603,9 +587,10 @@ void Login(Global *gameState, User *users, int user_count) {
     if (userIndex != -1) {
         customStringCPY(currentUser, users[userIndex].name);
         printf(GREEN"Anda telah berhasil login sebagai %s.\n"WHITE, currentUser);
-        users->money = users[userIndex].money;
-        printf(GREEN"Saldo anda: %d\n"WHITE, users->money);
+        users[userIndex].money = users[userIndex].money;
+        printf(GREEN"Saldo anda: %d\n"WHITE, users[userIndex].money);
         gameState->isLogin = TRUE;
+        gameState->userIndex = userIndex;
     }
     else {
         printf(RED"Username atau password salah. Silakan coba lagi.\n"WHITE);
@@ -1244,21 +1229,13 @@ void insertLastItem(ListItem *itemlist, Item item) {
 }
 
 // Cart Implementation
-void cartPay(User *profile, ListItem L) {
+void cartPay(Global *gameState, User *profile, ListItem L) {
     int price = 0;
     int total = 0;
     int val;
     char input[50];
 
-    int userIndex = -1;
-    for (int i = 0; i < MAX_USERS; i++) {
-        if (customStringCMP(profile[i].name, currentUser) == 0) {
-            userIndex = i;
-            break;
-        }
-    }
-
-    int uanguser = profile[userIndex].money;
+    int uanguser = profile[gameState->userIndex].money;
     
     printf("Kamu akan membeli barang-barang berikut.\n");
     if (IsEmptyMap(profile->cart)) {
@@ -1306,7 +1283,7 @@ void cartPay(User *profile, ListItem L) {
     }
 }
 
-void cartRemove(User *profile, char* removestr, int* idxint){
+void cartRemove(Global *gameState, User *profile, char* removestr, int* idxint){
     int i = 0;
     boolean found = FALSE;
 
@@ -1345,7 +1322,7 @@ void cartRemove(User *profile, char* removestr, int* idxint){
     }
 }
 
-void cartShow(User *profile, ListItem L){
+void cartShow(Global *gameState, User *profile, ListItem L){
     if (IsEmptyMap(profile->cart)){
         printf(RED"Keranjang anda masih kosong.\n"WHITE);
     }
@@ -1356,7 +1333,7 @@ void cartShow(User *profile, ListItem L){
     }
 }
 
-void cartAdd(User *profile, ListItem *L, char* addstr, int* qtyint) {
+void cartAdd(Global *gameState, User *profile, ListItem *L, char* addstr, int* qtyint) {
     if (*qtyint <= 0){
         printf(RED"Jumlah barang tidak valid.\n"WHITE);
         return;
