@@ -63,6 +63,8 @@ void showMainMenu(){
                 printf(RED"Anda harus load file konfigurasi terlebih dahulu.\n"WHITE);
             } else if (gameState.isLoaded && !gameState.isStarted){
                 Start(&gameState);
+            } else if (gameState.isStarted){
+                printf(RED"Program sudah dimulai. Silahkan logout terlebih dahulu.\n"WHITE);
             }
         } 
         else if (compareWords("LOAD", currentWord, 4)){
@@ -288,7 +290,7 @@ void showMainMenu(){
                     wordJ = currentWord;
                     j = WordToInt(wordJ);
 
-                    printf("DEBUG: Calling wishlistSwap with i=%d, j=%d\n", i, j); // Debug statement
+                    // printf("DEBUG: Calling wishlistSwap with i=%d, j=%d\n", i, j); // Debug statement
 
                     if (i > 0 && j > 0) {
                         wishlistSwap(&gameState.users[gameState.userIndex].wishlist, i, j);
@@ -352,14 +354,13 @@ void showMainMenu(){
                     ADVWORD();
                     wordToString(itemCart, itemStr);
 
+
                     tempQty = currentWord;
-                    if (isWordEmpty(tempQty)){
-                        printf(RED"Jumlah item tidak valid\n"WHITE);
-                        continue;
-                    }
+                    printf("DEBUG: tempQty = %s\n", tempQty.TabWord);
                     int Qty = WordToInt(tempQty);
-                
+                    printf("%d\n", Qty);
                     cartAdd(&gameState, &gameState.users[gameState.userIndex], &gameState.itemList, itemStr, &Qty);
+
                 } else if (IsEqual("REMOVE", currentWord)){
                     Word itemCart, tempQty;
                     int qtyCart;
@@ -398,6 +399,14 @@ void showMainMenu(){
             printf(RED"Command tidak valid. Silakan coba command yang valid.\n"WHITE);
         }
     }
+}
+
+int CharToInt(Word tempQty){
+    int res = 0;
+    for (int i = 0; i < tempQty.Length; i++){
+        res = res * 10 + (tempQty.TabWord[i] - '0');
+    }
+    return res;
 }
 
 void Start(Global *gameState) {
@@ -1127,7 +1136,7 @@ void wishlistRemove(WishlistUser *wishlist) {
     }
 
     char inputstr[MaxEl];
-    // input = currentWord;    
+    input = currentWord;    
     wordToString(input, inputstr);
 
     // Cek apakah input berupa nomor atau nama barang
@@ -1233,9 +1242,9 @@ void insertLastItem(ListItem *itemlist, Item item) {
 
 // Cart Implementation
 void cartPay(Global *gameState, User *profile, ListItem L) {
-    int price = 0;
+    int price = 0, idxmax = 0, lexical = 0, harga_per_barang, max = 0;
     int total = 0;
-    int val;
+    int val,temp;
     char input[50];
 
     int uanguser = profile->money;
@@ -1253,17 +1262,37 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
                 if (my_strcmp(L.item[j].name, profile->cart.Elements[i].Key)) {
                     harga = L.item[j].price;
                     found = TRUE;
+                    temp = i;
                     break;
                 }
             }
 
             if (found) {
-                int harga_per_barang = harga * profile->cart.Elements[i].Value;
+                harga_per_barang = harga * profile->cart.Elements[i].Value;
                 total += harga_per_barang;
                 printf("%-15d %-15s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
             }
+
             else {
                 printf("%-15s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
+            }
+              if (max > harga_per_barang) {
+                max = harga_per_barang;
+                idxmax = i;
+            }
+            else if (max < harga_per_barang) {
+                max = max;
+                idxmax = idxmax;
+            }
+            else if (max == harga_per_barang) {
+                if (lexical > profile->cart.Elements[i].Key[0]) {
+                    lexical = profile->cart.Elements[i].Key[0];
+                    idxmax = i;
+                }
+                else {
+                    lexical = lexical;
+                    idxmax = idxmax;
+                }
             }
         }
         printf("Total biaya yang harus dikeluarkan adalah %d, apakah jadi dibeli?\n", total);
@@ -1282,6 +1311,9 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
                 printf("Selamat kamu telah membeli barang-barang tersebut!\n");
                 uanguser -= total;
                 gameState->users[gameState->userIndex].money = uanguser;
+                while (!IsEmptyMap(profile->cart)) {
+                    Delete(&profile->cart, profile->cart.Elements->Key);
+                }
             }
         } 
     }

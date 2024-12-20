@@ -26,6 +26,9 @@ void DFS(double** jarak, int lokasi, int n, int* dikunjungi);
 // Fungsi untuk mengecek apakah graf terhubung
 int isConnected(double** jarak, int n);
 
+// Fungsi untuk menghitung kombinasi
+int combination(int n, int r);
+
 // Fungsi rekursif untuk mencari rute terbaik
 SolusiRute* optimasiRute(double** jarak, int n);
 
