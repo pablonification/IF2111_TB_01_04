@@ -135,7 +135,7 @@ void showMainMenu(){
                 printf(RED"Anda masih tercatat sebagai %s. Silahkan LOGOUT terlebih dahulu.\n"WHITE, currentUser);
             } else {
 
-                Login(&gameState, &gameState.users, gameState.userCount);
+                Login(&gameState, gameState.users, gameState.userCount);
 
             }
         }
@@ -160,7 +160,6 @@ void showMainMenu(){
                 printf(RED"Anda sudah login. Silahkan LOGOUT terlebih dahulu.\n"WHITE);
             } else {
                 Register(&gameState);
-                // gameState.isLogin = TRUE;
             }
         }
         else if (compareWords("PROFILE", currentWord, 7)){
@@ -338,7 +337,7 @@ void showMainMenu(){
                 if (IsEqual("SHOW", currentWord)){
                     cartShow(&gameState, &gameState.users[gameState.userIndex], gameState.itemList);
                 } else if (IsEqual("PAY", currentWord)){
-                    cartPay(&gameState, &gameState.users[gameState.userIndex], gameState.itemList);
+                    cartPay(&gameState ,&gameState.users[gameState.userIndex], gameState.itemList);
                 } else if (IsEqual("ADD", currentWord)){
                     Word itemCart, tempQty;
                     int qtyCart;
@@ -346,10 +345,18 @@ void showMainMenu(){
 
                     ADVWORD();
                     itemCart = currentWord;
+                    if (isWordEmpty(itemCart)){
+                        printf(RED"Item tidak valid\n"WHITE);
+                        continue;
+                    }
+                    ADVWORD();
                     wordToString(itemCart, itemStr);
 
-                    ADVWORD();
                     tempQty = currentWord;
+                    if (isWordEmpty(tempQty)){
+                        printf(RED"Jumlah item tidak valid\n"WHITE);
+                        continue;
+                    }
                     int Qty = WordToInt(tempQty);
                 
                     cartAdd(&gameState, &gameState.users[gameState.userIndex], &gameState.itemList, itemStr, &Qty);
@@ -542,10 +549,6 @@ int findUser(User *users, int user_count, const char *username, const char *pass
         }
     }
     return -1;
-}
-
-boolean isWordEmpty(Word w) {
-    return (w.Length == 0);
 }
 
 void disableEcho() {
@@ -1235,7 +1238,7 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
     int val;
     char input[50];
 
-    int uanguser = profile[gameState->userIndex].money;
+    int uanguser = profile->money;
     
     printf("Kamu akan membeli barang-barang berikut.\n");
     if (IsEmptyMap(profile->cart)) {
@@ -1278,6 +1281,7 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
             else {
                 printf("Selamat kamu telah membeli barang-barang tersebut!\n");
                 uanguser -= total;
+                gameState->users[gameState->userIndex].money = uanguser;
             }
         } 
     }

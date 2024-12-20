@@ -257,7 +257,7 @@ int OptimasiRute() {
                 printf("%d", solusi->jalur[i]);
                 if(i < jumlahLokasi - 1) printf("-");
             }
-            printf("-%d." WHITE "\n", solusi->jalur[0]);
+            printf("-%d dengan total jarak %f." WHITE "\n", solusi->jalur[0], solusi->totalJarak);
         }
     }
     else {
@@ -271,7 +271,7 @@ int OptimasiRute() {
                 printf("%d", solusi->jalur[i]);
                 if(i < jumlahLokasi - 1) printf("-");
             }
-            printf("-%d." WHITE "\n", solusi->jalur[0]);
+            printf("-%d dengan total jarak %f." WHITE "\n", solusi->jalur[0]);
         }
     }
         

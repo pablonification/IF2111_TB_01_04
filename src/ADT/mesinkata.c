@@ -289,3 +289,7 @@ void LoadWordsFromFile(const char *fileName, char ***wordsList, int *wordCount) 
 
     fclose(file);
 }
+
+boolean isWordEmpty(Word W) {
+    return W.Length == 0;
+}

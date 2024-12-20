@@ -106,4 +106,6 @@ Word makeWord(char* str, int length);
 
 void LoadWordsFromFile(const char *fileName, char ***wordsList, int *wordCount);
 
+boolean isWordEmpty(Word w);
+
 #endif
