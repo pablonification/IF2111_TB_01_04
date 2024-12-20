@@ -309,7 +309,7 @@ void showMainMenu(){
                 printf(RED"Lakukan login atau register terlebih dahulu\n"WHITE);
             } 
             else {
-                deteksiKebocoranDNA();
+                GlobalAlignment();
             }
         }
         else if (compareWords("OPTIMASIRUTE", currentWord, currentWord.Length)){

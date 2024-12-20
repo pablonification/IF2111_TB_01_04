@@ -86,7 +86,7 @@ int needlemanWunsch(Word ref, Word query, char *newRef, char *newQuery, int *pan
 }
 
 
-int deteksiKebocoranDNA(){
+int GlobalAlignment(){
     Word reference, query;
     char newRef[200], newQuery[200]; // misal max character DNA yang diberikan 200 kata
     int panjangsejajar; // panjang setelah disamain, ini ambil yang paling panjang
@@ -140,5 +140,5 @@ int deteksiKebocoranDNA(){
 }
 
 // int main(){
-//     return deteksiKebocoranDNA();
+//     return GlobalAlignment();
 // }
