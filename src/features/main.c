@@ -1127,7 +1127,9 @@ boolean isNumber(char *str) {
 
 void wishlistRemove(WishlistUser *wishlist) {
     Word input;
-    ADVWORD();
+    // ADVWORD();
+    STARTLINE();
+    input = currentWord;
 
     // cek apakah input kosong
     if (currentWord.Length == 0 || compareWords("REMOVE", currentWord, 6)) {
@@ -1136,7 +1138,7 @@ void wishlistRemove(WishlistUser *wishlist) {
     }
 
     char inputstr[MaxEl];
-    input = currentWord;    
+    // input = currentWord;    
     wordToString(input, inputstr);
 
     // Cek apakah input berupa nomor atau nama barang

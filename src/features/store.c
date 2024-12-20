@@ -10,22 +10,29 @@ terus fungsi aymar juga ada yg harus dibuat lagi insertLast
 #include "../../include/ADT/mesinkata.h"
 #include "../../include/ADT/mesinkarakter.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 void storeList (ListItem *L) {
     if (IsEmptyItem(L)) {
-        printf("TOKO KOSONG\n");
+        printf(RED"TOKO KOSONG\n"WHITE);
     }
     else { 
-        printf("List barang yang ada di toko: \n");
+        printf(CYAN"List barang yang ada di toko: \n"WHITE);
         for (int i  = 0; i < L->itemLength; i ++) {
             printf("");
-            printf("%d. %s - Harga: %d\n", i + 1, L->item[i].name, L-> item[i].price);
+            printf(CYAN"%d. %s - Harga: %d\n"WHITE, i + 1, L->item[i].name, L-> item[i].price);
         }
-    // }   
-    printf("\n");
-    // }
+        printf("\n");
     }
 }
-  // int itemCount = sizeof(itemList) / sizeof(itemList[0]);
   
 void storeRequest(ListItem *L, QueueItem *Q) {
     Word req;
@@ -39,7 +46,7 @@ void storeRequest(ListItem *L, QueueItem *Q) {
 
     boolean isFoundInList = SearchItem(*L, reqstr);
     if (isFoundInList) {
-        printf("Barang dengan nama yang sama sudah ada di toko\n");
+        printf(RED"Barang dengan nama yang sama sudah ada di toko\n"WHITE);
     } else if (isEmptyItem(*Q)) {
         enqueueItem(Q, reqstr);
     } else {
@@ -56,7 +63,7 @@ void storeRequest(ListItem *L, QueueItem *Q) {
         }
 
         if (foundInQueue) {
-            printf("Barang dengan nama yang sama sudah ada di antrian\n");
+            printf(RED"Barang dengan nama yang sama sudah ada di antrian\n"WHITE);
         } else {
             enqueueItem(Q, reqstr);
         }
@@ -72,7 +79,6 @@ void storeRemove(ListItem *L) {
     char item_namestr[50];
     wordToString(item_name, item_namestr);
 
-    
     boolean found = 0;
     int i = 0;
 
@@ -85,10 +91,10 @@ void storeRemove(ListItem *L) {
 
     if (found) {
         DeleteAtItem(L, i-1);
-        printf("%s telah berhasil dihapus.\n", item_namestr);
+        printf(GREEN"%s telah berhasil dihapus.\n"WHITE, item_namestr);
     }
     else {
-        printf("Toko tidak menjual %s.\n", item_namestr);
+        printf(RED"Toko tidak menjual %s.\n"WHITE, item_namestr);
     }
 }
 
@@ -110,7 +116,7 @@ void storeSupply(ListItem *L, QueueItem *Q) {
                 inputValid = TRUE;
             }
             else {
-                printf("Input tidak valid. Silakan coba lagi: ");
+                printf(RED"Input tidak valid. Silakan coba lagi: "WHITE);
                 scanWord(&response);
                 wordToString(response, &responsestr);
             }
@@ -127,7 +133,7 @@ void storeSupply(ListItem *L, QueueItem *Q) {
                     validprice = TRUE;
                 }
                 else {
-                    printf("Harga tidak valid. Silakan coba lagi: ");
+                    printf(RED"Harga tidak valid. Silakan coba lagi: "WHITE);
                     scanWord(&price);
                 }
             }
@@ -138,18 +144,18 @@ void storeSupply(ListItem *L, QueueItem *Q) {
             new_item.price = priceint;
 
             insertLastItem(L, new_item);
-            printf("%s dengan harga %d telah ditambahkan ke toko.\n", item_name, priceint);
+            printf(GREEN"%s dengan harga %d telah ditambahkan ke toko.\n"WHITE, item_name, priceint);
         }
         else if (customStringCMP(&responsestr, "Tunda") == 0) {
-            printf("%s dikembalikan ke antrian.\n", item_name);
+            printf(YELLOW"%s dikembalikan ke antrian.\n"WHITE, item_name);
             enqueueItem(Q, item_name);
         }
         else if (customStringCMP(&responsestr, "Tolak") == 0) {
-            printf("%s dihapus dari antrian.\n", item_name);
+            printf(RED"%s dihapus dari antrian.\n"WHITE, item_name);
         }
     }
     else {
-        printf("Antrian kosong.\n");
+        printf(RED"Antrian kosong.\n"WHITE);
     }
 }
 
@@ -182,7 +188,6 @@ boolean SearchItem(ListItem L, char *X) {
 	while ((i < L.itemLength) && !found) {
 		if (customStringCMP(L.item[i].name, X) == 0) {
 			found = TRUE;
-            // i++;
 		}
 		i += 1;
 	}
@@ -208,7 +213,7 @@ int lengthQueueItem(QueueItem q) {
 
 void enqueueItem(QueueItem *q, char *item_name) {
     if (q->idxTail == (q->idxHead - 1 + CAPACITY) % CAPACITY) {
-        printf("Queue is full! Cannot add new item.\n");
+        printf(RED"Queue is full! Cannot add new item.\n"WHITE);
         return;
     }
 

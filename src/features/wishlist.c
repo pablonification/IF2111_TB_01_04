@@ -6,19 +6,29 @@
 #include "../../include/ADT/mesinkarakter.h"
 #include "../../include/ADT/listlinier.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 // Fitur wishlistShow
 // Menampilkan isi wishlist pengguna
 void wishlistShow(WishlistUser *wishlist) {
     if (!IsEmptyLL(wishlist->wishlist_item)) {
-        printf("Berikut adalah isi wishlist-mu:\n");
+        printf(CYAN"Berikut adalah isi wishlist-mu:\n"WHITE);
         addressLL P = wishlist->wishlist_item.First;
         int idx = 1;
         while (P != Nil) {
-            printf("%d %s\n", idx++, P->info);
+            printf(CYAN"%d %s\n"WHITE, idx++, P->info);
             P = P->next;
         }
     } else {
-        printf("Wishlist kamu kosong!\n");
+        printf(YELLOW"Wishlist kamu kosong!\n"WHITE);
     }
 }
 
@@ -38,15 +48,15 @@ void wishlistAdd(ListItem *L, WishlistUser *wishlist) {
     if (isFoundInList) {
         // Cek apakah barang sudah ada di wishlist
         if (isMemberLL(wishlist->wishlist_item, item_namestr)) {
-            printf("%s sudah ada di wishlist\n", item_namestr);
+            printf(RED"%s sudah ada di wishlist\n"WHITE, item_namestr);
             wishlistAdd(L, wishlist); // Minta input ulang
         } else {
             InsertLastLL(&wishlist->wishlist_item, item_namestr);
             wishlist->number++;
-            printf("Berhasil menambahkan %s ke wishlist!\n", item_namestr);
+            printf(GREEN"Berhasil menambahkan %s ke wishlist!\n"WHITE, item_namestr);
         }
     } else {
-        printf("Tidak ada barang dengan nama %s!\n", item_namestr);
+        printf(RED"Tidak ada barang dengan nama %s!\n"WHITE, item_namestr);
         wishlistAdd(L, wishlist); // Minta input ulang
     }
     // wishlistShow(wishlist);
@@ -56,10 +66,10 @@ void wishlistAdd(ListItem *L, WishlistUser *wishlist) {
 // Menghapus semua barang di wishlist
 void wishlistClear(WishlistUser *wishlist) {
     if (IsEmptyLL(wishlist->wishlist_item)) {
-        printf("Wishlist sudah kosong.\n");
+        printf(YELLOW"Wishlist sudah kosong.\n"WHITE);
     } else {
         ClearLL(&wishlist->wishlist_item);
-        printf("Wishlist telah dikosongkan.\n");
+        printf(GREEN"Wishlist telah dikosongkan.\n"WHITE);
     }
 }
 
@@ -90,17 +100,17 @@ void wishlistRemove(WishlistUser *wishlist) {
         int idx = convertWordToInt(input);
         if (idx > 0 && idx <= wishlist->number) {
             DeleteAtLL(&wishlist->wishlist_item, idx - 1);
-            printf("Barang pada posisi %d berhasil dihapus dari wishlist!\n", idx);
+            printf(GREEN"Barang pada posisi %d berhasil dihapus dari wishlist!\n"WHITE, idx);
         } else {
-            printf("Penghapusan barang wishlist gagal dilakukan, posisi %d tidak ada di wishlist!\n", idx);
+            printf(RED"Penghapusan barang wishlist gagal dilakukan, posisi %d tidak ada di wishlist!\n"WHITE, idx);
             wishlistRemove(wishlist); // Minta input ulang
         }
     } else {
         if (isMemberLL(wishlist->wishlist_item, inputstr)) {
             DeleteByValueLL(&wishlist->wishlist_item, inputstr);
-            printf("%s berhasil dihapus dari wishlist!\n", inputstr);
+            printf(GREEN"%s berhasil dihapus dari wishlist!\n"WHITE, inputstr);
         } else {
-            printf("Penghapusan barang wishlist gagal dilakukan, %s tidak ada di wishlist!\n", inputstr);
+            printf(RED"Penghapusan barang wishlist gagal dilakukan, %s tidak ada di wishlist!\n"WHITE, inputstr);
             wishlistRemove(wishlist); // Minta input ulang
         }
     }
@@ -124,14 +134,14 @@ void wishlistSwap(WishlistUser *wishlist, int i, int j) {
         
         swapListLinier(&wishlist->wishlist_item, i - 1, j - 1);
         
-        printf("Urutan %s berubah dari %d menjadi %d. Sebaliknya, urutan %s berubah dari %d menjadi %d\n", 
+        printf(GREEN"Urutan %s berubah dari %d menjadi %d. Sebaliknya, urutan %s berubah dari %d menjadi %d\n"WHITE, 
                item1, i, j, item2, j, i);
     } else {
         if (wishlist->number <= 1) {
-            printf("Hanya terdapat satu barang (%s) pada wishlist sehingga posisinya tidak dapat ditukar\n", 
+            printf(YELLOW"Hanya terdapat satu barang (%s) pada wishlist sehingga posisinya tidak dapat ditukar\n"WHITE, 
                    GetLL(wishlist->wishlist_item, 1));
         } else {
-            printf("Posisi tidak valid!\n");
+            printf(RED"Posisi tidak valid!\n"WHITE);
         }
     }
     wishlistShow(wishlist);
@@ -163,7 +173,7 @@ void insertLastItem(ListItem *itemlist, Item item) {
         itemlist->item[itemlist->itemLength] = item;
         itemlist->itemLength++;
     } else {
-        printf("Item sudah penuh. Tidak bisa menambahkan item %s\n", item.name);
+        printf(RED"Item sudah penuh. Tidak bisa menambahkan item %s\n"WHITE, item.name);
     }
 }
 
