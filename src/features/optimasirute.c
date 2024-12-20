@@ -1,5 +1,15 @@
 #include "../../include/features/optimasirute.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 double** AlokasiMatrixJarak(int n) {
     double** matriks = (double**) malloc(n * sizeof(double*));
     for(int i = 0; i < n; i++) {
@@ -112,20 +122,20 @@ int OptimasiRuteEkspedisi() {
     int jumlahLokasi, jumlahRute;
     Word lokasi, route;
 
-    printf(">> OPTIMASIRUTE\n");
+    printf(">> " BLUE "OPTIMASIRUTE" WHITE "\n");
     
     printf("Masukkan jumlah lokasi pengiriman (node): ");
     STARTWORD(); 
     lokasi = currentWord;
 
     if (!isKataInt(lokasi)) {
-        printf("Input harus berupa angka!\n");
+        printf(RED "Input harus berupa angka!" WHITE "\n");
         return 1;
     }
 
     jumlahLokasi = WordToInt(lokasi);
     if(jumlahLokasi < 2 || jumlahLokasi > MAX_LOKASI) {
-        printf("Jumlah lokasi tidak valid!\n");
+        printf(RED "Jumlah lokasi tidak valid!" WHITE "\n");
         return 1;
     }
     
@@ -134,14 +144,14 @@ int OptimasiRuteEkspedisi() {
     route = currentWord;
 
     if (!isKataInt(route)) {
-        printf("Input harus berupa angka!\n");
+        printf(RED "Input harus berupa angka!" WHITE "\n");
         return 1;
     }
 
     jumlahRute = WordToInt(route);
     
     if(jumlahRute < jumlahLokasi - 1) {
-        printf("Jumlah rute terlalu sedikit untuk membentuk graf terhubung!\n");
+        printf(RED "Jumlah rute terlalu sedikit untuk membentuk graf terhubung!" WHITE "\n");
         return 1;
     }
     
@@ -157,7 +167,7 @@ int OptimasiRuteEkspedisi() {
 
         STARTWORD();
         if (!isKataInt(currentWord)) {
-            printf("Input harus berupa angka!\n");
+            printf(RED "Input harus berupa angka!" WHITE "\n");
             DealokasiMatrixJarak(jarak, jumlahLokasi);
             return 1;
         }
@@ -165,7 +175,7 @@ int OptimasiRuteEkspedisi() {
 
         ADVWORD();
         if (!isKataInt(currentWord)) {
-            printf("Input harus berupa angka!\n");
+            printf(RED "Input harus berupa angka!" WHITE "\n");
             DealokasiMatrixJarak(jarak, jumlahLokasi);
             return 1;
         }
@@ -173,19 +183,19 @@ int OptimasiRuteEkspedisi() {
 
         ADVWORD();
         if (!isKataInt(currentWord)) {  
-            printf("Input harus berupa angka!\n");
+            printf(RED "Input harus berupa angka!" WHITE "\n");
             DealokasiMatrixJarak(jarak, jumlahLokasi);
             return 1;
         }
         bobot = WordToDouble(currentWord);
         
         if(asal < 0 || asal >= jumlahLokasi || tujuan < 0 || tujuan >= jumlahLokasi) {
-            printf("Lokasi tidak valid!\n");
+            printf(RED "Lokasi tidak valid!" WHITE "\n");
             DealokasiMatrixJarak(jarak, jumlahLokasi);
             return 1;
         }
         if(bobot < 0) {
-            printf("Bobot tidak boleh negatif!\n");
+            printf(RED "Bobot tidak boleh negatif!" WHITE "\n");
             DealokasiMatrixJarak(jarak, jumlahLokasi);
             return 1;
         }
@@ -204,26 +214,26 @@ int OptimasiRuteEkspedisi() {
 
 
     if(!isConnected(jarak, jumlahLokasi)) {
-        printf("Graf tidak terhubung!\n");
+        printf(RED "Graf tidak terhubung!" WHITE "\n");
         DealokasiMatrixJarak(jarak, jumlahLokasi);
         return 1;
     }
 
-    printf("\nData diterima, silakan tunggu...\n");
+    printf("\n" YELLOW "Data diterima, silakan tunggu..." WHITE "\n");
 
     SolusiRute* solusi = optimasiRute(jarak, jumlahLokasi);
         
     if(solusi->totalJarak == infinity) {
-        printf("\nTidak ditemukan rute valid!\n");
+        printf("\n" RED "Tidak ditemukan rute valid!" WHITE "\n");
     } 
         
     else {
-        printf("A-ha! Rute paling efektif adalah ");
+        printf(GREEN "A-ha! Rute paling efektif adalah ");
         for (int i = 0; i < jumlahLokasi; i++) {
             printf("%d", solusi->jalur[i]);
             if(i < jumlahLokasi - 1) printf("-");
         }
-        printf("-%d.\n", solusi->jalur[0]);
+        printf("-%d." WHITE "\n", solusi->jalur[0]);
     }
         
     DealokasiMatrixJarak(jarak, jumlahLokasi);

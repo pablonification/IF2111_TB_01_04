@@ -29,6 +29,7 @@ void showMainMenu(){
     gameState.isLogin = FALSE;
     makeListItem(&gameState);
     CreateEmptyLL(&gameState.users->wishlist.wishlist_item);
+    CreateQueueItem(&gameState.requestQueue); // kalo ada apa apa comment aja
 
     printf(GREEN"                                                                                           \n"
            "                                                                                           \n"
@@ -49,6 +50,12 @@ void showMainMenu(){
     while (1) {
         printf(">> ");
         STARTWORD2("", "");
+
+        // Add validation for empty input
+        if (currentWord.Length == 0) {
+            printf(RED"Command tidak boleh kosong. Silakan coba lagi.\n"WHITE);
+            continue;
+        }
 
         if (compareWords("START", currentWord, 5)){
             if (!gameState.isLoaded && !gameState.isStarted){
@@ -106,6 +113,8 @@ void showMainMenu(){
                 printf("WISHLIST REMOVE -> Untuk menghapus barang dari wishlist\n");
                 printf("WISHLIST CLEAR -> Untuk menghapus seluruh barang dari wishlist\n");
                 printf("WISHLIST SWAP -> Untuk menukar posisi dua barang dalam wishlist\n");
+                printf("GLOBALALIGNMENT -> Untuk melakukan deteksi kebocoran DNA\n");
+                printf("OPTIMASIRUTE -> Untuk melakukan optimasi rute ekspedisi\n");
                 printf("PROFILE -> Untuk melihat profil\n");
                 printf("LOGOUT -> Untuk keluar dari sesi\n");
                 printf("SAVE -> Untuk menyimpan state ke dalam file\n");
@@ -184,10 +193,10 @@ void showMainMenu(){
             } else {
                 ADVWORD();
                 if (IsEqual("CHALLENGE", currentWord)){
-                    printf("Daftar challenge yang tersedia:\n");
+                    printf(CYAN"Daftar challenge yang tersedia:\n");
                     printf("1. Tebak Angka (biaya main=200)\n");
                     printf("2. W0RDL399 (biaya main=500)\n");
-                    printf("3. QUANTUM W0RDL399 (biaya main=1000)\n");
+                    printf("3. QUANTUM W0RDL399 (biaya main=1000)\n"WHITE);
 
                     printf("Masukan challenge yang hendak dimainkan: ");
                     Word choice;
@@ -436,7 +445,7 @@ void Load(const char *filename, Global *global) {
         closeFile(file);
         return;
     }
-    printf(CYAN"DEBUG: Reading %d items\n"WHITE, itemCount);
+    // printf(CYAN"DEBUG: Reading %d items\n"WHITE, itemCount);
 
     for (int i = 0; i < itemCount; i++) {
         int price;
@@ -447,7 +456,7 @@ void Load(const char *filename, Global *global) {
             closeFile(file);
             return;
         }
-        printf(CYAN"DEBUG: Read item %d: %s (price: %d)\n"WHITE, i+1, name, price);
+        // printf(CYAN"DEBUG: Read item %d: %s (price: %d)\n"WHITE, i+1, name, price);
 
         global->itemList.item[i].price = price;
         customStringCPY(global->itemList.item[i].name, name);
@@ -465,7 +474,7 @@ void Load(const char *filename, Global *global) {
         closeFile(file);
         return;
     }
-    printf(CYAN"DEBUG: Reading %d users\n"WHITE, userCount);
+    // printf(CYAN"DEBUG: Reading %d users\n"WHITE, userCount);
 
     for (int i = 0; i < userCount; i++) {
         int money;
@@ -476,7 +485,7 @@ void Load(const char *filename, Global *global) {
             closeFile(file);
             return;
         }
-        printf(CYAN"DEBUG: Read user %d: %s (money: %d)\n"WHITE, i+1, username, money);
+        // printf(CYAN"DEBUG: Read user %d: %s (money: %d)\n"WHITE, i+1, username, money);
 
         global->users[i].money = money;
         customStringCPY(global->users[i].name, username);
@@ -492,7 +501,7 @@ void Load(const char *filename, Global *global) {
             closeFile(file);
             return;
         }
-        printf(CYAN"DEBUG: Reading %d purchase history\n"WHITE, historyCount);
+        // printf(CYAN"DEBUG: Reading %d purchase history\n"WHITE, historyCount);
 
         succread_ph = TRUE;
         for (int j = 0; j < historyCount; j++) {
@@ -508,7 +517,7 @@ void Load(const char *filename, Global *global) {
             customStringCPY(item.name, itemName);
             Push(&global->users[i].history, item);
         }
-        printf(CYAN"\nDEBUG: Purchase History for user %s:\n"WHITE, global->users[i].name);
+        // printf(CYAN"\nDEBUG: Purchase History for user %s:\n"WHITE, global->users[i].name);
         printStack(&global->users[i].history);
 
         // Load wishlist
@@ -518,7 +527,7 @@ void Load(const char *filename, Global *global) {
             closeFile(file);
             return;
         }
-        printf(CYAN"DEBUG: Reading %d wishlist\n"WHITE, wishlistCount);
+        // printf(CYAN"DEBUG: Reading %d wishlist\n"WHITE, wishlistCount);
 
         succread_wl = TRUE;
         global->users[i].wishlist.wishlist_item.First = NULL; 
@@ -531,7 +540,7 @@ void Load(const char *filename, Global *global) {
             }
             global->users[i].wishlist.number = wishlistCount;
             InsertFirstLL(&global->users[i].wishlist.wishlist_item, wishItem);
-            printf(CYAN"DEBUG: Read wishlist %d: %s\n"WHITE, j+1, global->users[i].wishlist.wishlist_item.First->info);
+            // printf(CYAN"DEBUG: Read wishlist %d: %s\n"WHITE, j+1, global->users[i].wishlist.wishlist_item.First->info);
         }
     }
 
@@ -554,30 +563,52 @@ int findUser(User *users, int user_count, const char *username, const char *pass
     return -1;
 }
 
-void Login(User *users, int user_count) {
+boolean isWordEmpty(Word w) {
+    return (w.Length == 0);
+}
 
-    Word username,password;
+void disableEcho() {
+    printf("\033[8m"); // ANSI escape code to disable echo
+}
+
+void enableEcho() {
+    printf("\033[28m"); // ANSI escape code to enable echo
+}
+
+void Login(User *users, int user_count) {
+    Word username, password;
     
     printf("Username: ");
     STARTLINE();
     username = currentWord;
     wordToString(username, userstr);
 
+    if (isWordEmpty(username)) {
+        printf(RED"Username tidak boleh kosong.\n"WHITE);
+        return;
+    }
+
     printf("Password: ");
+    disableEcho(); // kalo gamau tinggal di comment dan apus aja ges
     STARTLINE();
+    enableEcho(); // kalo gamau tinggal di comment dan apus aja ges
     password = currentWord;
     wordToString(password, pwdstr);
+    printf("\n"); // Move to the next line
+
+    if (isWordEmpty(password)) {
+        printf(RED"Password tidak boleh kosong.\n"WHITE);
+        return;
+    }
 
     int userIndex = findUser(users, user_count, userstr, pwdstr);
     
-    if(userIndex != -1) {
+    if (userIndex != -1) {
         customStringCPY(currentUser, users[userIndex].name);
         printf(GREEN"Anda telah berhasil login sebagai %s.\n"WHITE, currentUser);
-    }
-    else {
+    } else {
         printf(RED"Username atau password salah. Silakan coba lagi.\n"WHITE);
     }
-
 }
 
 void Logout(User *users, int user_count) {
@@ -597,11 +628,21 @@ void Register(Global *gameState) {
     STARTLINE();
     username = currentWord;
     wordToString(username, userstr);
+
+    if (isWordEmpty(username)) {
+        printf(RED"Username tidak boleh kosong.\n"WHITE);
+        return;
+    }
     
     printf("Password: ");
     STARTLINE();
     password = currentWord;
     wordToString(password, pwdstr);
+
+    if (isWordEmpty(password)) {
+        printf(RED"Password tidak boleh kosong.\n"WHITE);
+        return;
+    }
     
     if (gameState->userCount >= MAX_USERS) {
         printf(RED"Maksimum jumlah pengguna telah tercapai.\n"WHITE);
@@ -748,7 +789,7 @@ void makeListItem(Global *gameState) {
 
 /* buat ngetes hasil load-an tadi*/
 void printStack(Stack *S) {
-    printf(CYAN"\nDEBUG: Printing Stack Contents:\n"WHITE);
+    // printf(CYAN"\nDEBUG: Printing Stack Contents:\n"WHITE);
     if (IsEmptyStack(*S)) {
         printf(RED"Stack is empty\n"WHITE);
         return;
@@ -790,6 +831,12 @@ void storeRequest(ListItem *L, QueueItem *Q) {
     printf("Nama barang yang diminta: ");
     STARTLINE();
     req = currentWord;
+
+    if (isWordEmpty(req)) {
+        printf(RED"Nama barang tidak boleh kosong.\n"WHITE);
+        storeRequest(L, Q);
+    }
+
     wordToString(req, reqstr); // Convert Word to string
 
     boolean isFoundInList = SearchItem(*L, reqstr);
@@ -823,6 +870,11 @@ void storeRemove(ListItem *L) {
     printf("Nama barang yang akan dihapus: ");
     STARTLINE();
     item_name = currentWord;
+
+    if (isWordEmpty(item_name)) {
+        printf(RED"Nama barang tidak boleh kosong.\n"WHITE);
+        storeRemove(L);
+    }
     
     char item_namestr[50];
     wordToString(item_name, item_namestr);
@@ -850,60 +902,59 @@ void storeRemove(ListItem *L) {
 void storeSupply(ListItem *L, QueueItem *Q) { 
     if (!isEmptyItem(*Q)) {
         char item_name[50];
-        dequeueItem(Q, item_name);
+        dequeueItem(Q, item_name); // Dequeue the item first
         printf("Apakah kamu ingin menambahkan barang %s ke toko? (Terima/Tunda/Tolak): ", item_name);
-
+        
         Word response;
         STARTLINE();
-        char responsestr;
         response = currentWord;
-        wordToString(response, &responsestr);
+        char responsestr[50];
+        wordToString(response, responsestr);
         boolean inputValid = FALSE;
 
         while (!inputValid) {
-            if (customStringCMP(&responsestr, "Terima") == 0 || customStringCMP(&responsestr, "Tunda") == 0 || customStringCMP(&responsestr, "Tolak") == 0) {
+            if (customStringCMP(responsestr, "Terima") == 0 || customStringCMP(responsestr, "Tunda") == 0 || customStringCMP(responsestr, "Tolak") == 0) {
                 inputValid = TRUE;
-            }
-            else {
+            } else {
                 printf("Input tidak valid. Silakan coba lagi: ");
-                scanWord(&response);
-                wordToString(response, &responsestr);
+                STARTLINE();
+                response = currentWord;
+                wordToString(response, responsestr);
             }
         }
 
-        if (customStringCMP(&responsestr, "Terima") == 0) {
+        if (customStringCMP(responsestr, "Terima") == 0) {
             Word price;
             printf("Harga barang: ");
-            scanWord(&price);
+            STARTLINE();
+            price = currentWord;
             boolean validprice = FALSE;
 
             while (!validprice) {
                 if (isWordInt(price)) {
                     validprice = TRUE;
-                }
-                else {
+                } else {
                     printf("Harga tidak valid. Silakan coba lagi: ");
-                    scanWord(&price);
+                    STARTLINE();
+                    price = currentWord;
                 }
             }
 
-            int priceint = convertWordToInt(price);
+            int priceint = WordToInt(price);
             Item new_item;
             customStringCPY(new_item.name, item_name);
             new_item.price = priceint;
 
             insertLastItem(L, new_item);
             printf(GREEN"%s dengan harga %d telah ditambahkan ke toko.\n"WHITE, item_name, priceint);
-        }
-        else if (customStringCMP(&responsestr, "Tunda") == 0) {
+        } else if (customStringCMP(responsestr, "Tunda") == 0) {
+            enqueueItem(Q, item_name);
             printf(YELLOW"%s dikembalikan ke antrian.\n"WHITE, item_name);
-        }
-        else if (customStringCMP(&responsestr, "Tolak") == 0) {
+        } else if (customStringCMP(responsestr, "Tolak") == 0) {
             printf(RED"%s dihapus dari antrian.\n"WHITE, item_name);
         }
-    }
-    else {
-        printf(RED"Antrian kosong.\n"WHITE);
+    } else {
+        printf(RED"Antrian kosong. Tidak ada barang yang perlu disupply.\n"WHITE);
     }
 }
 
@@ -1022,9 +1073,14 @@ void wishlistAdd(ListItem *L, WishlistUser *wishlist) {
     Word item_name;
     printf("Masukkan nama barang: ");
     STARTLINE();
+    item_name = currentWord;
+
+    if (isWordEmpty(item_name)) {
+        printf(RED"Nama barang tidak boleh kosong.\n"WHITE);
+        wishlistAdd(L, wishlist); // Minta input ulang
+    }
 
     char item_namestr[MaxEl];
-    item_name = currentWord;    
     wordToString(item_name, item_namestr); 
 
     // Cek apakah barang ada di store
@@ -1073,6 +1129,12 @@ void wishlistRemove(WishlistUser *wishlist) {
     Word input;
     ADVWORD();
 
+    // cek apakah input kosong
+    if (currentWord.Length == 0 || compareWords("REMOVE", currentWord, 6)) {
+        printf(RED"Nama barang tidak diberikan. Silakan coba lagi.\n"WHITE);
+        wishlistRemove(wishlist); // Minta input ulang
+    }
+
     char inputstr[MaxEl];
     input = currentWord;    
     wordToString(input, inputstr);
@@ -1107,10 +1169,10 @@ void wishlistSwap(WishlistUser *wishlist, int i, int j) {
         return;
     }
 
-    // Debug print more details
-    printf(CYAN"DEBUG: Wishlist pointer = %p\n"WHITE, (void*)wishlist);
-    printf(CYAN"DEBUG: Wishlist number = %d\n"WHITE, wishlist->number);
-    printf(CYAN"DEBUG: First node pointer = %p\n"WHITE, (void*)wishlist->wishlist_item.First);
+    // // Debug print more details
+    // printf(CYAN"DEBUG: Wishlist pointer = %p\n"WHITE, (void*)wishlist);
+    // printf(CYAN"DEBUG: Wishlist number = %d\n"WHITE, wishlist->number);
+    // printf(CYAN"DEBUG: First node pointer = %p\n"WHITE, (void*)wishlist->wishlist_item.First);
 
     // Add a safe check for First node
     if (wishlist->wishlist_item.First == NULL) {
@@ -1121,6 +1183,11 @@ void wishlistSwap(WishlistUser *wishlist, int i, int j) {
     // Rest of your validation logic
     if (wishlist->number <= 1) {
         printf(YELLOW"Wishlist hanya memiliki satu item\n"WHITE);
+        return;
+    }
+
+    if (i == j) {
+        printf(RED"Nomor tidak boleh sama. Silakan masukkan nomor yang berbeda.\n"WHITE);
         return;
     }
 
@@ -1137,7 +1204,7 @@ void wishlistSwap(WishlistUser *wishlist, int i, int j) {
 
     // Find nodes with validity checks
     while (curr != NULL) {
-        printf(CYAN"DEBUG: Checking position %d, current node = %p\n"WHITE, pos, (void*)curr);
+        // printf(CYAN"DEBUG: Checking position %d, current node = %p\n"WHITE, pos, (void*)curr);
         if (pos == i) {
             node1 = curr;
         }

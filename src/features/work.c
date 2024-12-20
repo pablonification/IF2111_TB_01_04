@@ -4,6 +4,16 @@
 #include "../../include/features/work.h"
 #include "../../include/features/misc.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 //IMPLEMENTASI FUNGSI DAN PROSEDUR WORK
 
 //Implementasi fungsi delay
@@ -67,9 +77,9 @@ void work(int *balance){
 
     int workCount = sizeof(workList) / sizeof(workList[0]); //jumlah pekerjaan tersedia
 
-    printf("Daftar pekerjaan:\n"); //print daftar pekerjaan yang tersedia
+    printf(CYAN"Daftar pekerjaan:\n"WHITE); //print daftar pekerjaan yang tersedia
     for(int i = 0; i < workCount; i++){
-        printf("%d. %s (pendapatan: %d, durasi: %ds)\n", i+1, workList[i].workName, workList[i].workPayment, workList[i].workDuration);
+        printf(CYAN"%d. %s (pendapatan: %d, durasi: %ds)\n"WHITE, i+1, workList[i].workName, workList[i].workPayment, workList[i].workDuration);
     }
 
     boolean validWork = FALSE; //inisialisasi
@@ -91,13 +101,13 @@ void work(int *balance){
             }
         }
         if (!validWork){ //jika tidak valid, kembali ke loop, input lagi
-            printf("Pekerjaan tidak valid, silakan coba lagi. "); 
+            printf(RED"Pekerjaan tidak valid, silakan coba lagi.\n"WHITE); 
         }
     }
-    printf("%d\n", selectedWorkIndex);
-    printf("Anda sedang bekerja sebagai %s. Harap tunggu...\n", workList[selectedWorkIndex].workName);
+    // printf("%d\n", selectedWorkIndex);
+    printf(CYAN"Anda sedang bekerja sebagai %s. Harap tunggu...\n"WHITE, workList[selectedWorkIndex].workName);
     delay(workList[selectedWorkIndex].workDuration);
-    printf("Pekerjaan telah selesai. Anda mendapatkan gaji $%d\n", workList[selectedWorkIndex].workPayment);
+    printf(GREEN"Pekerjaan telah selesai. Anda mendapatkan gaji $%d\n"WHITE, workList[selectedWorkIndex].workPayment);
 
     *balance += workList[selectedWorkIndex].workPayment;
 }

@@ -2,14 +2,24 @@
 #include <stdlib.h>
 #include "../../include/features/history.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 void history(Stack *S) {
     if (IsEmptyStack(*S)) {
-        printf("Kamu belum membeli barang apapun!\n");
+        printf(RED"Kamu belum membeli barang apapun!\n"RESET);
         return;
     }
-    printf("\nRiwayat pembelian barang:\n");
+    printf(GREEN"\nRiwayat pembelian barang:\n"RESET);
     for (int i = 0; i < S->TOP; i++) {
-        printf("%d. %s %d\n", 
+        printf(YELLOW"%d. %s %d\n"RESET, 
                i+1, 
                S->T[i].name, 
                S->T[i].harga);

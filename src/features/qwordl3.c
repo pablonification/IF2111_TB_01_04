@@ -5,6 +5,16 @@
 #include "../../include/ADT/mesinkarakter.h"
 #include "../../include/ADT/mesinkata.h"
 
+// ANSI escape codes for colors
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+
 #define WORD_LENGTH 5
 #define MAX_ATTEMPTSQ 9
 #define TOTAL_WORDS 4
@@ -64,7 +74,7 @@ void INITIALIZED_QWORDL3(char ***wordsList, int *wordCount) {
 
 void playQuantumWordl3(int *money) {
     if (*money < 1000){
-        printf("Uang anda kurang, challange ini membutuhkan 500 koin, koin anda saat ini %d\n", *money);
+        printf(RED"Uang anda kurang, challange ini membutuhkan 1000 koin, koin anda saat ini %d\n"WHITE, *money);
         return;
     } else {
         *money -= 1000;
@@ -107,7 +117,7 @@ void playQuantumWordl3(int *money) {
         boolean win = FALSE;
         Word guesses[TOTAL_WORDS];
 
-        printf("WELCOME TO QUANTUM W0RDL3! GUESS 4 WORDS SIMULTANEOUSLY. YOU HAVE %d CHANCES.\n", MAX_ATTEMPTSQ);
+        printf(CYAN"WELCOME TO QUANTUM W0RDL3! GUESS 4 WORDS SIMULTANEOUSLY. YOU HAVE %d CHANCES.\n"WHITE, MAX_ATTEMPTSQ);
 
         while (attempts < MAX_ATTEMPTSQ && !win) {
             // Display the game board
@@ -119,7 +129,7 @@ void playQuantumWordl3(int *money) {
             }
 
             for (int i = 0; i <= 3; i++){
-                printf("ANSWERS>>>>>>%s\n", answers[i]);
+                // printf(CYAN"ANSWERS>>>>>>%s\n"WHITE, answers[i]);
             }
 
             // Prompt the user for guesses
@@ -130,7 +140,7 @@ void playQuantumWordl3(int *money) {
                     guesses[w] = currentWord;
 
                     if (guesses[w].Length != WORD_LENGTH) {
-                        printf("Invalid input! Please enter a %d-letter word: ", WORD_LENGTH);
+                        printf(RED"Invalid input! Please enter a %d-letter word: "WHITE, WORD_LENGTH);
                     }
                 } while (guesses[w].Length != WORD_LENGTH);
             }
@@ -168,12 +178,12 @@ void playQuantumWordl3(int *money) {
 
         // Display the end message
         if (win) {
-            printf("Selamat, Anda menang! +5000 rupiah telah ditambahkan ke akun Anda.\n");
+            printf(GREEN"Selamat, Anda menang! +5000 rupiah telah ditambahkan ke akun Anda.\n"WHITE);
             *money += 5000;
         } else {
-            printf("Boo! Anda kalah. Jawaban yang benar adalah:\n");
+            printf(RED"Boo! Anda kalah. Jawaban yang benar adalah:\n"WHITE);
             for (int w = 0; w < TOTAL_WORDS; w++) {
-                printf("Word %d: %s\n", w + 1, answers[w]);
+                printf(CYAN"Word %d: %s\n"WHITE, w + 1, answers[w]);
             }
         }
 
