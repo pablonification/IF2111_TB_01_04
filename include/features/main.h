@@ -62,7 +62,7 @@ typedef struct {
 void showMainMenu();
 void Start(Global *Global);
 void Load(const char *filename, Global *Global);
-void Login(User *users, int user_count);
+void Login(Global *gameState, User *users, int user_count);
 int findUser(User *users, int user_count, const char *username, const char *password);
 void Register(Global *Global);
 void Save(const char *filename, Global *Global);

@@ -92,34 +92,38 @@ void showMainMenu(){
         }
         else if (compareWords("HELP", currentWord, 4)){
             if (!gameState.isLoaded && !gameState.isStarted && !gameState.isLogin){
-                printf("START -> Untuk masuk sesi baru\n");
-                printf("LOAD -> Untuk memulai sesi berdasarkan file konfigurasi\n");
-                printf("QUIT -> Untuk keluar dari program\n");
+                printf(YELLOW"START\t\t\t-> Untuk masuk sesi baru\n");
+                printf("LOAD\t\t\t-> Untuk memulai sesi berdasarkan file konfigurasi\n");
+                printf("QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);
             } else if (gameState.isLoaded && !gameState.isStarted && !gameState.isLogin){ 
                 printf("=====[ Login Menu Help PURRMART ]=====\n");
-                printf("REGISTER -> Untuk melakukan pendaftaran akun baru\n");
-                printf("LOGIN -> Untuk masuk ke dalam akun dan memulai sesi\n");
-                printf("QUIT -> Untuk keluar dari program\n");   
+                printf(YELLOW"REGISTER\t\t-> Untuk melakukan pendaftaran akun baru\n");
+                printf("LOGIN\t\t\t-> Untuk masuk ke dalam akun dan memulai sesi\n");
+                printf("QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);   
             } else if (gameState.isLoaded && gameState.isStarted && gameState.isLogin){ 
-                printf("=====[ Menu Help PURRMART ]=====\n");
-                printf("WORK -> Untuk bekerja\n");
-                printf("WORK CHALLENGE -> Untuk mengerjakan challenge\n");
-                printf("STORE LIST -> Untuk melihat barang-barang di toko\n");
-                printf("STORE REQUEST -> Untuk meminta penambahan barang\n");
-                printf("STORE SUPPLY -> Untuk menambahkan barang dari permintaan\n");
-                printf("STORE REMOVE -> Untuk menghapus barang\n");
-                printf("STORE REQUEST BIOWEAPON -> Untuk memproses DNA menjadi bioweapon\n");
-                printf("WISHLIST SHOW -> Untuk melihat wishlist\n");
-                printf("WISHLIST ADD -> Untuk menambahkan barang ke wishlist\n");
-                printf("WISHLIST REMOVE -> Untuk menghapus barang dari wishlist\n");
-                printf("WISHLIST CLEAR -> Untuk menghapus seluruh barang dari wishlist\n");
-                printf("WISHLIST SWAP -> Untuk menukar posisi dua barang dalam wishlist\n");
-                printf("GLOBALALIGNMENT -> Untuk melakukan deteksi kebocoran DNA\n");
-                printf("OPTIMASIRUTE -> Untuk melakukan optimasi rute ekspedisi\n");
-                printf("PROFILE -> Untuk melihat profil\n");
-                printf("LOGOUT -> Untuk keluar dari sesi\n");
-                printf("SAVE -> Untuk menyimpan state ke dalam file\n");
-                printf("QUIT -> Untuk keluar dari program\n");
+                printf(YELLOW"=====[ Menu Help PURRMART ]=====\n");
+                printf("WORK\t\t\t-> Untuk bekerja\n");
+                printf("WORK CHALLENGE\t\t-> Untuk mengerjakan challenge\n");
+                printf("STORE LIST\t\t-> Untuk melihat barang-barang di toko\n");
+                printf("STORE REQUEST\t\t-> Untuk meminta penambahan barang\n");
+                printf("STORE SUPPLY\t\t-> Untuk menambahkan barang dari permintaan\n");
+                printf("STORE REMOVE\t\t-> Untuk menghapus barang\n");
+                printf("STORE REQUEST BIOWEAPON\t-> Untuk memproses DNA menjadi bioweapon\n");
+                printf("WISHLIST SHOW\t\t-> Untuk melihat wishlist\n");
+                printf("WISHLIST ADD\t\t-> Untuk menambahkan barang ke wishlist\n");
+                printf("WISHLIST REMOVE\t\t-> Untuk menghapus barang dari wishlist\n");
+                printf("WISHLIST CLEAR\t\t-> Untuk menghapus seluruh barang dari wishlist\n");
+                printf("WISHLIST SWAP\t\t-> Untuk menukar posisi dua barang dalam wishlist\n");
+                printf("CART SHOW\t\t-> Untuk melihat isi keranjang\n");
+                printf("CART ADD\t\t-> Untuk menambahkan barang ke keranjang\n");
+                printf("CART REMOVE\t\t-> Untuk menghapus barang dari keranjang\n");
+                printf("CART PAY\t\t-> Untuk membayar barang di keranjang\n");
+                printf("GLOBALALIGNMENT\t\t-> Untuk melakukan deteksi kebocoran DNA\n");
+                printf("OPTIMASIRUTE\t\t-> Untuk melakukan optimasi rute ekspedisi\n");
+                printf("PROFILE\t\t\t-> Untuk melihat profil\n");
+                printf("LOGOUT\t\t\t-> Untuk keluar dari sesi\n");
+                printf("SAVE\t\t\t-> Untuk menyimpan state ke dalam file\n");
+                printf("QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);
             }
         }
         else if (compareWords("LOGIN", currentWord, 5)){
@@ -130,8 +134,8 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && gameState.isLogin){
                 printf(RED"Anda masih tercatat sebagai %s. Silahkan LOGOUT terlebih dahulu.\n"WHITE, currentUser);
             } else {
-                Login(gameState.users, gameState.userCount);
-                gameState.isLogin = TRUE;
+                Login(&gameState, gameState.users, gameState.userCount);
+                //gameState.isLogin = TRUE;
                 //gameState.users->money = gameState.users[0].money;
                 //printf("%d\n", gameState.users->money);
             }
@@ -568,8 +572,8 @@ void enableEcho() {
     printf("\033[28m"); // ANSI escape code to enable echo
 }
 
-void Login(User *users, int user_count) {
-    Word username, password;
+void Login(Global *gameState, User *users, int user_count) {
+    Word username,password;
     
     printf("Username: ");
     STARTLINE();
@@ -599,7 +603,11 @@ void Login(User *users, int user_count) {
     if (userIndex != -1) {
         customStringCPY(currentUser, users[userIndex].name);
         printf(GREEN"Anda telah berhasil login sebagai %s.\n"WHITE, currentUser);
-    } else {
+        users->money = users[userIndex].money;
+        printf(GREEN"Saldo anda: %d\n"WHITE, users->money);
+        gameState->isLogin = TRUE;
+    }
+    else {
         printf(RED"Username atau password salah. Silakan coba lagi.\n"WHITE);
     }
 }
@@ -1259,10 +1267,24 @@ void cartPay(User *profile, ListItem L) {
     else {
         printf("Kuantitas       Nama            Total\n");
         for (int i = 0; i < profile->cart.Count; i++) {
-            val = profile->cart.Elements[i].Value;
-            price = val * L.item[i].price;
-            printf("%-10d %-20s %d", val, profile->cart.Elements[i].Key, price);
-            total += price;
+            int harga = 0;
+            boolean found = FALSE;
+            for (int j = 0; j < L.itemLength; j++) {
+                if (my_strcmp(L.item[j].name, profile->cart.Elements[i].Key)) {
+                    harga = L.item[j].price;
+                    found = TRUE;
+                    break;
+                }
+            }
+
+            if (found) {
+                int harga_per_barang = harga * profile->cart.Elements[i].Value;
+                total += harga_per_barang;
+                printf("%-15d %-15s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
+            }
+            else {
+                printf("%-15s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
+            }
         }
         printf("Total biaya yang harus dikeluarkan adalah %d, apakah jadi dibeli?\n", total);
         printf("(Ya/Tidak)\n");
@@ -1289,34 +1311,34 @@ void cartRemove(User *profile, char* removestr, int* idxint){
     boolean found = FALSE;
 
     if (IsEmptyMap(profile->cart)){
-        printf("Tidak bise remove, keranjang kosong.\n");
+        printf(RED"Tidak bisa remove, keranjang kosong.\n"WHITE);
         return;
     }
 
     if (*idxint <= 0){
-        printf("Jumlah barang tidak valid.\n");
+        printf(RED"Jumlah barang tidak valid.\n"WHITE);
         return;
     }
 
     if (!IsMemberMap(profile->cart, removestr)){
-        printf("Barang tidak ada di keranjang.\n");
+        printf(RED"Barang tidak ada di keranjang.\n"WHITE);
         return;
     }
 
     valuetype currentJumlah = Value(profile->cart, profile->cart.Elements->Key);
 
     if (currentJumlah < *idxint){
-        printf("Gagal mengurangi. Hanya terdapat %d %s di keranjang.\n", currentJumlah, profile->cart.Elements->Key);
+        printf(RED"Gagal mengurangi. Hanya terdapat %d %s di keranjang.\n"WHITE, currentJumlah, profile->cart.Elements->Key);
     }
     else if (currentJumlah == *idxint){
         Delete(&profile->cart, profile->cart.Elements->Key);
-        printf("%s sebanyak %d berhasil dihapus dari keranjang.\n", profile->cart.Elements->Key, profile->cart.Elements->Value);
+        printf(GREEN"%s sebanyak %d berhasil dihapus dari keranjang.\n"WHITE, profile->cart.Elements->Key, profile->cart.Elements->Value);
     }
     else{
         for (int i = 0; i < profile->cart.Count; i++) {
             if (my_strcmp(profile->cart.Elements[i].Key, removestr)){
                 profile->cart.Elements[i].Value -= *idxint;
-                printf("%s sebanyak %d berhasil dihapus dari keranjang.\n", removestr, *idxint);
+                printf(GREEN"%s sebanyak %d berhasil dihapus dari keranjang.\n"WHITE, removestr, *idxint);
                 break;
             }
         }
@@ -1325,57 +1347,23 @@ void cartRemove(User *profile, char* removestr, int* idxint){
 
 void cartShow(User *profile, ListItem L){
     if (IsEmptyMap(profile->cart)){
-        printf("Keranjang anda masih kosong.\n");
+        printf(RED"Keranjang anda masih kosong.\n"WHITE);
     }
     else{
         int subtotal = 0;
-        printf("Isi Keranjangmu: \n");
+        printf(CYAN"Isi Keranjangmu: \n"WHITE);
         DisplayMap(profile, L);
     }
 }
 
-// void cartPay(Map *M, Stack *H, int *balance);
-// GARAP HISTORY DULU
-
-char* my_strtok(char* str, const char* delim) {
-    static char* last;
-    if (str) {
-        last = str;
-    }
-    if (!last) {
-        return NULL;
-    }
-    char* start = last;
-    while (*last) {
-        const char* d = delim;
-        while (*d) {
-            if (*last == *d) {
-                break;
-            }
-            d++;
-        }
-        if (*d) {
-            break;
-        }
-        last++;
-    }
-    if (*last) {
-        *last = '\0';
-        last++;
-    } else {
-        last = NULL;
-    }
-    return start;
-}
-
 void cartAdd(User *profile, ListItem *L, char* addstr, int* qtyint) {
     if (*qtyint <= 0){
-        printf("Jumlah barang tidak valid.\n");
+        printf(RED"Jumlah barang tidak valid.\n"WHITE);
         return;
     }
 
     if (IsFullMap(profile->cart)){
-        printf("Keranjang penuh.\n");
+        printf(RED"Keranjang penuh.\n"WHITE);
         return;
     }
 
@@ -1393,15 +1381,15 @@ void cartAdd(User *profile, ListItem *L, char* addstr, int* qtyint) {
     if (found){
         if (!IsMemberMap(profile->cart, addstr)){
             Insert(&profile->cart, addstr, *qtyint);
-            printf("%s sebanyak %d berhasil ditambahkan ke keranjang.\n", addstr, *qtyint);
+            printf(GREEN"%s sebanyak %d berhasil ditambahkan ke keranjang.\n"WHITE, addstr, *qtyint);
         }
         else{
             profile->cart.Elements[i-1].Value += *qtyint;
-            printf("%s sebanyak %d berhasil ditambahkan ke keranjang.\n", addstr, *qtyint);
+            printf(GREEN"%s sebanyak %d berhasil ditambahkan ke keranjang.\n"WHITE, addstr, *qtyint);
         }
     }
     else{
-        printf("Barang tidak ditemukan.\n");
+        printf(RED"Barang tidak ditemukan.\n"WHITE);
     }
 }
 
@@ -1410,7 +1398,7 @@ void DisplayMap(User *profile, ListItem L){
     if (IsEmptyMap(profile->cart)) {
         printf("Map is empty.\n");
     } else {
-        printf("Barang         Jumlah    Total\n");
+        printf("Kuantitas       Nama            Total\n");
         for (int i = 0; i < profile->cart.Count; i++) {
             int harga = 0;
             boolean found = FALSE;
@@ -1425,7 +1413,7 @@ void DisplayMap(User *profile, ListItem L){
             if (found) {
                 int harga_per_barang = harga * profile->cart.Elements[i].Value;
                 total += harga_per_barang;
-                printf("%-15s %-8d %-d\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value, harga_per_barang);
+                printf("%-15d %-15s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
             }
             else {
                 printf("%-15s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
