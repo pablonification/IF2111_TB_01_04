@@ -1,13 +1,13 @@
 #include "../../include/features/optimasirute.h"
 
-#define RESET "\033[0m"
-#define RED "\033[31m"
-#define GREEN "\033[32m"
-#define YELLOW "\033[33m"
-#define BLUE "\033[34m"
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
 #define MAGENTA "\033[35m"
-#define CYAN "\033[36m"
-#define WHITE "\033[37m"
+#define CYAN    "\033[36m"
+#define WHITE   "\033[37m"
 
 double** AlokasiMatrixJarak(int n) {
     double** matriks = (double**) malloc(n * sizeof(double*));
@@ -68,10 +68,10 @@ void bestRoute(double** jarak, int n, int depth, int* jalurSekarang, int* visite
         }
         return;
     }
-
     for(int i = 0; i < n; i++) {
         if(!visited[i]) {
             double jarakBaru = jarakSaatIni;
+
             if(depth > 0) {
                 double cost = jarak[jalurSekarang[depth - 1]][i];
                 if(cost == infinity) {
@@ -88,6 +88,7 @@ void bestRoute(double** jarak, int n, int depth, int* jalurSekarang, int* visite
             jalurSekarang[depth] = i;
             
             bestRoute(jarak, n, depth + 1, jalurSekarang, visited, jarakBaru, solusiTerbaik);
+            
             visited[i] = FALSE;
         }
     }
@@ -102,7 +103,10 @@ SolusiRute* optimasiRute(double** jarak, int n) {
     int* jalurSekarang = (int*) malloc(n * sizeof(int));
     int* visited = (int*) calloc(n, sizeof(int));
     
-    bestRoute(jarak, n, 0, jalurSekarang, visited, 0.0, solusi);
+    visited[0] = TRUE;
+    jalurSekarang[0] = 0;
+
+    bestRoute(jarak, n, 1, jalurSekarang, visited, 0.0, solusi);
     
     free(jalurSekarang);
     free(visited);
@@ -226,6 +230,12 @@ int OptimasiRute() {
         return 1;
     }
 
+    // if(cekDeadEnd(jarak, jumlahLokasi)) {
+    //     printf(RED "Graf mengandung dead-end, rute valid tidak ditemukan!" WHITE "\n");
+    //     DealokasiMatrixJarak(jarak, jumlahLokasi);
+    //     return 1;
+    // }
+
     printf("\n" YELLOW "Data diterima, silakan tunggu..." WHITE "\n");
 
     SolusiRute* solusi = optimasiRute(jarak, jumlahLokasi);
@@ -247,6 +257,8 @@ int OptimasiRute() {
         
     return 0;
 }
+
+
 
 // int TestOptimasiRute() {
 //    printf("\n=== RUNNING OPTIMASI RUTE TEST CASES ===\n\n");
@@ -377,7 +389,7 @@ int OptimasiRute() {
 //    // Test Case 13: Maximum Node Count
 //    printf("\nTC13: Maximum Node Count\n");
 //    printf("Input:\n");
-//    printf("9\n");
+//    printf("51\n");
 //    printf("Expected: Jumlah lokasi tidak valid!\n");
 //    printf("Result: ");
 //    OptimasiRute();
@@ -395,9 +407,9 @@ int OptimasiRute() {
 //    printf("\nTC15: Large Weights\n");
 //    printf("Input:\n");
 //    printf("3 3\n");
-//    printf("0 1 999999\n");
-//    printf("1 2 999999\n");
-//    printf("2 0 999999\n");
+//    printf("0 1 2139095040\n");
+//    printf("1 2 2139095040\n");
+//    printf("2 0 2139095040\n");
 //    printf("Expected: Valid route with large total\n");
 //    printf("Result: ");
 //    OptimasiRute();
@@ -463,6 +475,6 @@ int OptimasiRute() {
 //    return 0;
 // }
 
-// int main() {
-//     return OptimasiRute();
-// }
+int main() {
+    return OptimasiRute();
+}
