@@ -5,4 +5,5 @@
 #define MAX_USERS 100
 
 void history(Stack *S);
+void historyInt(Stack *S, int *i);
  

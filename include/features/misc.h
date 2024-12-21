@@ -16,5 +16,6 @@ void wordToString(Word word, char *str);
 int max(int a, int b, int c);
 boolean IsEqual(char *str2, Word str1);
 int isWordNegative(Word word);
+void readItemWithBlanks(Word *itemName, Word *qty, char *command);
 
 #endif

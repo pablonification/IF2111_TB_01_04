@@ -17,11 +17,29 @@ void history(Stack *S) {
         printf(RED"Kamu belum membeli barang apapun!\n"RESET);
         return;
     }
-    printf(GREEN"\nRiwayat pembelian barang:\n"RESET);
+    printf(GREEN"Riwayat pembelian barang:\n"RESET);
     for (int i = S->TOP; i >= 0; i--) {
         printf(YELLOW"%d. %s %d\n"RESET, 
                (S->TOP-i)+1, 
                S->T[i].name, 
                S->T[i].harga);
+    }
+}
+
+void historyInt(Stack *S, int *i){
+    if (IsEmptyStack(*S)) {
+        printf(RED"Kamu belum membeli barang apapun!\n"RESET);
+        return;
+    }
+    printf(GREEN"Riwayat pembelian barang:\n"RESET);
+    int j = S->TOP;
+    int count = 0;
+    while (j >= 0 && count < *i) {
+        printf(YELLOW"%d. %s %d\n"RESET, 
+               count + 1, 
+               S->T[j].name, 
+               S->T[j].harga);
+        j--;
+        count++;
     }
 }

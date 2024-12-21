@@ -142,3 +142,30 @@ int isWordNegative(Word word) {
     }
     return TRUE;
 }
+
+void readItemWithBlanks(Word *itemName, Word *qty, char *command) {
+    printf(">> %s ", command);
+    STARTLINE();
+    Word fullCommand = currentWord;
+
+    int lastSpace = fullCommand.Length - 1;
+    while (lastSpace >= 0 && fullCommand.TabWord[lastSpace] != ' ') {
+        lastSpace--;
+    }
+
+    qty->Length = 0;
+    int i;
+    for (i = lastSpace + 1; i < fullCommand.Length; i++) {
+        qty->TabWord[qty->Length++] = fullCommand.TabWord[i];
+    }
+    qty->TabWord[qty->Length] = '\0';
+
+    itemName->Length = 0;
+    for (i = 0; i < lastSpace; i++) {
+        itemName->TabWord[itemName->Length++] = fullCommand.TabWord[i];
+    }
+    itemName->TabWord[itemName->Length] = '\0';
+
+    currentWord = *itemName;
+}
+

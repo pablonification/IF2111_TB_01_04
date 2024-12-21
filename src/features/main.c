@@ -198,7 +198,14 @@ void showMainMenu(){
             } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
                 printf(RED"Lakukan login atau register terlebih dahulu\n"WHITE);
             } else {
-                history(&gameState.users[gameState.userIndex].history);
+                ADVWORD();
+                if (!isWordInt(currentWord)){
+                    history(&gameState.users[gameState.userIndex].history);
+                } else {
+                    int input = WordToInt(currentWord);
+                    historyInt(&gameState.users[gameState.userIndex].history, &input);
+                }
+                
             }
         }
 
@@ -236,10 +243,12 @@ void showMainMenu(){
                     }
                     else if (compareWords("3", choice, 1)){
                         playQuantumWordl3(&gameState.users[gameState.userIndex].money);
+                    } else {
+                        printf(RED"Nomor challenge tidak valid. Silakan coba lagi.\n"WHITE);
                     }
                 } else {
                     work(&gameState.users[gameState.userIndex].money);
-                }
+                } 
             }
         }
     
@@ -263,12 +272,15 @@ void showMainMenu(){
                     storeList(&gameState.itemList);
                 }
                 else if (IsEqual("REQUEST", currentWord)){
+                    ADVWORD();
                     if (IsEqual("BIOWEAPON", currentWord)){
                         processDNA();
                     }
                     else {
-                    storeRequest(&gameState.itemList, &gameState.requestQueue);
+                        storeRequest(&gameState.itemList, &gameState.requestQueue);
                     }
+                } else {
+                    printf(RED"Command tidak valid. Silakan coba lagi.\n"WHITE);
                 }
             }
         }
@@ -317,6 +329,8 @@ void showMainMenu(){
                     } else {
                         printf(RED"Nomor urut tidak valid. Silakan coba lagi.\n"WHITE);
                     }
+                } else {
+                    printf(RED"Command tidak valid. Silakan coba lagi.\n"WHITE);
                 }
             }
       
@@ -362,40 +376,50 @@ void showMainMenu(){
                     cartPay(&gameState ,&gameState.users[gameState.userIndex], gameState.itemList);
                 } else if (IsEqual("ADD", currentWord)){
                     Word itemCart, tempQty;
-                    int qtyCart;
                     char itemStr[MAX_LEN];
 
-                    ADVWORD();
-                    itemCart = currentWord;
+                    readItemWithBlanks(&itemCart, &tempQty, "CART ADD");
+
+                    //itemCart = currentWord;
                     if (isWordEmpty(itemCart)){
-                        printf(RED"Item tidak valid\n"WHITE);
+                        printf(RED"Masukan Tidak valid, format masukan adalah CART ADD <Nama Barang> <Jumlah Barang>\n"WHITE);
                         continue;
                     }
-                    ADVWORD();
                     wordToString(itemCart, itemStr);
 
+                    if (!isWordInt(tempQty)){
+                        printf(RED"Masukan Tidak valid, format masukan adalah CART ADD <Nama Barang> <Jumlah Barang>\n"WHITE);
+                        continue;
+                    }
 
-                    tempQty = currentWord;
-                    printf("DEBUG: tempQty = %s\n", tempQty.TabWord);
+                    // printf("DEBUG: itemCart = %s\n", itemCart.TabWord);
+                    // printf("DEBUG: tempQty = %s\n", tempQty.TabWord);
+
                     int Qty = WordToInt(tempQty);
-                    printf("%d\n", Qty);
                     cartAdd(&gameState, &gameState.users[gameState.userIndex], &gameState.itemList, itemStr, &Qty);
 
                 } else if (IsEqual("REMOVE", currentWord)){
                     Word itemCart, tempQty;
-                    int qtyCart;
                     char itemStr[MAX_LEN];
 
-                    ADVWORD();
-                    itemCart = currentWord;
+                    readItemWithBlanks(&itemCart, &tempQty, "CART REMOVE");
+
+                    if (isWordEmpty(itemCart)){
+                        printf(RED"Masukan Tidak valid, format masukan adalah CART REMOVE <Nama Barang> <Jumlah Barang>\n"WHITE);
+                        continue;
+                    }
                     wordToString(itemCart, itemStr);
 
-                    ADVWORD();
-                    tempQty = currentWord;
+                    if (!isWordInt(tempQty)){
+                        printf(RED"Masukan Tidak valid, format masukan adalah CART REMOVE <Nama Barang> <Jumlah Barang>\n"WHITE);
+                        continue;
+                    }
                     int Qty = WordToInt(tempQty);
 
                     cartRemove(&gameState, &gameState.users[gameState.userIndex], itemStr, &Qty);
-                } 
+                } else {
+                    printf(RED"Command tidak valid. Silakan coba lagi.\n"WHITE);
+                }
             }
         }
 
@@ -1003,10 +1027,11 @@ void storeSupply(ListItem *L, QueueItem *Q) {
             printf("Harga barang: ");
             STARTLINE();
             price = currentWord;
+            int priceint = WordToInt(price);
             boolean validprice = FALSE;
 
             while (!validprice) {
-                if (isWordInt(price)) {
+                if (priceint > 0) {
                     validprice = TRUE;
                 } else {
                     printf("Harga tidak valid. Silakan coba lagi: ");
@@ -1015,7 +1040,6 @@ void storeSupply(ListItem *L, QueueItem *Q) {
                 }
             }
 
-            int priceint = WordToInt(price);
             Item new_item;
             customStringCPY(new_item.name, item_name);
             new_item.price = priceint;

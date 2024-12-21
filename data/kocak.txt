@@ -1,9 +1,10 @@
-4
+5
 10 AK47
 20 Lalabu
 20 Ayam Goreng Crisbar
 500 Meong
-2
+50 Fufufafa
+3
 2000 user1 alstrukdatkeren
 6
 40 AK47
@@ -13,9 +14,18 @@
 500 Meong
 20 Ayam Goreng Crisbar
 2
-Ayam Goreng Crisbar
 AK47
+Ayam Goreng Crisbar
 25 user2 kerenbangetkak
 0
 1
 Meong
+230 andkdd auah
+3
+250 Fufufafa
+500 Fufufafa
+20 Ayam Goreng Crisbar
+3
+Meong
+Lalabu
+Fufufafa
