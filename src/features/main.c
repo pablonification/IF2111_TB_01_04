@@ -1500,7 +1500,7 @@ void cartAdd(Global *gameState, User *profile, ListItem *L, char* addstr, int* q
             printf(GREEN"%s sebanyak %d berhasil ditambahkan ke keranjang.\n"WHITE, addstr, *qtyint);
         }
         else{
-            profile->cart.Elements[i-1].Value += *qtyint;
+            profile->cart.Elements[i].Value += *qtyint;
             printf(GREEN"%s sebanyak %d berhasil ditambahkan ke keranjang.\n"WHITE, addstr, *qtyint);
         }
     }
@@ -1510,10 +1510,16 @@ void cartAdd(Global *gameState, User *profile, ListItem *L, char* addstr, int* q
 }
 
 void DisplayMap(User *profile, ListItem L){
-    int total;
+    int total = 0;
+    int harga_per_barang = 0;
+
+    int uanguser = profile->money;
+    
+    printf("Kamu akan membeli barang-barang berikut.\n");
     if (IsEmptyMap(profile->cart)) {
-        printf("Map is empty.\n");
-    } else {
+        printf("Keranjang kamu kosong!\n");
+    }
+    else {
         printf("Kuantitas       Nama            Total\n");
         for (int i = 0; i < profile->cart.Count; i++) {
             int harga = 0;
@@ -1527,13 +1533,16 @@ void DisplayMap(User *profile, ListItem L){
             }
 
             if (found) {
-                int harga_per_barang = harga * profile->cart.Elements[i].Value;
+                harga_per_barang = harga * profile->cart.Elements[i].Value;
                 total += harga_per_barang;
                 printf("%-15d %-15s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
             }
             else {
                 printf("%-15s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
             }
+            }
         }
-    }
+
+        
+        printf("Total biaya yang harus dikeluarkan adalah %d.\n", total);
 }
