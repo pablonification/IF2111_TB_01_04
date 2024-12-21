@@ -1242,10 +1242,14 @@ void insertLastItem(ListItem *itemlist, Item item) {
 
 // Cart Implementation
 void cartPay(Global *gameState, User *profile, ListItem L) {
-    int price = 0, idxmax = 0, lexical = 0, harga_per_barang, max = 0;
+    int price = 0;
     int total = 0;
-    int val,temp;
+    int val;
     char input[50];
+    int max = 0;
+    int harga_per_barang = 0;
+    int idxmax = 0;
+    int lexical = 0;
 
     int uanguser = profile->money;
     
@@ -1262,7 +1266,6 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
                 if (my_strcmp(L.item[j].name, profile->cart.Elements[i].Key)) {
                     harga = L.item[j].price;
                     found = TRUE;
-                    temp = i;
                     break;
                 }
             }
@@ -1272,29 +1275,13 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
                 total += harga_per_barang;
                 printf("%-15d %-15s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
             }
-
             else {
                 printf("%-15s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
             }
-              if (max > harga_per_barang) {
-                max = harga_per_barang;
-                idxmax = i;
-            }
-            else if (max < harga_per_barang) {
-                max = max;
-                idxmax = idxmax;
-            }
-            else if (max == harga_per_barang) {
-                if (lexical > profile->cart.Elements[i].Key[0]) {
-                    lexical = profile->cart.Elements[i].Key[0];
-                    idxmax = i;
-                }
-                else {
-                    lexical = lexical;
-                    idxmax = idxmax;
-                }
             }
         }
+
+        
         printf("Total biaya yang harus dikeluarkan adalah %d, apakah jadi dibeli?\n", total);
         printf("(Ya/Tidak)\n");
 
@@ -1311,13 +1298,43 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
                 printf("Selamat kamu telah membeli barang-barang tersebut!\n");
                 uanguser -= total;
                 gameState->users[gameState->userIndex].money = uanguser;
+
+                for (int i = 0; i < profile->cart.Count; i++) {
+                    for (int j = 0; j < L.itemLength; j++) {
+                        if (max > harga_per_barang) {
+                            max = max;
+                            idxmax = idxmax;
+                        }
+                        else if (max < harga_per_barang) {
+                            max = harga_per_barang;
+                            idxmax = i;
+                        }
+                        else if (max == harga_per_barang) {
+                            if (lexical < profile->cart.Elements[i].Key[0]) {
+                                lexical = profile->cart.Elements[i].Key[0];
+                                idxmax = i;
+                            }
+                            else {
+                                lexical = lexical;
+                                idxmax = idxmax;
+                            }
+                        }
+                }
+                }
+                infotypeStack x;
+                x.harga = max;
+                customStringCPY(x.name, profile->cart.Elements[idxmax].Key);
+                Push(&profile->history, x); 
+
                 while (!IsEmptyMap(profile->cart)) {
                     Delete(&profile->cart, profile->cart.Elements->Key);
                 }
-            }
         } 
+
     }
+    printStack(&profile->history);
 }
+
 
 void cartRemove(Global *gameState, User *profile, char* removestr, int* idxint){
     int i = 0;
@@ -1344,8 +1361,8 @@ void cartRemove(Global *gameState, User *profile, char* removestr, int* idxint){
         printf(RED"Gagal mengurangi. Hanya terdapat %d %s di keranjang.\n"WHITE, currentJumlah, profile->cart.Elements->Key);
     }
     else if (currentJumlah == *idxint){
-        Delete(&profile->cart, profile->cart.Elements->Key);
         printf(GREEN"%s sebanyak %d berhasil dihapus dari keranjang.\n"WHITE, profile->cart.Elements->Key, profile->cart.Elements->Value);
+        Delete(&profile->cart, profile->cart.Elements->Key);
     }
     else{
         for (int i = 0; i < profile->cart.Count; i++) {

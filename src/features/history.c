@@ -18,9 +18,9 @@ void history(Stack *S) {
         return;
     }
     printf(GREEN"\nRiwayat pembelian barang:\n"RESET);
-    for (int i = 0; i < S->TOP; i++) {
+    for (int i = S->TOP; i >= 0; i--) {
         printf(YELLOW"%d. %s %d\n"RESET, 
-               i+1, 
+               (S->TOP-i)+1, 
                S->T[i].name, 
                S->T[i].harga);
     }
