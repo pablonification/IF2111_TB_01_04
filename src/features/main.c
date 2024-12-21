@@ -22,6 +22,20 @@ int main(){
     return 0;
 }
 
+boolean endsWith_txt(char *str) {
+    int len = 0;
+    while (str[len] != '\0') {
+        len++;
+    }
+    
+    if (len < 4) return FALSE;
+    
+    return (str[len-4] == '.' && 
+            str[len-3] == 't' && 
+            str[len-2] == 'x' && 
+            str[len-1] == 't');
+}
+
 void showMainMenu(){   
     Global gameState = {0};
     gameState.isStarted = FALSE; 
@@ -94,38 +108,39 @@ void showMainMenu(){
         }
         else if (compareWords("HELP", currentWord, 4)){
             if (!gameState.isLoaded && !gameState.isStarted && !gameState.isLogin){
-                printf(YELLOW"START\t\t\t-> Untuk masuk sesi baru\n");
-                printf("LOAD\t\t\t-> Untuk memulai sesi berdasarkan file konfigurasi\n");
-                printf("QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);
-            } else if (gameState.isLoaded && !gameState.isStarted && !gameState.isLogin){ 
-                printf("=====[ Login Menu Help PURRMART ]=====\n");
-                printf(YELLOW"REGISTER\t\t-> Untuk melakukan pendaftaran akun baru\n");
-                printf("LOGIN\t\t\t-> Untuk masuk ke dalam akun dan memulai sesi\n");
-                printf("QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);   
+            printf("=====[ Welcome Menu Help PURRMART]=====\n");
+            printf(YELLOW"\t1. START\t\t-> Untuk masuk sesi baru\n");
+            printf("\t2. LOAD\t\t\t-> Untuk memulai sesi berdasarkan file konfigurasi\n");
+            printf("\t3. QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){ 
+            printf("=====[ Login Menu Help PURRMART ]=====\n");
+            printf(YELLOW"\t1. REGISTER\t\t-> Untuk melakukan pendaftaran akun baru\n");
+            printf("\t2. LOGIN\t\t-> Untuk masuk ke dalam akun dan memulai sesi\n");
+            printf("\t3. QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);   
             } else if (gameState.isLoaded && gameState.isStarted && gameState.isLogin){ 
-                printf(YELLOW"=====[ Menu Help PURRMART ]=====\n");
-                printf("WORK\t\t\t-> Untuk bekerja\n");
-                printf("WORK CHALLENGE\t\t-> Untuk mengerjakan challenge\n");
-                printf("STORE LIST\t\t-> Untuk melihat barang-barang di toko\n");
-                printf("STORE REQUEST\t\t-> Untuk meminta penambahan barang\n");
-                printf("STORE SUPPLY\t\t-> Untuk menambahkan barang dari permintaan\n");
-                printf("STORE REMOVE\t\t-> Untuk menghapus barang\n");
-                printf("STORE REQUEST BIOWEAPON\t-> Untuk memproses DNA menjadi bioweapon\n");
-                printf("WISHLIST SHOW\t\t-> Untuk melihat wishlist\n");
-                printf("WISHLIST ADD\t\t-> Untuk menambahkan barang ke wishlist\n");
-                printf("WISHLIST REMOVE\t\t-> Untuk menghapus barang dari wishlist\n");
-                printf("WISHLIST CLEAR\t\t-> Untuk menghapus seluruh barang dari wishlist\n");
-                printf("WISHLIST SWAP\t\t-> Untuk menukar posisi dua barang dalam wishlist\n");
-                printf("CART SHOW\t\t-> Untuk melihat isi keranjang\n");
-                printf("CART ADD\t\t-> Untuk menambahkan barang ke keranjang\n");
-                printf("CART REMOVE\t\t-> Untuk menghapus barang dari keranjang\n");
-                printf("CART PAY\t\t-> Untuk membayar barang di keranjang\n");
-                printf("GLOBALALIGNMENT\t\t-> Untuk melakukan deteksi kebocoran DNA\n");
-                printf("OPTIMASIRUTE\t\t-> Untuk melakukan optimasi rute ekspedisi\n");
-                printf("PROFILE\t\t\t-> Untuk melihat profil\n");
-                printf("LOGOUT\t\t\t-> Untuk keluar dari sesi\n");
-                printf("SAVE\t\t\t-> Untuk menyimpan state ke dalam file\n");
-                printf("QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);
+            printf(YELLOW"=====[ Menu Help PURRMART ]=====\n");
+            printf("\t1. WORK\t\t\t\t-> Untuk bekerja\n");
+            printf("\t2. WORK CHALLENGE\t\t-> Untuk mengerjakan challenge\n");
+            printf("\t3. STORE LIST\t\t\t-> Untuk melihat barang-barang di toko\n");
+            printf("\t4. STORE REQUEST\t\t-> Untuk meminta penambahan barang\n");
+            printf("\t5. STORE SUPPLY\t\t\t-> Untuk menambahkan barang dari permintaan\n");
+            printf("\t6. STORE REMOVE\t\t\t-> Untuk menghapus barang\n");
+            printf("\t7. STORE REQUEST BIOWEAPON\t-> Untuk memproses DNA menjadi bioweapon\n");
+            printf("\t8. WISHLIST SHOW\t\t-> Untuk melihat wishlist\n");
+            printf("\t9. WISHLIST ADD\t\t\t-> Untuk menambahkan barang ke wishlist\n");
+            printf("\t10. WISHLIST REMOVE\t\t-> Untuk menghapus barang dari wishlist\n");
+            printf("\t11. WISHLIST CLEAR\t\t-> Untuk menghapus seluruh barang dari wishlist\n");
+            printf("\t12. WISHLIST SWAP\t\t-> Untuk menukar posisi dua barang dalam wishlist\n");
+            printf("\t13. CART SHOW\t\t\t-> Untuk melihat isi keranjang\n");
+            printf("\t14. CART ADD\t\t\t-> Untuk menambahkan barang ke keranjang\n");
+            printf("\t15. CART REMOVE\t\t\t-> Untuk menghapus barang dari keranjang\n");
+            printf("\t16. CART PAY\t\t\t-> Untuk membayar barang di keranjang\n");
+            printf("\t17. GLOBALALIGNMENT\t\t-> Untuk melakukan deteksi kebocoran DNA\n");
+            printf("\t18. OPTIMASIRUTE\t\t-> Untuk melakukan optimasi rute ekspedisi\n");
+            printf("\t19. PROFILE\t\t\t-> Untuk melihat profil\n");
+            printf("\t20. LOGOUT\t\t\t-> Untuk keluar dari sesi\n");
+            printf("\t21. SAVE\t\t\t-> Untuk menyimpan state ke dalam file\n");
+            printf("\t22. QUIT\t\t\t-> Untuk keluar dari program\n"WHITE);
             }
         }
         else if (compareWords("LOGIN", currentWord, 5)){
@@ -203,10 +218,15 @@ void showMainMenu(){
                     printf("2. W0RDL399 (biaya main=500)\n");
                     printf("3. QUANTUM W0RDL399 (biaya main=1000)\n"WHITE);
 
-                    printf("Masukan challenge yang hendak dimainkan: ");
+                    printf("Masukan challenge yang hendak dimainkan (nomor challenge): ");
                     Word choice;
                     STARTLINE();
                     choice = currentWord;
+                    
+                    // cek input nomor atau bukan
+                    if (!isKataInt(choice)){
+                        printf(RED"Input harus berupa angka!\n"WHITE);
+                    } 
 
                     if (compareWords("1", choice, 1)){
                         tebakAngkaRNG(&gameState.users[gameState.userIndex].money);
@@ -384,20 +404,75 @@ void showMainMenu(){
         }
 
 
-        else if (compareWords("SAVE", currentWord, 4)){
-            if (!gameState.isLoaded && !gameState.isStarted){
+        else if (compareWords("SAVE", currentWord, 4)) {
+            if (!gameState.isLoaded && !gameState.isStarted) {
                 printf(RED"Lakukan Command LOAD dan START terlebih dahulu untuk memulai program\n"WHITE);
-            } else if (gameState.isLoaded && !gameState.isStarted){
+            } else if (gameState.isLoaded && !gameState.isStarted) {
                 printf(RED"Anda belum start program\n"WHITE);
-            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin){
+            } else if (gameState.isLoaded && gameState.isStarted && !gameState.isLogin) {
                 printf(RED"Lakukan login atau register terlebih dahulu\n"WHITE);
             } else {
-                 Save("savefile.txt", &gameState);
+                ADVWORD(); // Read the filename
+                if (currentWord.Length == 0 || compareWords("SAVE", currentWord, 4)) {
+                    printf(RED"Nama file tidak diberikan. Silakan coba lagi.\n"WHITE);
+                } else {
+                    char filename[MaxEl];
+                    wordToString(currentWord, filename);
+                    
+                    if (!endsWith_txt(filename)) {
+                        printf(RED"Nama file harus berakhiran .txt\n"WHITE);
+                    } else {
+                        Save(filename, &gameState);
+                        printf(GREEN"Game berhasil disimpan dalam data/%s.\n"WHITE, filename);
+                    }
+                }
             }
         }
+
         else if (compareWords("QUIT", currentWord, 4)){
-            printf(YELLOW"Keluar dari program... \n"WHITE);
-            break;
+            if (!gameState.isLogin) {
+                printf("\nKamu keluar dari PURRMART.\n");
+                printf("Dadah ^_^/\n");
+                break;
+            } else {
+                boolean validResponse = FALSE;
+                while (!validResponse) {
+                    printf("\nApakah kamu ingin menyimpan data sesi sekarang (Y/N)? ");
+                    STARTLINE();
+                    if (currentWord.Length == 0) {
+                        printf(RED"Input tidak boleh kosong. Silakan masukkan Y/N.\n"WHITE);
+                        continue;
+                    }
+                    
+                    char response = currentWord.TabWord[0];
+                    if (response == 'Y' || response == 'y') {
+                        printf("Masukkan nama file penyimpanan: ");
+                        STARTLINE();
+                        if (currentWord.Length == 0) {
+                            printf(RED"Tolong masukkan nama file yang benar.\n"WHITE);
+                            continue;
+                        } else {
+                            char filename[MaxEl];
+                            wordToString(currentWord, filename);
+                            if (!endsWith_txt(filename)) {
+                                printf(RED"Nama file harus berakhiran .txt\n"WHITE);
+                                continue;
+                            }
+                            Save(filename, &gameState);
+                            printf(GREEN"Game berhasil disimpan dalam data/%s.\n"WHITE, filename);
+                        }
+                        validResponse = TRUE;
+                    } else if (response == 'N' || response == 'n') {
+                        validResponse = TRUE;
+                    } else {
+                        printf(RED"Input tidak valid. Silakan masukkan Y/N.\n"WHITE);
+                    }
+                }
+                
+                printf("\nKamu keluar dari PURRMART.\n");
+                printf("Dadah ^_^/\n");
+                break;
+            }
         }
         else {
             printf(RED"Command tidak valid. Silakan coba command yang valid.\n"WHITE);
@@ -415,7 +490,7 @@ int CharToInt(Word tempQty){
 
 void Start(Global *gameState) {
     gameState->isStarted = TRUE;
-    printf(GREEN"Game berhasil dimulai. Selamat bermain!\n"WHITE);
+    printf(GREEN"File konfigurasi aplikasi berhasil dibaca. PURRMART berhasil dijalankan.\n"WHITE);
 }
 
 // Implement other functions as in your original code...
@@ -519,7 +594,7 @@ void Load(const char *filename, Global *global) {
             Push(&global->users[i].history, item);
         }
         // printf(CYAN"\nDEBUG: Purchase History for user %s:\n"WHITE, global->users[i].name);
-        printStack(&global->users[i].history);
+        // printStack(&global->users[i].history);
 
         // Load wishlist
         int wishlistCount;
@@ -547,9 +622,9 @@ void Load(const char *filename, Global *global) {
 
     if (succread_item && succread_user && succread_ph && succread_wl) {
         global->isLoaded = TRUE;
-        printf(GREEN"File konfigurasi berhasil diload. PURRMART siap digunakan.\n"WHITE);
+        printf(GREEN"Save file berhasil dibaca. PURRMART berhasil dijalankan..\n"WHITE);
     } else {
-        printf(RED"Gagal load file konfigurasi. Silakan cek file konfigurasi.\n"WHITE);
+        printf(RED"Save file tidak ditemukan. PURRMART gagal dijalankan.\n"WHITE);
     }
     closeFile(file);
 }
@@ -602,14 +677,14 @@ void Login(Global *gameState, User *users, int user_count) {
     
     if (userIndex != -1) {
         customStringCPY(currentUser, users[userIndex].name);
-        printf(GREEN"Anda telah berhasil login sebagai %s.\n"WHITE, currentUser);
+        printf(GREEN"Anda telah login ke PURRMART sebagai %s.\n"WHITE, currentUser);
         users[userIndex].money = users[userIndex].money;
         printf(GREEN"Saldo anda: %d\n"WHITE, users[userIndex].money);
         gameState->isLogin = TRUE;
         gameState->userIndex = userIndex;
     }
     else {
-        printf(RED"Username atau password salah. Silakan coba lagi.\n"WHITE);
+        printf(RED"Username atau password salah.\n"WHITE);
     }
 }
 
@@ -637,7 +712,9 @@ void Register(Global *gameState) {
     }
     
     printf("Password: ");
+    disableEcho(); // kalo gamau tinggal di comment dan apus aja ges
     STARTLINE();
+    enableEcho(); // kalo gamau tinggal di comment dan apus aja ges
     password = currentWord;
     wordToString(password, pwdstr);
 
@@ -653,7 +730,7 @@ void Register(Global *gameState) {
     
     for (int i = 0; i < gameState->userCount; i++) {
         if (compareWords(gameState->users[i].name, username, username.Length)) {
-            printf(RED"Username %s sudah terdaftar. Silakan gunakan username lain.\n"WHITE, userstr);
+            printf(RED"Akun dengan username %s gagal dibuat. Silakan lakukan REGISTER ulang.\n"WHITE, userstr);
             return;
         }
     }
@@ -725,7 +802,7 @@ void Save(const char *filename, Global *gameState) {
     }
 
     closeFile(file);
-    printf(GREEN"Game berhasil disimpan dalam %s.\n"WHITE, filepath);
+    // printf(GREEN"Game berhasil disimpan dalam %s.\n"WHITE, filepath);
 }
 
 void profile(User *users) {
@@ -953,7 +1030,7 @@ void storeSupply(ListItem *L, QueueItem *Q) {
             enqueueItem(Q, item_name);
             printf(YELLOW"%s dikembalikan ke antrian.\n"WHITE, item_name);
         } else if (customStringCMP(responsestr, "Tolak") == 0) {
-            printf(RED"%s dihapus dari antrian.\n"WHITE, item_name);
+            printf(RED"%s dihapuskan dari antrian.\n"WHITE, item_name);
         }
     } else {
         printf(RED"Antrian kosong. Tidak ada barang yang perlu disupply.\n"WHITE);
@@ -1134,8 +1211,8 @@ void wishlistRemove(WishlistUser *wishlist) {
     }
 
     Word input;
-    ADVWORD(); // Read the "REMOVE" part
-    ADVWORD(); // Read the next part (could be a number or nothing)
+    ADVWORD(); // baca "REMOVE"
+    ADVWORD(); // baca input selanjutnya, bisa berupa nomor atau nama barang
     input = currentWord;
 
     char inputstr[MaxEl];
@@ -1147,12 +1224,12 @@ void wishlistRemove(WishlistUser *wishlist) {
         return;
     }
 
-    // Check if input is a number
+    // cek apakah input berupa nomor
     if (isNumber(inputstr)) {
         int idx = convertWordToInt(input);
         if (idx > 0 && idx <= wishlist->number) {
             DeleteAtLL(&wishlist->wishlist_item, idx - 1);
-            printf(GREEN"Barang pada posisi %d berhasil dihapus dari wishlist!\n"WHITE, idx);
+            printf(GREEN"Berhasil menghapus barang posisi ke-%d dari wishlist!\n"WHITE, idx);
         } else {
             printf(RED"Penghapusan barang WISHLIST gagal dilakukan, Barang ke-%d tidak ada di WISHLIST!\n"WHITE, idx);
         }
@@ -1177,71 +1254,66 @@ void wishlistRemove(WishlistUser *wishlist) {
 // Fitur wishlistSwap
 // Menukar posisi dua barang dalam wishlist
 void wishlistSwap(WishlistUser *wishlist, int i, int j) {
-    // First check if wishlist pointer is valid
     if (wishlist == NULL) {
         printf(RED"Error: Invalid wishlist pointer\n"WHITE);
         return;
     }
 
-    // // Debug print more details
-    // printf(CYAN"DEBUG: Wishlist pointer = %p\n"WHITE, (void*)wishlist);
-    // printf(CYAN"DEBUG: Wishlist number = %d\n"WHITE, wishlist->number);
-    // printf(CYAN"DEBUG: First node pointer = %p\n"WHITE, (void*)wishlist->wishlist_item.First);
-
-    // Add a safe check for First node
     if (wishlist->wishlist_item.First == NULL) {
-        printf(RED"Wishlist kosong (First node is NULL)\n"WHITE);
+        printf(RED"Wishlist kosong\n"WHITE);
         return;
     }
 
-    // Rest of your validation logic
-    if (wishlist->number <= 1) {
-        printf(YELLOW"Wishlist hanya memiliki satu item\n"WHITE);
-        return;
+    int actualSize = 0;
+    addressLL temp = wishlist->wishlist_item.First;
+    while (temp != NULL) {
+        actualSize++;
+        temp = temp->next;
     }
+    wishlist->number = actualSize;
+
 
     if (i == j) {
         printf(RED"Nomor tidak boleh sama. Silakan masukkan nomor yang berbeda.\n"WHITE);
+        printf(RED"Pastikan input berupa nomor dan nomor tersebut valid.\n"WHITE);
         return;
     }
 
-    if (i <= 0 || j <= 0 || i > wishlist->number || j > wishlist->number) {
+    if (i <= 0 || j <= 0 ) {
+        // || i > wishlist->number || j > wishlist->number
         printf(RED"Posisi tidak valid! (i=%d, j=%d, max=%d)\n"WHITE, i, j, wishlist->number);
         return;
     }
 
-    // Get the nodes safely
     addressLL curr = wishlist->wishlist_item.First;
     addressLL node1 = NULL;
     addressLL node2 = NULL;
     int pos = 1;
 
-    // Find nodes with validity checks
     while (curr != NULL) {
-        // printf(CYAN"DEBUG: Checking position %d, current node = %p\n"WHITE, pos, (void*)curr);
-        if (pos == i) {
-            node1 = curr;
-        }
-        if (pos == j) {
-            node2 = curr;
-        }
+        if (pos == i) node1 = curr;
+        if (pos == j) node2 = curr;
         curr = curr->next;
         pos++;
     }
 
-    // Verify we found both nodes
-    if (node1 == NULL || node2 == NULL) {
-        printf(RED"Error: Could not find one or both nodes\n"WHITE);
+    if (wishlist->number <= 1) {
+        printf(RED"Gagal menukar posisi %s!\n"WHITE, node1 ? node1->info : "item");
+        printf(YELLOW"Wishlist hanya memiliki satu item\n"WHITE);
         return;
     }
 
-    // Perform the swap
+    if (node1 == NULL || node2 == NULL) {
+        printf(RED"Gagal menukar posisi %s!\n"WHITE, node1 ? node1->info : "item");
+        return;
+    }
+
     char tempInfo[100];
     my_strcpy(tempInfo, node1->info);
     my_strcpy(node1->info, node2->info);
     my_strcpy(node2->info, tempInfo);
 
-    printf(GREEN"Sukses menukar posisi barang ke-%d dengan barang ke-%d\n"WHITE, i, j);
+    printf(GREEN"Berhasil menukar posisi %s dengan %s pada wishlist!\n"WHITE, tempInfo, node1->info);
 }
 
 
@@ -1346,7 +1418,7 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
         } 
 
     }
-    printStack(&profile->history);
+    // printStack(&profile->history);
 }
 
 

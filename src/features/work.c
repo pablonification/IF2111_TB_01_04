@@ -88,7 +88,7 @@ void work(int *balance){
     int selectedWorkIndex;
 
     while(!validWork){
-        printf("\nPilih nama pekerjaan: ");
+        printf("\nMasukkan pekerjaan yang dipilih (nama pekerjaan): ");
         STARTLINE();
         selectedWork = currentWord;
         wordToString(selectedWork, selectedWorkStr);
@@ -105,9 +105,9 @@ void work(int *balance){
         }
     }
     // printf("%d\n", selectedWorkIndex);
-    printf(CYAN"Anda sedang bekerja sebagai %s. Harap tunggu...\n"WHITE, workList[selectedWorkIndex].workName);
+    printf(CYAN"Anda sedang bekerja sebagai %s... harap tunggu.\n"WHITE, workList[selectedWorkIndex].workName);
     delay(workList[selectedWorkIndex].workDuration);
-    printf(GREEN"Pekerjaan telah selesai. Anda mendapatkan gaji $%d\n"WHITE, workList[selectedWorkIndex].workPayment);
+    printf(GREEN"Pekerjaan telah selesai. +%d rupiah telah ditambahkan ke akun Anda.\n"WHITE, workList[selectedWorkIndex].workPayment);
 
     *balance += workList[selectedWorkIndex].workPayment;
 }
