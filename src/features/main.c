@@ -341,24 +341,28 @@ void showMainMenu(){
                 } else if (IsEqual("PAY", currentWord)){
                     cartPay(&gameState ,&gameState.users[gameState.userIndex], gameState.itemList);
                 } else if (IsEqual("ADD", currentWord)){
-                    Word itemCart, tempQty;
-                    int qtyCart;
+                    Word itemCart;
+                    int Qty;
                     char itemStr[MAX_LEN];
 
                     ADVWORD();
-                    itemCart = currentWord;
-                    if (isWordEmpty(itemCart)){
-                        printf(RED"Item tidak valid\n"WHITE);
+                    if (isWordEmpty(currentWord)) {
+                        printf(RED"Masukkan tidak valid. Format input <nama barang> <jumlah barang>\n"WHITE);
                         continue;
                     }
-                    ADVWORD();
+                    itemCart = currentWord;
                     wordToString(itemCart, itemStr);
+                    //printf("DEBUG: itemStr = %s\n", itemStr);
 
-
-                    tempQty = currentWord;
-                    printf("DEBUG: tempQty = %s\n", tempQty.TabWord);
-                    int Qty = WordToInt(tempQty);
-                    printf("%d\n", Qty);
+                    ADVWORD();
+                    if (!isKataInt(currentWord)) {
+                        printf(RED"Masukkan tidak valid. Format input <nama barang> <jumlah barang>\n"WHITE);
+                        continue;
+                    }
+                    //printf("DEBUG: currentWord = %s\n", currentWord.TabWord);
+    
+                    Qty = WordToInt(currentWord);
+                
                     cartAdd(&gameState, &gameState.users[gameState.userIndex], &gameState.itemList, itemStr, &Qty);
 
                 } else if (IsEqual("REMOVE", currentWord)){
