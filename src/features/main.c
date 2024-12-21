@@ -1128,39 +1128,49 @@ boolean isNumber(char *str) {
 }
 
 void wishlistRemove(WishlistUser *wishlist) {
-    Word input;
-    // ADVWORD();
-    STARTLINE();
-    input = currentWord;
-
-    // cek apakah input kosong
-    if (currentWord.Length == 0 || compareWords("REMOVE", currentWord, 6)) {
-        printf(RED"Nama barang tidak diberikan. Silakan coba lagi.\n"WHITE);
-        wishlistRemove(wishlist); // Minta input ulang
+    if (wishlist->number == 0) {
+        printf(RED"Penghapusan barang WISHLIST gagal dilakukan, WISHLIST kosong!\n"WHITE);
+        return;
     }
 
+    Word input;
+    ADVWORD(); // Read the "REMOVE" part
+    ADVWORD(); // Read the next part (could be a number or nothing)
+    input = currentWord;
+
     char inputstr[MaxEl];
-    input = currentWord;    
     wordToString(input, inputstr);
 
-    // Cek apakah input berupa nomor atau nama barang
+    // cek apakah wishlist kosong, kalau kosong remove tidak bisa dilakukan
+    if (IsEmptyLL(wishlist->wishlist_item)) {
+        printf(RED"Penghapusan barang WISHLIST gagal dilakukan, WISHLIST kosong!\n"WHITE);
+        return;
+    }
+
+    // Check if input is a number
     if (isNumber(inputstr)) {
         int idx = convertWordToInt(input);
         if (idx > 0 && idx <= wishlist->number) {
             DeleteAtLL(&wishlist->wishlist_item, idx - 1);
             printf(GREEN"Barang pada posisi %d berhasil dihapus dari wishlist!\n"WHITE, idx);
         } else {
-            printf(RED"Penghapusan barang wishlist gagal dilakukan, posisi %d tidak ada di wishlist!\n"WHITE, idx);
-            wishlistRemove(wishlist); // Minta input ulang
+            printf(RED"Penghapusan barang WISHLIST gagal dilakukan, Barang ke-%d tidak ada di WISHLIST!\n"WHITE, idx);
         }
-    } else {
+    } else if (compareWords("REMOVE", input, 6)) {
+        // If no number is provided, ask for the item name
+        printf("Masukkan nama barang yang akan dihapus: ");
+        STARTLINE(); // Read the item name
+        input = currentWord;
+        wordToString(input, inputstr);
+
         if (isMemberLL(wishlist->wishlist_item, inputstr)) {
             DeleteByValueLL(&wishlist->wishlist_item, inputstr);
             printf(GREEN"%s berhasil dihapus dari wishlist!\n"WHITE, inputstr);
         } else {
-            printf(RED"Penghapusan barang wishlist gagal dilakukan, %s tidak ada di wishlist!\n"WHITE, inputstr);
-            wishlistRemove(wishlist); // Minta input ulang
+            printf(RED"Penghapusan barang WISHLIST gagal dilakukan, %s tidak ada di WISHLIST!\n"WHITE, inputstr);
         }
+    } else {
+        printf(RED"Penghapusan barang WISHLIST gagal dilakukan, command tidak valid!\n"WHITE);
     }
 }
 

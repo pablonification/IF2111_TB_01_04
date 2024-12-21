@@ -463,6 +463,6 @@ int OptimasiRute() {
 //    return 0;
 // }
 
-int main() {
-    return OptimasiRute();
-}
+// int main() {
+//     return OptimasiRute();
+// }
