@@ -60,15 +60,11 @@ int combination(int n, int r) {
 
 void bestRoute(double** jarak, int n, int depth, int* jalurSekarang, int* visited, double jarakSaatIni, SolusiRute* solusiTerbaik) {
     if(depth == n) {
-        // TSP check: kembali ke node awal
-        if(jarak[jalurSekarang[n-1]][jalurSekarang[0]] != infinity) {
-            double totalJarak = jarakSaatIni + jarak[jalurSekarang[n-1]][jalurSekarang[0]];
-            if(totalJarak < solusiTerbaik->totalJarak) {
-                for(int i = 0; i < n; i++) {
-                    solusiTerbaik->jalur[i] = jalurSekarang[i];
-                }
-                solusiTerbaik->totalJarak = totalJarak;
+        if (jarakSaatIni < solusiTerbaik->totalJarak) {
+            for(int i = 0; i < n; i++) {
+                solusiTerbaik->jalur[i] = jalurSekarang[i];
             }
+            solusiTerbaik->totalJarak = jarakSaatIni;
         }
         return;
     }
@@ -120,7 +116,7 @@ int cekDeadEnd(double** jarak, int n) {
         for(int j = 0; j < n; j++) {
             if(jarak[i][j] != infinity) edge_count++;
         }
-        if(edge_count < 2) return TRUE;
+        if(edge_count < 2 && i != n-1) return TRUE;  
     }
     return FALSE;
 }
@@ -195,7 +191,7 @@ int OptimasiRute() {
         tujuan = WordToInt(currentWord);
 
         ADVWORD();
-        if (!isKataInt(currentWord)) {  
+        if (!isKataInt(currentWord) && !isWordNegative(currentWord)) {
             printf(RED "Input harus berupa angka!" WHITE "\n");
             DealokasiMatrixJarak(jarak, jumlahLokasi);
             return 1;
@@ -234,14 +230,6 @@ int OptimasiRute() {
 
     SolusiRute* solusi = optimasiRute(jarak, jumlahLokasi);
 
-    double lastLeg = infinity;
-    if (solusi->totalJarak != infinity) {
-        lastLeg = jarak[solusi->jalur[jumlahLokasi - 1]][solusi->jalur[0]];
-    }
-    double totalTanpaBalik = (solusi->totalJarak == infinity) ? infinity : (solusi->totalJarak - lastLeg);
-
-    double jarakOutput = totalTanpaBalik;
-
     if(solusi->totalJarak == infinity) {
         printf("\n" RED "Tidak ditemukan rute valid!" WHITE "\n");
     } else {
@@ -250,7 +238,7 @@ int OptimasiRute() {
             printf("%d", solusi->jalur[i]);
             if(i < jumlahLokasi - 1) printf("-");
         }
-        printf(" dengan total jarak %.2f.\n" WHITE, jarakOutput);
+        printf(" dengan total jarak %.2f.\n" WHITE, solusi->totalJarak);
     }
         
     DealokasiMatrixJarak(jarak, jumlahLokasi);
@@ -260,4 +248,221 @@ int OptimasiRute() {
     return 0;
 }
 
-// Catatan: Untuk benar-benar Hamiltonian Path, ubah isi if(depth == n) di bestRoute.
+// int TestOptimasiRute() {
+//    printf("\n=== RUNNING OPTIMASI RUTE TEST CASES ===\n\n");
+   
+//    // Test Case 1: Basic Valid Route
+//    printf("TC1: Basic Valid Route\n");
+//    printf("Input:\n");
+//    printf("3 2\n");
+//    printf("0 1 10\n");
+//    printf("1 2 20\n");
+//    printf("Expected: Valid route 0-1-2 with total 30\n");
+//    printf("Result: ");
+//    OptimasiRute();
+   
+//    // Test Case 2: Graf Tidak Terhubung
+//    printf("\nTC2: Graf Tidak Terhubung\n");
+//    printf("Input:\n");
+//    printf("4 3\n");
+//    printf("0 1 10\n");
+//    printf("1 2 15\n");
+//    printf("2 0 20\n");
+//    printf("Expected: Graf tidak terhubung!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 3: Bobot Nol Valid
+//    printf("\nTC3: Bobot Nol Valid\n");
+//    printf("Input:\n");
+//    printf("3 3\n"); 
+//    printf("0 1 0\n");
+//    printf("1 2 0\n");
+//    printf("2 0 0\n");
+//    printf("Expected: Valid route with total 0\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 4: Maximum Edges
+//    printf("\nTC4: Maximum Edges\n");
+//    printf("Input:\n");
+//    printf("4 6\n");
+//    printf("0 1 10\n");
+//    printf("1 2 20\n");
+//    printf("2 3 30\n");
+//    printf("3 0 40\n");
+//    printf("0 2 50\n");
+//    printf("1 3 60\n");
+//    printf("Expected: Valid route with optimal path\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 5: Invalid Location
+//    printf("\nTC5: Invalid Location\n");
+//    printf("Input:\n");
+//    printf("3 2\n");
+//    printf("0 3 10\n");
+//    printf("1 2 20\n");
+//    printf("Expected: Lokasi tidak valid!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 6: Negative Weight
+//    printf("\nTC6: Negative Weight\n");
+//    printf("Input:\n");
+//    printf("3 2\n");
+//    printf("0 1 -10\n");
+//    printf("1 2 20\n");
+//    printf("Expected: Bobot tidak boleh negatif!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 7: Too Few Edges
+//    printf("\nTC7: Too Few Edges\n");
+//    printf("Input:\n");
+//    printf("4 2\n");
+//    printf("Expected: Jumlah rute terlalu sedikit!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 8: Invalid Node Count
+//    printf("\nTC8: Invalid Node Count\n");
+//    printf("Input:\n");
+//    printf("1\n");
+//    printf("Expected: Jumlah lokasi tidak valid!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 9: Non-Numeric Input
+//    printf("\nTC9: Non-Numeric Input\n");
+//    printf("Input:\n");
+//    printf("abc\n");
+//    printf("Expected: Input harus berupa angka!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 10: Too Many Edges
+//    printf("\nTC10: Too Many Edges\n");
+//    printf("Input:\n");
+//    printf("3 4\n");
+//    printf("Expected: Jumlah rute terlalu banyak!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 11: Dead End Path
+//    printf("\nTC11: Dead End Path\n");
+//    printf("Input:\n");
+//    printf("4 3\n");
+//    printf("0 1 10\n");
+//    printf("1 2 15\n");
+//    printf("2 3 20\n");
+//    printf("Expected: Tidak ditemukan rute valid!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 12: Equal Weight Routes
+//    printf("\nTC12: Equal Weight Routes\n");
+//    printf("Input:\n");
+//    printf("4 6\n");
+//    printf("0 1 10\n");
+//    printf("1 2 10\n");
+//    printf("2 3 10\n");
+//    printf("3 0 10\n");
+//    printf("0 2 10\n");
+//    printf("1 3 10\n");
+//    printf("Expected: Valid route with total 30\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 13: Maximum Node Count
+//    printf("\nTC13: Maximum Node Count\n");
+//    printf("Input:\n");
+//    printf("9\n");
+//    printf("Expected: Jumlah lokasi tidak valid!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 14: Single Edge Graph
+//    printf("\nTC14: Single Edge Graph\n");
+//    printf("Input:\n");
+//    printf("2 1\n");
+//    printf("0 1 10\n");
+//    printf("Expected: Valid route\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 15: Large Weights
+//    printf("\nTC15: Large Weights\n");
+//    printf("Input:\n");
+//    printf("3 3\n");
+//    printf("0 1 999999\n");
+//    printf("1 2 999999\n");
+//    printf("2 0 999999\n");
+//    printf("Expected: Valid route with large total\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 16: Zero Distance Round Trip
+//    printf("\nTC16: Zero Distance Round Trip\n");
+//    printf("Input:\n");
+//    printf("3 3\n");
+//    printf("0 1 0\n");
+//    printf("1 2 0\n");
+//    printf("2 0 0\n");
+//    printf("Expected: Valid route with total 0\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 17: Duplicate Routes with Different Weights
+//    printf("\nTC17: Duplicate Routes\n");
+//    printf("Input:\n");
+//    printf("3 3\n");
+//    printf("0 1 10\n");
+//    printf("0 1 5\n");
+//    printf("1 2 20\n");
+//    printf("Expected: Uses minimum weight for duplicate routes\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 18: Self Loop
+//    printf("\nTC18: Self Loop\n");
+//    printf("Input:\n");
+//    printf("3 3\n");
+//    printf("0 0 10\n");
+//    printf("1 1 10\n");
+//    printf("2 2 10\n");
+//    printf("Expected: Graf tidak terhubung!\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 19: Linear Path
+//    printf("\nTC19: Linear Path\n");
+//    printf("Input:\n");
+//    printf("4 3\n");
+//    printf("0 1 10\n");
+//    printf("1 2 20\n");
+//    printf("2 3 30\n");
+//    printf("Expected: Valid route 0-1-2-3\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    // Test Case 20: Mixed Edge Types
+//    printf("\nTC20: Mixed Edge Types\n");
+//    printf("Input:\n");
+//    printf("4 5\n");
+//    printf("0 1 10\n");
+//    printf("1 2 0\n");
+//    printf("2 3 30\n");
+//    printf("3 0 40\n");
+//    printf("1 3 20\n");
+//    printf("Expected: Valid route with optimal path\n");
+//    printf("Result: ");
+//    OptimasiRute();
+
+//    printf("\n=== TEST CASES COMPLETED ===\n");
+//    return 0;
+// }
+
+int main() {
+    return OptimasiRute();
+}

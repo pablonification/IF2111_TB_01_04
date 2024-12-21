@@ -3,9 +3,10 @@
 #include <math.h>
 #include "../ADT/boolean.h"
 #include "../ADT/mesinkata.h"
+#include "misc.h"
 
-#define MAX_LOKASI 100
-#define infinity 999999
+#define MAX_LOKASI 50 // Maksimal jumlah lokasi
+#define infinity 2139095040 // 2^31 - 1 untuk tipe data double 
 
 // Struktur untuk menyimpan solusi rute
 typedef struct {

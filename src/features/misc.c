@@ -130,3 +130,15 @@ boolean IsEqual(char *str2, Word str1)
     }
     return checker;
 }
+
+int isWordNegative(Word word) {
+    if (word.Length <= 1) return FALSE;
+    if (word.TabWord[0] != '-') return FALSE;
+
+    for (int i = 1; i < word.Length; i++) {
+        if (word.TabWord[i] < '0' || word.TabWord[i] > '9') {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
