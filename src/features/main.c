@@ -1205,7 +1205,7 @@ void wishlistRemove(WishlistUser *wishlist) {
         printf(RED"Penghapusan barang WISHLIST gagal dilakukan, WISHLIST kosong!\n"WHITE);
         return;
     }
-
+    int idx;
     Word input;
     ADVWORD(); // baca "REMOVE"
     ADVWORD(); // baca input selanjutnya, bisa berupa nomor atau nama barang
@@ -1222,10 +1222,12 @@ void wishlistRemove(WishlistUser *wishlist) {
 
     // cek apakah input berupa nomor
     if (isNumber(inputstr)) {
-        int idx = convertWordToInt(input);
+        idx = convertWordToInt(input);
         if (idx > 0 && idx <= wishlist->number) {
             DeleteAtLL(&wishlist->wishlist_item, idx - 1);
             printf(GREEN"Berhasil menghapus barang posisi ke-%d dari wishlist!\n"WHITE, idx);
+            wishlist->number--;
+            
         } else {
             printf(RED"Penghapusan barang WISHLIST gagal dilakukan, Barang ke-%d tidak ada di WISHLIST!\n"WHITE, idx);
         }
