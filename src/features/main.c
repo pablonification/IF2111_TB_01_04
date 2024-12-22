@@ -1366,7 +1366,7 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
         printf("Keranjang kamu kosong!\n");
     }
     else {
-        printf("Kuantitas       Nama            Total\n");
+        printf("Kuantitas       Nama                      Total\n");
         for (int i = 0; i < profile->cart.Count; i++) {
             int harga = 0;
             boolean found = FALSE;
@@ -1381,10 +1381,10 @@ void cartPay(Global *gameState, User *profile, ListItem L) {
             if (found) {
                 harga_per_barang = harga * profile->cart.Elements[i].Value;
                 total += harga_per_barang;
-                printf("%-15d %-15s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
+                printf("%-15d %-25s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
             }
             else {
-                printf("%-15s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
+                printf("%-30s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
             }
             }
         }
@@ -1542,7 +1542,7 @@ void DisplayMap(User *profile, ListItem L){
         printf("Keranjang kamu kosong!\n");
     }
     else {
-        printf("Kuantitas       Nama            Total\n");
+        printf("Kuantitas       Nama                      Total\n");
         for (int i = 0; i < profile->cart.Count; i++) {
             int harga = 0;
             boolean found = FALSE;
@@ -1557,10 +1557,10 @@ void DisplayMap(User *profile, ListItem L){
             if (found) {
                 harga_per_barang = harga * profile->cart.Elements[i].Value;
                 total += harga_per_barang;
-                printf("%-15d %-15s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
+                printf("%-15d %-25s %-d\n", profile->cart.Elements[i].Value, profile->cart.Elements[i].Key, harga_per_barang);
             }
             else {
-                printf("%-15s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
+                printf("%-25s %-8d (Harga tidak ditemukan)\n", profile->cart.Elements[i].Key, profile->cart.Elements[i].Value);
             }
             }
         }
