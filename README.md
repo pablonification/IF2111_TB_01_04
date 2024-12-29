@@ -48,6 +48,8 @@ PURRMART adalah aplikasi C yang mensimulasikan permainan pasar di mana pengguna 
 - `rng.c`: Implementasi fitur generator angka acak.
 - `qwordl3.c`: Implementasi fitur permainan Quantum Wordle.
 - `DNA.c`: Implementasi fitur bonus tambahan.
+- `DNA2.c`: Implementasi fitur bonus tambahan.
+- `optimasirute.c`: Implementasi fitur bonus tambahan.
 
 **File Header (`include` direktori):**
 
@@ -72,6 +74,11 @@ PURRMART adalah aplikasi C yang mensimulasikan permainan pasar di mana pengguna 
 
 - `driver_list.c`: Driver pengujian untuk modul daftar.
 - `driver_mesinkarakter.c`: Driver pengujian untuk modul mesin karakter.
+- `driver_mesinkata.c`: Driver pengujian untuk modul mesin kata.
+- `driver_queue.c`: Driver pengujian untuk modul queue.
+- `driver_stack.c`: Driver pengujian untuk modul stack.
+- `driver_setmap.c`: Driver pengujian untuk modul setmap.
+- `driver_listlinier.c`: Driver pengujian untuk modul linked list variasi list linier.
 
 ## Cara Menjalankan Kode
 
